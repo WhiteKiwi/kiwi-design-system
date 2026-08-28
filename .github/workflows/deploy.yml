@@ -39,10 +39,12 @@ jobs:
         env:
           KIWI_DESIGN_RELEASE_ID: ${{ github.event_name == 'workflow_dispatch' && github.sha || github.event.workflow_run.head_sha }}
         run: bash deploy/activate-static-release.sh "$KIWI_DESIGN_RELEASE_ID"
-      - name: Verify public origin
+      - name: Verify local TLS origin
         run: >-
           curl --fail --silent --show-error --max-time 20
-          --output /dev/null https://design.whitekiwi.link/
+          --output /dev/null
+          --resolve design.whitekiwi.link:10424:127.0.0.1
+          https://design.whitekiwi.link:10424/
 
   external-smoke:
     needs: production
