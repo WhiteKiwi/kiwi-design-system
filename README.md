@@ -14,6 +14,9 @@ Foundation → Primitive → Component → Pattern → Page
 - `@whitekiwi/ui`: 접근 가능한 React component와 명시적인 static/interactive variant
 - `@whitekiwi/docs`: guideline, component catalogue와 responsive visual QA surface
 
+Current UI exports: `Button`, `TextField`, `TextLink`, `Badge`, `Callout`, `StaticCard`,
+`LinkedCard`, `SectionHeading`, `CollectionHeading`, `Disclosure`, and `cn`.
+
 ## Commands
 
 ```bash

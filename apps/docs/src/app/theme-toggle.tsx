@@ -2,24 +2,34 @@
 
 import { useEffect, useState } from "react";
 
-type Theme = "light" | "dark";
+type Theme = "auto" | "light" | "dark";
+
+const themes: Theme[] = ["auto", "light", "dark"];
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<Theme>("auto");
 
   useEffect(() => {
+    if (theme === "auto") {
+      document.documentElement.removeAttribute("data-theme");
+      return;
+    }
     document.documentElement.dataset.theme = theme;
   }, [theme]);
 
   return (
-    <button
-      className="docs-theme-toggle"
-      onClick={() =>
-        setTheme((value) => (value === "light" ? "dark" : "light"))
-      }
-      type="button"
-    >
-      {theme === "light" ? "DARK" : "LIGHT"} ↗
-    </button>
+    <fieldset className="docs-theme-toggle">
+      <legend className="docs-sr-only">Theme</legend>
+      {themes.map((value) => (
+        <button
+          aria-pressed={theme === value}
+          key={value}
+          onClick={() => setTheme(value)}
+          type="button"
+        >
+          {value.toUpperCase()}
+        </button>
+      ))}
+    </fieldset>
   );
 }

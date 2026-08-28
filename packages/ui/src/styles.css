@@ -29,6 +29,169 @@
   color: var(--kiwi-color-canvas);
 }
 
+.kiwi-button {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--kiwi-radius-sm);
+  cursor: pointer;
+  font-family: var(--kiwi-font-mono);
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  transition:
+    background-color var(--kiwi-motion-fast) var(--kiwi-ease-out),
+    color var(--kiwi-motion-fast) var(--kiwi-ease-out),
+    border-color var(--kiwi-motion-fast) var(--kiwi-ease-out);
+}
+.kiwi-button--compact {
+  min-height: 2.25rem;
+  padding-inline: var(--kiwi-space-3);
+}
+.kiwi-button--normal {
+  padding-inline: var(--kiwi-space-6);
+}
+.kiwi-button--primary {
+  background: var(--kiwi-color-brand-field);
+  color: var(--kiwi-color-on-brand);
+}
+.kiwi-button--primary:hover {
+  background: color-mix(
+    in srgb,
+    var(--kiwi-color-brand-field) 86%,
+    var(--kiwi-color-canvas)
+  );
+}
+.kiwi-button--secondary {
+  border-color: var(--kiwi-color-border);
+  background: var(--kiwi-color-surface-raised);
+  color: var(--kiwi-color-text);
+}
+.kiwi-button--secondary:hover,
+.kiwi-button--ghost:hover {
+  background: var(--kiwi-color-brand-soft);
+}
+.kiwi-button--ghost {
+  background: transparent;
+  color: var(--kiwi-color-interactive);
+}
+.kiwi-button--danger {
+  background: var(--kiwi-color-error);
+  color: var(--kiwi-color-surface-raised);
+}
+.kiwi-button:focus-visible,
+.kiwi-text-link:focus-visible,
+.kiwi-field__input:focus-visible {
+  outline: 2px solid var(--kiwi-color-focus);
+  outline-offset: 0.2rem;
+}
+.kiwi-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.kiwi-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kiwi-space-2);
+  color: var(--kiwi-color-interactive);
+  font-weight: 650;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+
+.kiwi-field {
+  display: grid;
+  gap: var(--kiwi-space-2);
+  color: var(--kiwi-color-text);
+}
+.kiwi-field__label,
+.kiwi-field__description {
+  font-family: var(--kiwi-font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+}
+.kiwi-field__input {
+  min-height: 3rem;
+  padding-inline: var(--kiwi-space-4);
+  border: 1px solid var(--kiwi-color-border);
+  border-radius: var(--kiwi-radius-sm);
+  background: var(--kiwi-color-surface-raised);
+  color: var(--kiwi-color-text);
+  font: inherit;
+}
+.kiwi-field__description {
+  color: var(--kiwi-color-text-muted);
+}
+.kiwi-field__error,
+.kiwi-field__input[aria-invalid="true"] {
+  color: var(--kiwi-color-error);
+}
+.kiwi-field__input[aria-invalid="true"] {
+  border-color: var(--kiwi-color-error);
+}
+
+.kiwi-badge {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  padding: 0.35rem 0.55rem;
+  border-radius: 999px;
+  font-family: var(--kiwi-font-mono);
+  font-size: 0.58rem;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+}
+.kiwi-badge--neutral {
+  background: var(--kiwi-color-surface);
+  color: var(--kiwi-color-text-muted);
+}
+.kiwi-badge--brand {
+  background: var(--kiwi-color-brand-soft);
+  color: var(--kiwi-color-interactive);
+}
+.kiwi-badge--success {
+  background: var(--kiwi-color-success-soft);
+  color: var(--kiwi-color-success);
+}
+.kiwi-badge--warning {
+  background: var(--kiwi-color-warning-soft);
+  color: var(--kiwi-color-warning);
+}
+.kiwi-badge--danger {
+  background: var(--kiwi-color-error-soft);
+  color: var(--kiwi-color-error);
+}
+.kiwi-badge--info {
+  background: var(--kiwi-color-info-soft);
+  color: var(--kiwi-color-info);
+}
+
+.kiwi-callout {
+  padding: var(--kiwi-space-4);
+  border-inline-start: 3px solid currentColor;
+  background: var(--kiwi-color-surface);
+  color: var(--kiwi-color-text);
+}
+.kiwi-callout--success {
+  background: var(--kiwi-color-success-soft);
+  color: var(--kiwi-color-success);
+}
+.kiwi-callout--warning {
+  background: var(--kiwi-color-warning-soft);
+  color: var(--kiwi-color-warning);
+}
+.kiwi-callout--danger {
+  background: var(--kiwi-color-error-soft);
+  color: var(--kiwi-color-error);
+}
+.kiwi-callout--info {
+  background: var(--kiwi-color-info-soft);
+  color: var(--kiwi-color-info);
+}
+
 .kiwi-card-link {
   justify-content: space-between;
   gap: var(--kiwi-space-12);

@@ -15,6 +15,9 @@
   --kiwi-line: #668b15;
   --kiwi-deep: #3c6000;
   --kiwi-error: #b42318;
+  --kiwi-success: #16794f;
+  --kiwi-warning: #7a5300;
+  --kiwi-info: #1769aa;
 
   /* Semantic color roles */
   --kiwi-color-canvas: var(--kiwi-paper);
@@ -30,6 +33,13 @@
   --kiwi-color-interactive: var(--kiwi-deep);
   --kiwi-color-focus: var(--kiwi-line);
   --kiwi-color-error: var(--kiwi-error);
+  --kiwi-color-error-soft: #fbe9e7;
+  --kiwi-color-success: var(--kiwi-success);
+  --kiwi-color-success-soft: #e5f5ed;
+  --kiwi-color-warning: var(--kiwi-warning);
+  --kiwi-color-warning-soft: #fff2cc;
+  --kiwi-color-info: var(--kiwi-info);
+  --kiwi-color-info-soft: #e8f2fb;
 
   /* Layout and material */
   --kiwi-space-1: 0.25rem;
@@ -71,6 +81,13 @@
   );
   --kiwi-color-interactive: var(--kiwi-signal);
   --kiwi-color-error: #ff8585;
+  --kiwi-color-error-soft: #321817;
+  --kiwi-color-success: #62d49a;
+  --kiwi-color-success-soft: #10281f;
+  --kiwi-color-warning: #f2c14e;
+  --kiwi-color-warning-soft: #2d2410;
+  --kiwi-color-info: #73b7ff;
+  --kiwi-color-info-soft: #10243a;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -94,6 +111,13 @@
     );
     --kiwi-color-interactive: var(--kiwi-signal);
     --kiwi-color-error: #ff8585;
+    --kiwi-color-error-soft: #321817;
+    --kiwi-color-success: #62d49a;
+    --kiwi-color-success-soft: #10281f;
+    --kiwi-color-warning: #f2c14e;
+    --kiwi-color-warning-soft: #2d2410;
+    --kiwi-color-info: #73b7ff;
+    --kiwi-color-info-soft: #10243a;
   }
 }
 
