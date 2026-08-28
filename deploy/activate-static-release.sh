@@ -33,8 +33,7 @@ else
   trap - EXIT
 fi
 
-ln -sfn "releases/$release_id" "$release_root/current.next"
-mv -f "$release_root/current.next" "$release_root/current"
+ln -sfn "releases/$release_id" "$release_root/current"
 
 resolved_current="$(readlink "$release_root/current")"
 if [[ "$resolved_current" != "releases/$release_id" ]]; then
@@ -43,4 +42,3 @@ if [[ "$resolved_current" != "releases/$release_id" ]]; then
 fi
 
 echo "PIP release activated: $release_id"
-
