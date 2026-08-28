@@ -163,6 +163,48 @@ a {
   min-height: clamp(6rem, 11vw, 10rem);
   border: 1px solid color-mix(in srgb, #11140f 10%, transparent);
 }
+.docs-swatch__color[data-color="PAPER"] {
+  background: #f4f5ef;
+}
+.docs-swatch__color[data-color="MILK"] {
+  background: #fbfcf8;
+}
+.docs-swatch__color[data-color="ASH"] {
+  background: #62685e;
+}
+.docs-swatch__color[data-color="FOG"] {
+  background: #a5ab9f;
+}
+.docs-swatch__color[data-color="INK"] {
+  background: #11140f;
+}
+.docs-swatch__color[data-color="CARBON"] {
+  background: #0e100e;
+}
+.docs-swatch__color[data-color="SOFT"] {
+  background: #e9f8c9;
+}
+.docs-swatch__color[data-color="SIGNAL"] {
+  background: #c6ff4a;
+}
+.docs-swatch__color[data-color="LINE"] {
+  background: #668b15;
+}
+.docs-swatch__color[data-color="DEEP"] {
+  background: #3c6000;
+}
+.docs-swatch__color[data-color="SUCCESS"] {
+  background: #16794f;
+}
+.docs-swatch__color[data-color="INFO"] {
+  background: #1769aa;
+}
+.docs-swatch__color[data-color="WARNING"] {
+  background: #7a5300;
+}
+.docs-swatch__color[data-color="ERROR"] {
+  background: #b42318;
+}
 .docs-swatch strong,
 .docs-swatch code {
   overflow: hidden;
@@ -229,6 +271,27 @@ a {
   height: 0.8rem;
   border: 1px solid var(--kiwi-color-border);
   border-radius: 50%;
+}
+.docs-role-scene i[data-role="CANVAS"] {
+  background: var(--kiwi-color-canvas);
+}
+.docs-role-scene i[data-role="SURFACE"] {
+  background: var(--kiwi-color-surface);
+}
+.docs-role-scene i[data-role="TEXT"] {
+  background: var(--kiwi-color-text);
+}
+.docs-role-scene i[data-role="MUTED"] {
+  background: var(--kiwi-color-text-muted);
+}
+.docs-role-scene i[data-role="BRAND FIELD"] {
+  background: var(--kiwi-color-brand-field);
+}
+.docs-role-scene i[data-role="INTERACTIVE"] {
+  background: var(--kiwi-color-interactive);
+}
+.docs-role-scene i[data-role="FOCUS"] {
+  background: var(--kiwi-color-focus);
 }
 .docs-role-scene strong,
 .docs-role-scene code,
@@ -303,6 +366,30 @@ a {
   height: 0.6rem;
   max-width: 100%;
   background: var(--kiwi-color-brand-field);
+}
+.docs-space-specimen i[data-space="1"] {
+  width: var(--kiwi-space-1);
+}
+.docs-space-specimen i[data-space="2"] {
+  width: var(--kiwi-space-2);
+}
+.docs-space-specimen i[data-space="3"] {
+  width: var(--kiwi-space-3);
+}
+.docs-space-specimen i[data-space="4"] {
+  width: var(--kiwi-space-4);
+}
+.docs-space-specimen i[data-space="6"] {
+  width: var(--kiwi-space-6);
+}
+.docs-space-specimen i[data-space="8"] {
+  width: var(--kiwi-space-8);
+}
+.docs-space-specimen i[data-space="12"] {
+  width: var(--kiwi-space-12);
+}
+.docs-space-specimen i[data-space="16"] {
+  width: var(--kiwi-space-16);
 }
 
 .docs-component-block {

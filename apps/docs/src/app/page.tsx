@@ -109,10 +109,7 @@ export default function Home() {
               <div className="docs-swatch-row">
                 {group.swatches.map(([name, value]) => (
                   <div className="docs-swatch" key={name}>
-                    <span
-                      className="docs-swatch__color"
-                      style={{ background: value }}
-                    />
+                    <span className="docs-swatch__color" data-color={name} />
                     <strong>{name}</strong>
                     <code>{value}</code>
                   </div>
@@ -127,7 +124,7 @@ export default function Home() {
             <span>LIGHT THEME · SEMANTIC ROLES</span>
             {semanticRoles.map(([name, token, description]) => (
               <div key={name}>
-                <i style={{ background: `var(${token})` }} />
+                <i data-role={name} />
                 <strong>{name}</strong>
                 <code>{token}</code>
                 <small>{description}</small>
@@ -141,7 +138,7 @@ export default function Home() {
             <span>DARK THEME · SAME ROLES</span>
             {semanticRoles.map(([name, token, description]) => (
               <div key={name}>
-                <i style={{ background: `var(${token})` }} />
+                <i data-role={name} />
                 <strong>{name}</strong>
                 <code>{token}</code>
                 <small>{description}</small>
@@ -174,7 +171,7 @@ export default function Home() {
             {[1, 2, 3, 4, 6, 8, 12, 16].map((step) => (
               <div key={step}>
                 <code>{step}</code>
-                <i style={{ width: `calc(var(--kiwi-space-1) * ${step})` }} />
+                <i data-space={step} />
               </div>
             ))}
           </article>
