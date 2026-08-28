@@ -1,0 +1,62 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: design-system-production
+  cancel-in-progress: false
+
+jobs:
+  production:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main')
+    runs-on: [self-hosted, macOS, ARM64, kiwi-design-system]
+    timeout-minutes: 20
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.sha || github.event.workflow_run.head_sha }}
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - name: Activate immutable static release
+        env:
+          KIWI_DESIGN_RELEASE_ID: ${{ github.event_name == 'workflow_dispatch' && github.sha || github.event.workflow_run.head_sha }}
+        run: bash deploy/activate-static-release.sh "$KIWI_DESIGN_RELEASE_ID"
+      - name: Verify public origin
+        run: >-
+          curl --fail --silent --show-error --max-time 20
+          --output /dev/null https://design.whitekiwi.link/
+
+  external-smoke:
+    needs: production
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify the independent public route
+        run: |
+          set -euo pipefail
+          headers="$(mktemp)"
+          body="$(mktemp)"
+          curl --fail --silent --show-error --max-time 20 \
+            --dump-header "$headers" --output "$body" \
+            https://design.whitekiwi.link/
+          grep -Fq 'PIP' "$body"
+          grep -Eiq '^strict-transport-security: max-age=31536000' "$headers"
+          grep -Eiq '^content-security-policy:' "$headers"

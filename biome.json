@@ -11,6 +11,9 @@
     "enabled": true,
     "indentStyle": "space"
   },
+  "files": {
+    "includes": ["**", "!**/.next", "!**/dist", "!**/node_modules", "!**/out"]
+  },
   "css": {
     "parser": {
       "tailwindDirectives": true

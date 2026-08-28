@@ -20,13 +20,13 @@ export default function Home() {
   return (
     <main>
       <header className="docs-header">
-        <strong>KIWI DESIGN SYSTEM</strong>
-        <span>V0.1 · PRIVATE</span>
+        <strong>PIP · WHITEKIWI DESIGN SYSTEM</strong>
+        <span>V0.1 · PUBLIC</span>
         <ThemeToggle />
       </header>
 
       <section className="docs-hero">
-        <span>WHITEKIWI · FOUNDATION</span>
+        <span>PIP · SMALL PARTS, ONE CLEAR SYSTEM</span>
         <h1>
           QUIET CANVAS.
           <br />
