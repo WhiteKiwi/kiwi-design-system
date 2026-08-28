@@ -1,0 +1,21 @@
+{
+  "name": "kiwi-design-system",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "pnpm --filter @whitekiwi/ui build && pnpm --filter @whitekiwi/docs build",
+    "dev": "pnpm --filter @whitekiwi/docs dev",
+    "format": "biome format --write .",
+    "lint": "biome check .",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "check": "pnpm lint && pnpm typecheck && pnpm build"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.2",
+    "typescript": "^5.9.3"
+  }
+}

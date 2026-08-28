@@ -1,0 +1,25 @@
+{
+  "name": "@whitekiwi/docs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@whitekiwi/tokens": "workspace:*",
+    "@whitekiwi/ui": "workspace:*",
+    "next": "16.3.2",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^20.19.43",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3"
+  }
+}

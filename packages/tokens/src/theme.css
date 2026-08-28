@@ -1,0 +1,118 @@
+:root {
+  color-scheme: light;
+
+  /* Primitive palette */
+  --kiwi-paper: #f4f5ef;
+  --kiwi-milk: #fbfcf8;
+  --kiwi-ink: #11140f;
+  --kiwi-ash: #62685e;
+  --kiwi-carbon: #0e100e;
+  --kiwi-carbon-raised: #181a18;
+  --kiwi-fog: #a5ab9f;
+  --kiwi-chalk: #f1f4eb;
+  --kiwi-signal: #c6ff4a;
+  --kiwi-soft: #e9f8c9;
+  --kiwi-line: #668b15;
+  --kiwi-deep: #3c6000;
+  --kiwi-error: #b42318;
+
+  /* Semantic color roles */
+  --kiwi-color-canvas: var(--kiwi-paper);
+  --kiwi-color-surface: var(--kiwi-milk);
+  --kiwi-color-surface-raised: #ffffff;
+  --kiwi-color-text: var(--kiwi-ink);
+  --kiwi-color-text-muted: var(--kiwi-ash);
+  --kiwi-color-border: color-mix(in srgb, var(--kiwi-ink) 12%, transparent);
+  --kiwi-color-border-soft: color-mix(in srgb, var(--kiwi-ink) 7%, transparent);
+  --kiwi-color-brand-field: var(--kiwi-signal);
+  --kiwi-color-brand-soft: var(--kiwi-soft);
+  --kiwi-color-on-brand: var(--kiwi-ink);
+  --kiwi-color-interactive: var(--kiwi-deep);
+  --kiwi-color-focus: var(--kiwi-line);
+  --kiwi-color-error: var(--kiwi-error);
+
+  /* Layout and material */
+  --kiwi-space-1: 0.25rem;
+  --kiwi-space-2: 0.5rem;
+  --kiwi-space-3: 0.75rem;
+  --kiwi-space-4: 1rem;
+  --kiwi-space-6: 1.5rem;
+  --kiwi-space-8: 2rem;
+  --kiwi-space-12: 3rem;
+  --kiwi-space-16: 4rem;
+  --kiwi-gutter: clamp(1.2rem, 3vw, 3rem);
+  --kiwi-radius-none: 0;
+  --kiwi-radius-sm: 0.25rem;
+  --kiwi-radius-md: 0.5rem;
+  --kiwi-motion-fast: 150ms;
+  --kiwi-motion-base: 220ms;
+  --kiwi-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --kiwi-font-sans: "Pretendard", "Apple SD Gothic Neo", system-ui, sans-serif;
+  --kiwi-font-mono: "SFMono-Regular", Consolas, monospace;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --kiwi-color-canvas: var(--kiwi-carbon);
+  --kiwi-color-surface: var(--kiwi-carbon-raised);
+  --kiwi-color-surface-raised: #202320;
+  --kiwi-color-text: var(--kiwi-chalk);
+  --kiwi-color-text-muted: var(--kiwi-fog);
+  --kiwi-color-border: color-mix(in srgb, var(--kiwi-chalk) 14%, transparent);
+  --kiwi-color-border-soft: color-mix(
+    in srgb,
+    var(--kiwi-chalk) 8%,
+    transparent
+  );
+  --kiwi-color-brand-soft: color-mix(
+    in srgb,
+    var(--kiwi-signal) 12%,
+    var(--kiwi-carbon)
+  );
+  --kiwi-color-interactive: var(--kiwi-signal);
+  --kiwi-color-error: #ff8585;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --kiwi-color-canvas: var(--kiwi-carbon);
+    --kiwi-color-surface: var(--kiwi-carbon-raised);
+    --kiwi-color-surface-raised: #202320;
+    --kiwi-color-text: var(--kiwi-chalk);
+    --kiwi-color-text-muted: var(--kiwi-fog);
+    --kiwi-color-border: color-mix(in srgb, var(--kiwi-chalk) 14%, transparent);
+    --kiwi-color-border-soft: color-mix(
+      in srgb,
+      var(--kiwi-chalk) 8%,
+      transparent
+    );
+    --kiwi-color-brand-soft: color-mix(
+      in srgb,
+      var(--kiwi-signal) 12%,
+      var(--kiwi-carbon)
+    );
+    --kiwi-color-interactive: var(--kiwi-signal);
+    --kiwi-color-error: #ff8585;
+  }
+}
+
+@theme inline {
+  --color-canvas: var(--kiwi-color-canvas);
+  --color-surface: var(--kiwi-color-surface);
+  --color-surface-raised: var(--kiwi-color-surface-raised);
+  --color-foreground: var(--kiwi-color-text);
+  --color-muted: var(--kiwi-color-text-muted);
+  --color-line: var(--kiwi-color-border);
+  --color-brand: var(--kiwi-color-brand-field);
+  --color-brand-soft: var(--kiwi-color-brand-soft);
+  --color-interactive: var(--kiwi-color-interactive);
+  --font-sans: var(--kiwi-font-sans);
+  --font-mono: var(--kiwi-font-mono);
+  --radius-sm: var(--kiwi-radius-sm);
+  --radius-md: var(--kiwi-radius-md);
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+}
