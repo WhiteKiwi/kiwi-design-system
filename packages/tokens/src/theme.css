@@ -28,11 +28,29 @@
   --kiwi-color-border: color-mix(in srgb, var(--kiwi-ink) 12%, transparent);
   --kiwi-color-border-soft: color-mix(in srgb, var(--kiwi-ink) 7%, transparent);
   --kiwi-color-brand-field: var(--kiwi-signal);
+  --kiwi-color-brand-field-hover: #b7ef3f;
+  --kiwi-color-brand-field-active: #a8dd35;
   --kiwi-color-brand-soft: var(--kiwi-soft);
   --kiwi-color-on-brand: var(--kiwi-ink);
   --kiwi-color-interactive: var(--kiwi-deep);
+  --kiwi-color-interactive-hover: #2f4d00;
+  --kiwi-color-interactive-active: #223900;
+  --kiwi-color-control-hover: #e2f2bf;
+  --kiwi-color-control-active: #d7eaaa;
   --kiwi-color-focus: var(--kiwi-line);
+  --kiwi-color-disabled-surface: color-mix(
+    in srgb,
+    var(--kiwi-ink) 6%,
+    transparent
+  );
+  --kiwi-color-disabled-text: color-mix(
+    in srgb,
+    var(--kiwi-ink) 42%,
+    transparent
+  );
   --kiwi-color-error: var(--kiwi-error);
+  --kiwi-color-error-hover: #9a1e16;
+  --kiwi-color-error-active: #811912;
   --kiwi-color-error-soft: #fbe9e7;
   --kiwi-color-success: var(--kiwi-success);
   --kiwi-color-success-soft: #e5f5ed;
@@ -74,13 +92,31 @@
     var(--kiwi-chalk) 8%,
     transparent
   );
+  --kiwi-color-brand-field-hover: #d2ff72;
+  --kiwi-color-brand-field-active: #b7ef3f;
   --kiwi-color-brand-soft: color-mix(
     in srgb,
     var(--kiwi-signal) 12%,
     var(--kiwi-carbon)
   );
   --kiwi-color-interactive: var(--kiwi-signal);
+  --kiwi-color-interactive-hover: #d8ff84;
+  --kiwi-color-interactive-active: #b7ef3f;
+  --kiwi-color-control-hover: #29321e;
+  --kiwi-color-control-active: #344325;
+  --kiwi-color-disabled-surface: color-mix(
+    in srgb,
+    var(--kiwi-chalk) 8%,
+    transparent
+  );
+  --kiwi-color-disabled-text: color-mix(
+    in srgb,
+    var(--kiwi-chalk) 42%,
+    transparent
+  );
   --kiwi-color-error: #ff8585;
+  --kiwi-color-error-hover: #ff9a9a;
+  --kiwi-color-error-active: #e56f6f;
   --kiwi-color-error-soft: #321817;
   --kiwi-color-success: #62d49a;
   --kiwi-color-success-soft: #10281f;
@@ -104,13 +140,31 @@
       var(--kiwi-chalk) 8%,
       transparent
     );
+    --kiwi-color-brand-field-hover: #d2ff72;
+    --kiwi-color-brand-field-active: #b7ef3f;
     --kiwi-color-brand-soft: color-mix(
       in srgb,
       var(--kiwi-signal) 12%,
       var(--kiwi-carbon)
     );
     --kiwi-color-interactive: var(--kiwi-signal);
+    --kiwi-color-interactive-hover: #d8ff84;
+    --kiwi-color-interactive-active: #b7ef3f;
+    --kiwi-color-control-hover: #29321e;
+    --kiwi-color-control-active: #344325;
+    --kiwi-color-disabled-surface: color-mix(
+      in srgb,
+      var(--kiwi-chalk) 8%,
+      transparent
+    );
+    --kiwi-color-disabled-text: color-mix(
+      in srgb,
+      var(--kiwi-chalk) 42%,
+      transparent
+    );
     --kiwi-color-error: #ff8585;
+    --kiwi-color-error-hover: #ff9a9a;
+    --kiwi-color-error-active: #e56f6f;
     --kiwi-color-error-soft: #321817;
     --kiwi-color-success: #62d49a;
     --kiwi-color-success-soft: #10281f;

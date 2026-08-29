@@ -1,0 +1,25 @@
+# PIP — WhiteKiwi Design System
+
+> PIP is WhiteKiwi's public design system for foundations, semantic tokens, React components, product patterns, and adoption governance. Its thesis is: Quiet canvas. Electric kiwi. Human evidence.
+
+Use the public documentation for implemented behavior and the source repository for exact code. A reference or candidate is not automatically approved or implemented.
+
+## Documentation
+
+- [PIP documentation](https://design.whitekiwi.link/): Implemented foundations, component specimens, patterns, interaction contracts, inventory, and governance.
+- [Design guidelines](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/docs/guidelines.md): Canonical visual and interaction rules.
+- [Agent design contract](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/DESIGN.md): Compact repository-local implementation contract.
+- [Reference base](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/references/README.md): Authoritative sources and adoption stance.
+
+## Source
+
+- [Repository](https://github.com/WhiteKiwi/kiwi-design-system): Tokens, owned React components, public documentation, and deployment source.
+- [Semantic tokens](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/packages/tokens/src/theme.css): Light and dark theme roles and interaction states.
+- [UI components](https://github.com/WhiteKiwi/kiwi-design-system/tree/main/packages/ui/src): Component source and shared styles.
+
+## Interpretation notes
+
+- PIP separates Foundation, Primitive, Component, Pattern, and Page responsibilities.
+- Kiwi green is a brand signal, not a success semantic.
+- Static surfaces and navigational surfaces have distinct affordance contracts.
+- External registries are implementation references, not visual authority.

@@ -13,4 +13,12 @@
 - [Adobe Spectrum Color](https://spectrum.adobe.com/page/color-system/): 지각·접근성 기반 color semantics
 - [WCAG 2.2 Contrast Minimum](https://www.w3.org/TR/WCAG22/#contrast-minimum): Text contrast release gate
 - [WCAG 2.2 Non-text Contrast](https://www.w3.org/TR/WCAG22/#non-text-contrast): Control boundary와 focus contrast release gate
+- [GOV.UK Design System](https://design-system.service.gov.uk/): 근거, maturity와 공개 contribution governance
+- [Storybook](https://storybook.js.org/): 격리된 component state와 반복 가능한 visual review
+- [Awesome Design MD](https://github.com/VoltAgent/awesome-design-md): 저장소 안에서 agent가 읽을 수 있는 짧은 디자인 계약
 
+## Adoption stance
+
+각 source는 하나의 구체적인 판단에만 사용하며 전체 시각 언어를 복사하지 않는다. Native semantic HTML을 우선하고, 외부 primitive나 registry source는 canonical source, license, dependency, keyboard, focus, reduced motion과 기존 token 적합성을 확인한다.
+
+`reference`, `candidate`, `approved`, `implemented`는 서로 다른 상태다. 공개 문서에는 실제 코드와 QA가 함께 완료된 항목만 implemented로 표시한다.

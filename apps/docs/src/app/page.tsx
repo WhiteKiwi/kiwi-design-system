@@ -52,6 +52,8 @@ const semanticRoles = [
   ["BRAND FIELD", "--kiwi-color-brand-field", "제한적으로 쓰는 signature 면"],
   ["INTERACTIVE", "--kiwi-color-interactive", "링크와 행동의 신호"],
   ["FOCUS", "--kiwi-color-focus", "키보드 focus boundary"],
+  ["HOVER", "--kiwi-color-brand-field-hover", "primary action hover"],
+  ["DISABLED", "--kiwi-color-disabled-surface", "비활성 control surface"],
 ] as const;
 
 const inventory = [
@@ -67,22 +69,70 @@ const inventory = [
   ["Disclosure", "DISCLOSURE", "Radix Collapsible"],
 ] as const;
 
+const principles = [
+  ["01", "QUIET CANVAS", "Neutral이 구조와 읽기 흐름을 맡습니다."],
+  ["02", "ONE SIGNAL", "Kiwi는 한 장면의 한 가지 기억에만 씁니다."],
+  ["03", "HONEST AFFORDANCE", "움직이는 것과 읽는 것을 명확히 구분합니다."],
+  ["04", "HUMAN EVIDENCE", "장식보다 실제 결과와 맥락을 먼저 보여줍니다."],
+] as const;
+
+const systemLayers = [
+  ["FOUNDATION", "roles", "color · type · space · motion"],
+  ["PRIMITIVE", "behavior", "focus · keyboard · disclosure"],
+  ["COMPONENT", "contract", "state · semantics · API"],
+  ["PATTERN", "composition", "repeated product decisions"],
+  ["PAGE", "context", "evidence · task · audience"],
+] as const;
+
+const references = [
+  [
+    "SEED",
+    "SYSTEM",
+    "semantic token과 foundation 구조",
+    "https://seed-design.io/",
+  ],
+  [
+    "RADIX",
+    "PRIMITIVE",
+    "focus·keyboard behavior",
+    "https://www.radix-ui.com/primitives",
+  ],
+  [
+    "SHADCN/UI",
+    "OWNERSHIP",
+    "open-code component ownership",
+    "https://ui.shadcn.com/",
+  ],
+  [
+    "GOV.UK",
+    "GOVERNANCE",
+    "근거와 maturity를 공개하는 방식",
+    "https://design-system.service.gov.uk/",
+  ],
+  [
+    "STORYBOOK",
+    "WORKFLOW",
+    "격리된 상태와 반복 가능한 review",
+    "https://storybook.js.org/",
+  ],
+] as const;
+
 export default function Home() {
   return (
     <main>
       <header className="docs-header">
         <a href="#top">PIP · WHITEKIWI</a>
         <nav aria-label="Design system sections">
-          <a href="#colors">COLORS</a>
-          <a href="#foundations">FOUNDATIONS</a>
+          <a href="#principles">SYSTEM</a>
           <a href="#components">COMPONENTS</a>
+          <a href="#governance">GOVERNANCE</a>
         </nav>
         <ThemeToggle />
       </header>
 
       <section className="docs-hero" id="top">
         <div>
-          <span>PIP · V0.2 · IMPLEMENTED</span>
+          <span>PIP · V0.3 · IMPLEMENTED</span>
           <h1>
             SMALL PARTS.
             <br />
@@ -90,15 +140,50 @@ export default function Home() {
           </h1>
         </div>
         <p>
-          WhiteKiwi의 color, type, component와 interaction contract를 한곳에서
-          확인합니다. 설명보다 실제 토큰과 상태를 먼저 보여줍니다.
+          WhiteKiwi가 더 빠르게 같은 결정을 내리기 위한 공개 설계 언어입니다.
+          보이는 모양뿐 아니라 token, behavior, pattern과 adoption gate를 함께
+          관리합니다.
         </p>
+        <ol className="docs-system-flow" aria-label="System architecture">
+          {systemLayers.map(([name, role, description], index) => (
+            <li key={name}>
+              <code>{String(index + 1).padStart(2, "0")}</code>
+              <strong>{name}</strong>
+              <span>{role}</span>
+              <small>{description}</small>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="docs-section docs-principles" id="principles">
+        <SectionHeading
+          description="유행하는 UI를 모으는 대신, 다음 화면에서도 같은 판단을 재현할 수 있는 원칙을 먼저 둡니다."
+          eyebrow="01 · PRINCIPLES"
+          id="principles-title"
+          title={
+            <>
+              Quiet canvas.
+              <br />
+              Electric kiwi.
+            </>
+          }
+        />
+        <div className="docs-principle-grid">
+          {principles.map(([number, name, description]) => (
+            <article key={name}>
+              <code>{number}</code>
+              <strong>{name}</strong>
+              <p>{description}</p>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="docs-section docs-color-section" id="colors">
         <SectionHeading
           description="Neutral이 대부분을 차지하고 kiwi는 신호로만 씁니다. 브랜드와 success는 같은 초록으로 처리하지 않습니다."
-          eyebrow="01 · COLOR"
+          eyebrow="02 · COLOR"
           id="colors-title"
           title={<>색을 숨기지 않습니다.</>}
         />
@@ -151,7 +236,7 @@ export default function Home() {
       <section className="docs-section" id="foundations">
         <CollectionHeading
           end="TYPE · SPACE · MATERIAL"
-          start="02 · FOUNDATIONS"
+          start="03 · FOUNDATIONS"
         />
         <div className="docs-foundation-grid">
           <article className="docs-type-specimen">
@@ -181,7 +266,7 @@ export default function Home() {
       <section className="docs-section" id="components">
         <SectionHeading
           description="Radix behavior, shadcn 방식의 조합 가능한 API, Tailwind-compatible semantic token을 사용합니다. 화면별 새 UI보다 공통 contract를 우선합니다."
-          eyebrow="03 · COMPONENTS"
+          eyebrow="04 · COMPONENTS"
           id="components-title"
           title={<>상태까지 보여줍니다.</>}
         />
@@ -284,10 +369,52 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="docs-section" id="patterns">
+        <SectionHeading
+          description="Pattern은 예쁜 블록이 아니라 반복해서 나타난 제품 결정입니다. 두 번째 consumer가 생기기 전에는 core component로 성급히 승격하지 않습니다."
+          eyebrow="05 · PATTERNS"
+          id="patterns-title"
+          title={
+            <>
+              Repeat decisions,
+              <br />
+              not decoration.
+            </>
+          }
+        />
+        <div className="docs-pattern-grid">
+          <article className="docs-pattern-scene">
+            <div className="docs-pattern-scene__header">
+              <span>DECISION ROW · IMPLEMENTED</span>
+              <Badge tone="success">READY</Badge>
+            </div>
+            <div className="docs-decision-row">
+              <code>01</code>
+              <div>
+                <strong>상태를 문장으로 설명합니다.</strong>
+                <p>
+                  Color token 하나가 아니라 rest부터 disabled까지의 행동을
+                  기록합니다.
+                </p>
+              </div>
+              <TextLink href="#state-matrix">STATE MATRIX</TextLink>
+            </div>
+          </article>
+          <article className="docs-pattern-scene docs-pattern-scene--inverse">
+            <span>EVIDENCE FIRST · CANDIDATE</span>
+            <blockquote>“UI는 evidence보다 먼저 보이지 않는다.”</blockquote>
+            <p>
+              실제 수치, 작업 결과, 출처가 장식과 인터랙션보다 먼저 읽혀야
+              합니다.
+            </p>
+          </article>
+        </div>
+      </section>
+
       <section className="docs-section" id="inventory">
         <CollectionHeading
           end={`${inventory.length} COMPONENTS`}
-          start="04 · INVENTORY"
+          start="06 · INVENTORY"
         />
         <div className="docs-inventory">
           {inventory.map(([name, family, states], index) => (
@@ -305,7 +432,7 @@ export default function Home() {
       <section className="docs-section" id="contracts">
         <SectionHeading
           description="컴포넌트의 모양보다 행동과 상태를 먼저 고정합니다. Mobile은 desktop을 줄이지 않고 정보 우선순위를 유지한 채 재구성합니다."
-          eyebrow="05 · CONTRACTS"
+          eyebrow="07 · CONTRACTS"
           id="contracts-title"
           title={<>Compose. Don’t redraw.</>}
         />
@@ -333,7 +460,120 @@ export default function Home() {
             </p>
           </Disclosure>
         </div>
+
+        <div className="docs-state-matrix" id="state-matrix">
+          <CollectionHeading
+            end="LIGHT · DARK"
+            start="INTERACTION STATE MATRIX"
+          />
+          <div className="docs-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>THEME</th>
+                  <th>REST</th>
+                  <th>HOVER</th>
+                  <th>ACTIVE</th>
+                  <th>FOCUS</th>
+                  <th>DISABLED</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>LIGHT</th>
+                  <td>signal / ink</td>
+                  <td>brand-hover</td>
+                  <td>brand-active</td>
+                  <td>2px kiwi-line</td>
+                  <td>disabled pair</td>
+                </tr>
+                <tr>
+                  <th>DARK</th>
+                  <td>signal / ink</td>
+                  <td>bright hover</td>
+                  <td>brand-active</td>
+                  <td>2px kiwi-line</td>
+                  <td>disabled pair</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
+
+      <section className="docs-section docs-governance" id="governance">
+        <SectionHeading
+          description="좋아 보인다는 이유만으로 도입하지 않습니다. 출처, license, behavior, dependency와 실제 product fit을 검토하고 상태를 명확히 기록합니다."
+          eyebrow="08 · GOVERNANCE"
+          id="governance-title"
+          title={
+            <>
+              Reference is
+              <br />
+              not approval.
+            </>
+          }
+        />
+        <div className="docs-governance-grid">
+          <article>
+            <span>ADOPTION STATES</span>
+            <ol>
+              <li>
+                <strong>REFERENCE</strong>
+                <small>배울 가치가 확인된 자료</small>
+              </li>
+              <li>
+                <strong>CANDIDATE</strong>
+                <small>제품 맥락에서 검토 중</small>
+              </li>
+              <li>
+                <strong>APPROVED</strong>
+                <small>도입 결정과 범위가 합의됨</small>
+              </li>
+              <li>
+                <strong>IMPLEMENTED</strong>
+                <small>코드·문서·QA가 함께 완료됨</small>
+              </li>
+            </ol>
+          </article>
+          <article>
+            <span>ADOPTION GATE</span>
+            <ul>
+              <li>Canonical source와 license를 확인했는가?</li>
+              <li>Keyboard, focus, reduced motion을 검증했는가?</li>
+              <li>기존 semantic token으로 표현 가능한가?</li>
+              <li>두 번째 consumer가 존재하는가?</li>
+              <li>320px·390px과 두 theme에서 확인했는가?</li>
+            </ul>
+          </article>
+        </div>
+        <CollectionHeading
+          end={`${references.length} PRIMARY SOURCES`}
+          start="REFERENCE BASE"
+        />
+        <div className="docs-reference-list">
+          {references.map(([name, type, takeaway, url]) => (
+            <a href={url} key={name} rel="noreferrer" target="_blank">
+              <strong>{name}</strong>
+              <span>{type}</span>
+              <small>{takeaway}</small>
+              <i aria-hidden="true">↗</i>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <footer className="docs-footer">
+        <div>
+          <strong>PIP</strong>
+          <span>WHITEKIWI DESIGN SYSTEM</span>
+        </div>
+        <p>Quiet canvas. Electric kiwi. Human evidence.</p>
+        <div>
+          <span>V0.3 · IMPLEMENTED</span>
+          <a href="#top">BACK TO TOP ↑</a>
+        </div>
+      </footer>
     </main>
   );
 }

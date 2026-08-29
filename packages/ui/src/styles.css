@@ -58,11 +58,10 @@
   color: var(--kiwi-color-on-brand);
 }
 .kiwi-button--primary:hover {
-  background: color-mix(
-    in srgb,
-    var(--kiwi-color-brand-field) 86%,
-    var(--kiwi-color-canvas)
-  );
+  background: var(--kiwi-color-brand-field-hover);
+}
+.kiwi-button--primary:active {
+  background: var(--kiwi-color-brand-field-active);
 }
 .kiwi-button--secondary {
   border-color: var(--kiwi-color-border);
@@ -71,7 +70,11 @@
 }
 .kiwi-button--secondary:hover,
 .kiwi-button--ghost:hover {
-  background: var(--kiwi-color-brand-soft);
+  background: var(--kiwi-color-control-hover);
+}
+.kiwi-button--secondary:active,
+.kiwi-button--ghost:active {
+  background: var(--kiwi-color-control-active);
 }
 .kiwi-button--ghost {
   background: transparent;
@@ -81,6 +84,12 @@
   background: var(--kiwi-color-error);
   color: var(--kiwi-color-surface-raised);
 }
+.kiwi-button--danger:hover {
+  background: var(--kiwi-color-error-hover);
+}
+.kiwi-button--danger:active {
+  background: var(--kiwi-color-error-active);
+}
 .kiwi-button:focus-visible,
 .kiwi-text-link:focus-visible,
 .kiwi-field__input:focus-visible {
@@ -89,7 +98,9 @@
 }
 .kiwi-button:disabled {
   cursor: not-allowed;
-  opacity: 0.42;
+  border-color: transparent;
+  background: var(--kiwi-color-disabled-surface);
+  color: var(--kiwi-color-disabled-text);
 }
 
 .kiwi-text-link {
@@ -100,6 +111,12 @@
   font-weight: 650;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.22em;
+}
+.kiwi-text-link:hover {
+  color: var(--kiwi-color-interactive-hover);
+}
+.kiwi-text-link:active {
+  color: var(--kiwi-color-interactive-active);
 }
 
 .kiwi-field {
@@ -205,11 +222,7 @@
   background: var(--kiwi-color-brand-soft);
 }
 .kiwi-card-link:active {
-  background: color-mix(
-    in srgb,
-    var(--kiwi-color-brand-soft) 82%,
-    var(--kiwi-color-canvas)
-  );
+  background: var(--kiwi-color-brand-field-active);
 }
 .kiwi-card-link:focus-visible {
   box-shadow:

@@ -1,4 +1,4 @@
-# PIP Design Guidelines v0.2
+# PIP Design Guidelines v0.3
 
 Status: **implemented**
 
@@ -21,6 +21,8 @@ Status: **implemented**
 6. Mobile은 desktop 축소판이 아니라 동일한 정보 우선순위의 재구성이다.
 7. Normal text는 WCAG AA 4.5:1, large text와 필수 UI는 3:1 이상이어야 한다.
 8. 색만으로 상태와 의미를 전달하지 않는다.
+9. Registry reference는 candidate일 뿐이며 license, dependency, keyboard, focus, reduced motion을 검토하기 전에는 approved가 아니다.
+10. Pattern은 반복되는 제품 결정이다. 두 번째 consumer가 생기기 전에는 core component로 승격하지 않는다.
 
 ## Color contracts
 
@@ -29,6 +31,19 @@ Status: **implemented**
 - Component는 primitive hex를 직접 고르지 않고 semantic role만 사용한다.
 - Light와 dark는 같은 role을 유지하되 서로 다른 값을 매핑한다.
 - 문서에 표시된 text/background pair는 WCAG 2.2 AA 4.5:1 이상이다.
+- Primary action의 hover·active와 disabled pair는 component 내부 조합이 아니라 semantic state token으로 관리한다.
+
+## System layers
+
+```text
+Foundation → Primitive → Component → Pattern → Page
+```
+
+- Foundation은 시각 역할과 scale을 소유한다.
+- Primitive는 복잡한 behavior만 책임지고 visual authority가 되지 않는다.
+- Component는 semantic token과 interaction contract를 구현한다.
+- Pattern은 두 consumer 이상에서 반복된 composition을 기록한다.
+- Page는 evidence, task와 audience의 product context를 소유한다.
 
 ## Component inventory
 
@@ -48,3 +63,5 @@ token을 조합한다. 새 component는 카탈로그 specimen과 inventory를 �
 - Component가 새로운 interaction을 만들면 light·dark의 rest·hover·focus·pressed·disabled matrix를 함께 작성한다.
 - Portfolio-specific story layout은 두 번째 consumer가 생기기 전까지 core component로 승격하지 않는다.
 - Core token 변경은 docs, package와 실제 consumer visual QA를 같은 변경 단위에서 검토한다.
+- 외부 자료와 구현 상태는 `reference → candidate → approved → implemented` 순서로 기록한다.
+- 새 interactive family는 light·dark의 rest, hover, active, focus-visible, disabled 표를 문서에 추가한다.
