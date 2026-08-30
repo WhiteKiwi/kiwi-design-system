@@ -84,37 +84,108 @@ const systemLayers = [
   ["PAGE", "context", "evidence · task · audience"],
 ] as const;
 
-const references = [
-  [
-    "SEED",
-    "SYSTEM",
-    "semantic token과 foundation 구조",
-    "https://seed-design.io/",
-  ],
-  [
-    "RADIX",
-    "PRIMITIVE",
-    "focus·keyboard behavior",
-    "https://www.radix-ui.com/primitives",
-  ],
-  [
-    "SHADCN/UI",
-    "OWNERSHIP",
-    "open-code component ownership",
-    "https://ui.shadcn.com/",
-  ],
-  [
-    "GOV.UK",
-    "GOVERNANCE",
-    "근거와 maturity를 공개하는 방식",
-    "https://design-system.service.gov.uk/",
-  ],
-  [
-    "STORYBOOK",
-    "WORKFLOW",
-    "격리된 상태와 반복 가능한 review",
-    "https://storybook.js.org/",
-  ],
+const primaryReferences = [
+  {
+    name: "SEED",
+    type: "SYSTEM",
+    use: "semantic token과 foundation 구조",
+    limit: "브랜드 값과 제품 문법은 복사하지 않음",
+    url: "https://seed-design.io/",
+  },
+  {
+    name: "RADIX",
+    type: "PRIMITIVE",
+    use: "focus·keyboard behavior",
+    limit: "시각 접근성은 제품이 별도로 책임짐",
+    url: "https://www.radix-ui.com/primitives",
+  },
+  {
+    name: "SHADCN/UI",
+    type: "OWNERSHIP",
+    use: "open-code component ownership",
+    limit: "복사한 source와 upgrade 비용은 제품 소유",
+    url: "https://ui.shadcn.com/",
+  },
+  {
+    name: "GOV.UK",
+    type: "GOVERNANCE",
+    use: "근거와 maturity를 공개하는 방식",
+    limit: "공공 서비스의 시각 문법은 맥락 전용",
+    url: "https://design-system.service.gov.uk/",
+  },
+  {
+    name: "STORYBOOK",
+    type: "WORKFLOW",
+    use: "격리된 상태와 반복 가능한 review",
+    limit: "통합 page와 실제 data QA를 대신하지 않음",
+    url: "https://storybook.js.org/",
+  },
+] as const;
+
+const curatedIndexes = [
+  {
+    name: "AWESOME",
+    coverage: "CURATION",
+    use: "scope·분류·기여 규칙의 기준",
+    limit: "디자인 결정의 authority는 아님",
+    url: "https://github.com/sindresorhus/awesome",
+  },
+  {
+    name: "DESIGN SYSTEMS · ALEX PATE",
+    coverage: "SYSTEMS",
+    use: "공개 시스템과 capability tag 비교",
+    limit: "개별 링크의 현재 상태를 재확인",
+    url: "https://github.com/alexpate/awesome-design-systems",
+  },
+  {
+    name: "DESIGN SYSTEMS · KLAUFEL",
+    coverage: "OPERATIONS",
+    use: "token·testing·talk·tool까지 탐색",
+    limit: "canonical source로 다시 검증",
+    url: "https://github.com/klaufel/awesome-design-systems",
+  },
+  {
+    name: "AWESOME DESIGN TOOLS",
+    coverage: "TOOLS",
+    use: "job 중심 도구와 workflow 탐색",
+    limit: "목록 포함이 품질 보증은 아님",
+    url: "https://github.com/goabstract/Awesome-Design-Tools",
+  },
+  {
+    name: "DESIGN RESOURCES FOR DEVELOPERS",
+    coverage: "IMPLEMENTATION",
+    use: "UI library·asset·template 폭넓게 탐색",
+    limit: "항목별 license와 접근성 확인",
+    url: "https://github.com/bradtraversy/design-resources-for-developers",
+  },
+  {
+    name: "AWESOME STYLEGUIDES",
+    coverage: "DOCUMENTATION",
+    use: "styleguide와 workbench 구조 비교",
+    limit: "legacy·중단된 링크가 섞일 수 있음",
+    url: "https://github.com/streamich/awesome-styleguides",
+  },
+  {
+    name: "AWESOME TAILWIND CSS",
+    coverage: "TAILWIND",
+    use: "현재 Tailwind UI 생태계 지도",
+    limit: "PIP token·a11y 적합성은 별도",
+    url: "https://github.com/aniftyco/awesome-tailwindcss",
+  },
+  {
+    name: "AWESOME REACT COMPONENTS",
+    coverage: "REACT",
+    use: "interaction job별 구현 후보 탐색",
+    limit: "component별 유지보수·license 확인",
+    url: "https://github.com/brillout/awesome-react-components",
+  },
+  {
+    name: "AWESOME STORYBOOK",
+    coverage: "WORKFLOW",
+    use: "addon·문서·visual QA workflow 탐색",
+    limit: "설치된 major version 호환성 확인",
+    url: "https://github.com/lauthieb/awesome-storybook",
+  },
 ] as const;
 
 export default function Home() {
@@ -547,19 +618,84 @@ export default function Home() {
             </ul>
           </article>
         </div>
-        <CollectionHeading
-          end={`${references.length} PRIMARY SOURCES`}
-          start="REFERENCE BASE"
-        />
-        <div className="docs-reference-list">
-          {references.map(([name, type, takeaway, url]) => (
-            <a href={url} key={name} rel="noreferrer" target="_blank">
-              <strong>{name}</strong>
-              <span>{type}</span>
-              <small>{takeaway}</small>
-              <i aria-hidden="true">↗</i>
-            </a>
-          ))}
+        <div className="docs-reference-collection" id="reference-base">
+          <CollectionHeading
+            end={`${primaryReferences.length} PRIMARY SOURCES`}
+            start="REFERENCE BASE"
+          />
+          <div className="docs-table-wrap">
+            <table className="docs-reference-table">
+              <caption className="docs-sr-only">
+                PIP 설계 결정에 직접 사용하는 주요 출처
+              </caption>
+              <thead>
+                <tr>
+                  <th>SOURCE</th>
+                  <th>ROLE</th>
+                  <th>USE</th>
+                  <th>LIMIT</th>
+                  <th>STATE</th>
+                </tr>
+              </thead>
+              <tbody>
+                {primaryReferences.map((reference) => (
+                  <tr key={reference.name}>
+                    <th scope="row">
+                      <a href={reference.url} rel="noreferrer" target="_blank">
+                        {reference.name} <span aria-hidden="true">↗</span>
+                      </a>
+                    </th>
+                    <td>{reference.type}</td>
+                    <td>{reference.use}</td>
+                    <td>{reference.limit}</td>
+                    <td>
+                      <Badge>REFERENCE</Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="docs-reference-collection" id="curated-indexes">
+          <CollectionHeading
+            end={`${curatedIndexes.length} DISCOVERY MAPS`}
+            start="CURATED INDEXES"
+          />
+          <p className="docs-reference-note">
+            묶음 repository는 후보를 찾는 지도입니다. 실제 채택 판단은 각 항목의
+            canonical source와 license, behavior를 다시 확인합니다.
+          </p>
+          <div className="docs-table-wrap">
+            <table className="docs-reference-table docs-reference-table--indexes">
+              <caption className="docs-sr-only">
+                디자인 시스템과 UI 구현 자료를 찾기 위한 공개 큐레이션 저장소
+              </caption>
+              <thead>
+                <tr>
+                  <th>INDEX</th>
+                  <th>LANE</th>
+                  <th>BEST FOR</th>
+                  <th>USE WITH CAUTION</th>
+                </tr>
+              </thead>
+              <tbody>
+                {curatedIndexes.map((reference) => (
+                  <tr key={reference.name}>
+                    <th scope="row">
+                      <a href={reference.url} rel="noreferrer" target="_blank">
+                        {reference.name} <span aria-hidden="true">↗</span>
+                      </a>
+                    </th>
+                    <td>{reference.coverage}</td>
+                    <td>{reference.use}</td>
+                    <td>{reference.limit}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
