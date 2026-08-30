@@ -58,6 +58,9 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  verification: {
+    google: "qmYTEDrOz1_XUxaQ2AvsqF69zS06FT9acIOBN3lb17w",
+  },
   twitter: {
     card: "summary_large_image",
     title: "PIP — WhiteKiwi Design System",
