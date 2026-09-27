@@ -73,6 +73,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ko">
       <head>
+        <meta
+          content="default-src 'self'; base-uri 'self'; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com; font-src 'self'; form-action 'none'; img-src 'self' data: https://www.google-analytics.com; manifest-src 'self'; object-src 'none'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self'; upgrade-insecure-requests"
+          httpEquiv="Content-Security-Policy"
+        />
+        <meta content="no-referrer" name="referrer" />
         <link href="/llms.txt" rel="describedby" type="text/markdown" />
       </head>
       <body>

@@ -86,6 +86,16 @@ pnpm check
 
 `pnpm check` runs formatting/lint checks, TypeScript validation, the UI package build, and the production documentation build.
 
+## Publish
+
+The public documentation is hosted by GitHub Pages at
+[design.whitekiwi.link](https://design.whitekiwi.link/). A successful `main` push CI
+triggers the `Deploy` workflow on GitHub-hosted Ubuntu, which publishes the
+static `apps/docs/out` export. The workflow also checks the public page and a
+referenced JavaScript asset over HTTPS. A manual `Deploy` dispatch is available
+for a reviewed republish. The retired `deploy/` script is kept as a Mac rollback
+helper.
+
 ## Repository map
 
 ```text
@@ -94,7 +104,7 @@ packages/tokens/ semantic foundations for both themes
 packages/ui/     owned React components and styles
 docs/            canonical human-readable guideline
 references/      authoritative source map and rationale
-deploy/          static release activation
+deploy/          retained Mac rollback activation
 DESIGN.md        compact implementation contract for agents
 ```
 

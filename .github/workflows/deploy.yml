@@ -27,8 +27,6 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
-    outputs:
-      page_url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -56,14 +54,16 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Verify the independent public route
-        env:
-          PAGE_URL: ${{ needs.pages.outputs.page_url }}
         run: |
           set -euo pipefail
           headers="$(mktemp)"
           body="$(mktemp)"
           curl --fail --silent --show-error --max-time 20 \
             --dump-header "$headers" --output "$body" \
-            "$PAGE_URL"
+            https://design.whitekiwi.link/
           grep -Fq 'PIP' "$body"
           grep -Eiq '^content-type: text/html' "$headers"
+          asset_path="$(grep -oE 'src="/_next/static/[^"]+\.js"' "$body" | sed -n '1s/^src="//;1s/"$//;1p')"
+          test -n "$asset_path"
+          curl --fail --silent --show-error --max-time 20 \
+            --output /dev/null "https://design.whitekiwi.link${asset_path}"
