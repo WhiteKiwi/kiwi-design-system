@@ -8,21 +8,27 @@ on:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
 
 concurrency:
   group: design-system-production
   cancel-in-progress: false
 
 jobs:
-  production:
+  pages:
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.event == 'push' &&
       github.event.workflow_run.head_branch == 'main')
-    runs-on: [self-hosted, macOS, ARM64, kiwi-design-system]
+    runs-on: ubuntu-latest
     timeout-minutes: 20
-    environment: production
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    outputs:
+      page_url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -33,32 +39,31 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 24
+          cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
-      - name: Activate immutable static release
-        env:
-          KIWI_DESIGN_RELEASE_ID: ${{ github.event_name == 'workflow_dispatch' && github.sha || github.event.workflow_run.head_sha }}
-        run: bash deploy/activate-static-release.sh "$KIWI_DESIGN_RELEASE_ID"
-      - name: Verify local TLS origin
-        run: >-
-          curl --fail --silent --show-error --max-time 20
-          --output /dev/null
-          --resolve design.whitekiwi.link:10424:127.0.0.1
-          https://design.whitekiwi.link:10424/
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+      - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        with:
+          path: apps/docs/out
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
 
   external-smoke:
-    needs: production
+    needs: pages
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Verify the independent public route
+        env:
+          PAGE_URL: ${{ needs.pages.outputs.page_url }}
         run: |
           set -euo pipefail
           headers="$(mktemp)"
           body="$(mktemp)"
           curl --fail --silent --show-error --max-time 20 \
             --dump-header "$headers" --output "$body" \
-            https://design.whitekiwi.link/
+            "$PAGE_URL"
           grep -Fq 'PIP' "$body"
-          grep -Eiq '^strict-transport-security: max-age=31536000' "$headers"
-          grep -Eiq '^content-security-policy:' "$headers"
+          grep -Eiq '^content-type: text/html' "$headers"
