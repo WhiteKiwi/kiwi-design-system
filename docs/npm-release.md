@@ -13,8 +13,8 @@ without requesting npm credentials or writing to the registry.
 - All non-private `packages/*` libraries join the release automatically, subject
   to scope, metadata, export, license, and dependency checks
 
-Public libraries use one lockstep SemVer version. The current starting version
-is `0.1.0`. Bump all libraries together with `pnpm release:version 0.1.1`, add
+Public libraries use one lockstep SemVer version. The current library version
+is `0.1.1`. Bump all libraries together with `pnpm release:version 0.1.2`, add
 release notes describing consumer-visible changes, and review the diff. The
 command does not commit, tag, push, publish, or modify private app versions.
 Workspace references remain `workspace:^` or `workspace:*` in source; pinned
