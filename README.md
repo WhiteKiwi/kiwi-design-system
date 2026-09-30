@@ -64,6 +64,8 @@ For the compact implementation contract used by coding agents, read [`DESIGN.md`
 | Editorial | `StaticCard`, `LinkedCard`, `SectionHeading`, `CollectionHeading` | content and navigation affordance remain distinct |
 | Disclosure | `Disclosure` | Radix-backed keyboard and focus behavior |
 
+See [repository surfaces](docs/repository-surfaces.md) for applying the same identity to README covers and release assets.
+
 ## Adoption policy
 
 Native semantic HTML is the first choice. A behavior primitive is justified when focus management, keyboard navigation, layering, or disclosure is genuinely difficult. Registry components are references, not design authority.
@@ -84,9 +86,15 @@ pnpm dev
 pnpm check
 ```
 
-`pnpm check` runs formatting/lint checks, TypeScript validation, the UI package build, and the production documentation build.
+`pnpm check` runs formatting/lint checks, TypeScript validation, the UI package build, and the production documentation build, semantic color-pair gates, and rendered component contract tests.
 
-## Publish
+## npm library releases
+
+`@whitekiwi/tokens` and `@whitekiwi/ui` have a manual preview/publish pipeline. The documentation app and workspace root stay private. This is release preparation, not a claim that packages are already available on npm.
+
+Read [npm release setup](docs/npm-release.md) for license approval, owner bootstrap, protected environment, OIDC trust, and inspected tarballs. Never add registry credentials to the repository.
+
+## Publish documentation
 
 The public documentation is hosted by GitHub Pages at
 [design.whitekiwi.link](https://design.whitekiwi.link/). A successful `main` push CI

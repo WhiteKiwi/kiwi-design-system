@@ -26,6 +26,7 @@
   --kiwi-color-text: var(--kiwi-ink);
   --kiwi-color-text-muted: var(--kiwi-ash);
   --kiwi-color-border: color-mix(in srgb, var(--kiwi-ink) 12%, transparent);
+  --kiwi-color-control-border: var(--kiwi-ash);
   --kiwi-color-border-soft: color-mix(in srgb, var(--kiwi-ink) 7%, transparent);
   --kiwi-color-brand-field: var(--kiwi-signal);
   --kiwi-color-brand-field-hover: #b7ef3f;
@@ -86,6 +87,7 @@
   --kiwi-color-surface-raised: #202320;
   --kiwi-color-text: var(--kiwi-chalk);
   --kiwi-color-text-muted: var(--kiwi-fog);
+  --kiwi-color-control-border: var(--kiwi-fog);
   --kiwi-color-border: color-mix(in srgb, var(--kiwi-chalk) 14%, transparent);
   --kiwi-color-border-soft: color-mix(
     in srgb,
@@ -134,6 +136,7 @@
     --kiwi-color-surface-raised: #202320;
     --kiwi-color-text: var(--kiwi-chalk);
     --kiwi-color-text-muted: var(--kiwi-fog);
+    --kiwi-color-control-border: var(--kiwi-fog);
     --kiwi-color-border: color-mix(in srgb, var(--kiwi-chalk) 14%, transparent);
     --kiwi-color-border-soft: color-mix(
       in srgb,

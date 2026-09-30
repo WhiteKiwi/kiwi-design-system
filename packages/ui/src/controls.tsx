@@ -1,3 +1,5 @@
+"use client";
+
 import { cva, type VariantProps } from "class-variance-authority";
 import type {
   AnchorHTMLAttributes,
@@ -5,6 +7,7 @@ import type {
   InputHTMLAttributes,
   ReactNode,
 } from "react";
+import { useId } from "react";
 import { cn } from "./cn";
 
 const button = cva("kiwi-button", {
@@ -29,10 +32,17 @@ const button = cva("kiwi-button", {
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof button>;
 
-export function Button({ className, size, variant, ...props }: ButtonProps) {
+export function Button({
+  className,
+  size,
+  variant,
+  type = "button",
+  ...props
+}: ButtonProps) {
   return (
     <button
       {...props}
+      type={type}
       className={cn(button({ size, variant }), className)}
       data-ui="button"
     />
@@ -56,16 +66,15 @@ export function TextLink({
   );
 }
 
-export type TextFieldProps = Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  "aria-describedby"
-> & {
+export type TextFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   error?: string;
   hint?: string;
   label: ReactNode;
 };
 
 export function TextField({
+  "aria-describedby": describedBy,
+  "aria-invalid": invalid,
   className,
   error,
   hint,
@@ -73,16 +82,23 @@ export function TextField({
   label,
   ...props
 }: TextFieldProps) {
-  const fieldId = id ?? props.name;
-  const descriptionId = fieldId ? `${fieldId}-description` : undefined;
+  const generatedId = useId();
+  const fieldId = id ?? generatedId;
+  const descriptionId = `${fieldId}-description`;
+  const descriptionIds =
+    [describedBy, hint || error ? descriptionId : undefined]
+      .filter(Boolean)
+      .join(" ") || undefined;
 
   return (
-    <label className={cn("kiwi-field", className)} data-ui="text-field">
-      <span className="kiwi-field__label">{label}</span>
+    <div className={cn("kiwi-field", className)} data-ui="text-field">
+      <label className="kiwi-field__label" htmlFor={fieldId}>
+        {label}
+      </label>
       <input
         {...props}
-        aria-describedby={hint || error ? descriptionId : undefined}
-        aria-invalid={error ? true : undefined}
+        aria-describedby={descriptionIds}
+        aria-invalid={error ? true : invalid}
         className="kiwi-field__input"
         id={fieldId}
       />
@@ -97,6 +113,6 @@ export function TextField({
           {error ?? hint}
         </span>
       ) : null}
-    </label>
+    </div>
   );
 }

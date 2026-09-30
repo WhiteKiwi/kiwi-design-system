@@ -64,7 +64,7 @@
   background: var(--kiwi-color-brand-field-active);
 }
 .kiwi-button--secondary {
-  border-color: var(--kiwi-color-border);
+  border-color: var(--kiwi-color-control-border);
   background: var(--kiwi-color-surface-raised);
   color: var(--kiwi-color-text);
 }
@@ -133,7 +133,7 @@
 .kiwi-field__input {
   min-height: 3rem;
   padding-inline: var(--kiwi-space-4);
-  border: 1px solid var(--kiwi-color-border);
+  border: 1px solid var(--kiwi-color-control-border);
   border-radius: var(--kiwi-radius-sm);
   background: var(--kiwi-color-surface-raised);
   color: var(--kiwi-color-text);
@@ -148,6 +148,13 @@
 }
 .kiwi-field__input[aria-invalid="true"] {
   border-color: var(--kiwi-color-error);
+}
+
+.kiwi-field__input:disabled {
+  cursor: not-allowed;
+  border-color: transparent;
+  background: var(--kiwi-color-disabled-surface);
+  color: var(--kiwi-color-disabled-text);
 }
 
 .kiwi-badge {
@@ -212,7 +219,6 @@
 .kiwi-card-link {
   justify-content: space-between;
   gap: var(--kiwi-space-12);
-  color: var(--kiwi-color-text);
   outline: 0;
   text-decoration: none;
   transition: background-color var(--kiwi-motion-fast) ease;
@@ -220,9 +226,11 @@
 
 .kiwi-card-link:hover {
   background: var(--kiwi-color-brand-soft);
+  color: var(--kiwi-color-text);
 }
 .kiwi-card-link:active {
   background: var(--kiwi-color-brand-field-active);
+  color: var(--kiwi-color-on-brand);
 }
 .kiwi-card-link:focus-visible {
   box-shadow:
@@ -231,7 +239,7 @@
 }
 
 .kiwi-card-link__arrow {
-  color: var(--kiwi-color-interactive);
+  color: currentColor;
   font-family: var(--kiwi-font-mono);
   font-size: 0.65rem;
   letter-spacing: 0.08em;
@@ -342,6 +350,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .kiwi-button,
   .kiwi-card-link {
     transition: none;
   }

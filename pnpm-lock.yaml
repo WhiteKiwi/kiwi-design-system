@@ -75,9 +75,15 @@ importers:
       '@types/react':
         specifier: ^19.2.18
         version: 19.2.18
+      '@whitekiwi/tokens':
+        specifier: workspace:*
+        version: link:../tokens
       react:
         specifier: ^19.2.8
         version: 19.2.8
+      react-dom:
+        specifier: ^19.2.8
+        version: 19.2.8(react@19.2.8)
       tsup:
         specifier: ^8.5.0
         version: 8.5.1(jiti@2.7.0)(postcss@8.5.26)(typescript@5.9.3)

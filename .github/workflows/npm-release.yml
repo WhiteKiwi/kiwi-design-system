@@ -1,0 +1,100 @@
+name: npm release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact package version at the selected ref (without v)
+        type: string
+        required: true
+      tag:
+        description: npm dist-tag (prereleases must use next)
+        type: choice
+        options: [latest, next]
+        default: latest
+      publish:
+        description: Publish to npm after approval (requires matching vVERSION tag)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: npm-release
+  cancel-in-progress: false
+
+env:
+  RELEASE_VERSION: ${{ inputs.version }}
+  RELEASE_TAG: ${{ inputs.tag }}
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      artifact-id: ${{ steps.artifact.outputs.artifact-id }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+        with:
+          version: 10.33.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: node --test scripts/release.test.mjs
+      - name: Check every public library
+        run: node scripts/release.mjs check
+      - name: Verify real publication prerequisites
+        if: inputs.publish
+        run: |
+          test "$GITHUB_REPOSITORY" = 'WhiteKiwi/kiwi-design-system'
+          test "$GITHUB_REF" = "refs/tags/v${RELEASE_VERSION}"
+          node scripts/release.mjs check --publish
+      - name: Pack and inspect exact registry artifacts
+        run: node scripts/release.mjs pack
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        id: artifact
+        with:
+          name: npm-release-${{ github.run_id }}-${{ github.run_attempt }}
+          path: dist/npm/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Summarize preview
+        run: |
+          printf 'Release artifacts inspected. No npm write occurs in the preview job.\n\n' >> "$GITHUB_STEP_SUMMARY"
+          cat dist/npm/release-plan.json >> "$GITHUB_STEP_SUMMARY"
+
+  publish:
+    needs: preview
+    if: inputs.publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: npm
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Verify OIDC-capable npm
+        run: |
+          node -e 'const v = require("node:child_process").execFileSync("npm", ["--version"], {encoding:"utf8"}).trim().split(".").map(Number); if (v[0] < 11 || (v[0] === 11 && (v[1] < 5 || (v[1] === 5 && v[2] < 1)))) throw Error("npm >=11.5.1 required")'
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
+        with:
+          artifact-ids: ${{ needs.preview.outputs.artifact-id }}
+          merge-multiple: true
+          path: dist/npm/
+      - name: Publish verified tarballs in dependency order with OIDC
+        run: node scripts/release.mjs publish --publish

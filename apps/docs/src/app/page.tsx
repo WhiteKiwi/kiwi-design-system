@@ -535,7 +535,7 @@ export default function Home() {
         <div className="docs-state-matrix" id="state-matrix">
           <CollectionHeading
             end="LIGHT · DARK"
-            start="INTERACTION STATE MATRIX"
+            start="PRIMARY ACTION STATE MATRIX"
           />
           <div className="docs-table-wrap">
             <table>

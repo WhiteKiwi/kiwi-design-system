@@ -48,3 +48,9 @@ Motion은 150–220ms의 짧은 feedback에 한정하며 `prefers-reduced-motion
 ## Adoption gate
 
 Native semantic HTML을 우선한다. 외부 primitive나 registry component는 license, dependency, keyboard, focus, reduced motion, responsive behavior를 확인한 뒤 PIP token과 API에 맞게 소유한다. `reference`, `candidate`, `approved`, `implemented`를 같은 의미로 사용하지 않는다.
+
+## Repository surfaces
+
+README·release artwork는 [repository surface contract](docs/repository-surfaces.md)를 따른다. GitHub의 native Markdown을 읽기·설치의 본문으로 유지하고 cover는 하나의 짧은 편집형 headline만 맡긴다.
+
+Control boundary는 장식용 border와 분리된 `--kiwi-color-control-border`를 사용한다. LinkedCard의 rest·hover·active는 항상 foreground/background pair로 관리한다.

@@ -27,3 +27,5 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
+      - name: Inspect registry artifacts without publishing
+        run: pnpm release:check && pnpm release:pack

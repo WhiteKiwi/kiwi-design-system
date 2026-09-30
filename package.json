@@ -12,7 +12,12 @@
     "format": "biome format --write .",
     "lint": "biome check .",
     "typecheck": "pnpm -r --if-present typecheck",
-    "check": "pnpm lint && pnpm typecheck && pnpm build"
+    "check": "pnpm lint && pnpm typecheck && pnpm build && pnpm test && pnpm test:release",
+    "test": "node scripts/check-design.mjs",
+    "release:check": "node scripts/release.mjs check",
+    "release:pack": "node scripts/release.mjs pack",
+    "release:version": "node scripts/release.mjs version",
+    "test:release": "node --test scripts/release.test.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.2",

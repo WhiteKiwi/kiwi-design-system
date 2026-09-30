@@ -1,7 +1,7 @@
 {
   "name": "@whitekiwi/ui",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "type": "module",
   "sideEffects": [
     "**/*.css"
@@ -15,10 +15,12 @@
   },
   "files": [
     "dist",
-    "src/styles.css"
+    "src/styles.css",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean",
+    "build": "tsup",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -31,9 +33,28 @@
     "@types/react": "^19.2.18",
     "react": "^19.2.8",
     "tsup": "^8.5.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "@whitekiwi/tokens": "workspace:*",
+    "react-dom": "^19.2.8"
   },
   "peerDependencies": {
-    "react": ">=19"
+    "react": ">=19",
+    "@whitekiwi/tokens": "workspace:^",
+    "react-dom": ">=19"
+  },
+  "description": "PIP React components and styles for WhiteKiwi interfaces",
+  "license": "UNLICENSED",
+  "homepage": "https://design.whitekiwi.link/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WhiteKiwi/kiwi-design-system.git",
+    "directory": "packages/ui"
+  },
+  "bugs": {
+    "url": "https://github.com/WhiteKiwi/kiwi-design-system/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

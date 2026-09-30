@@ -30,7 +30,7 @@ Status: **implemented**
 - `kiwi-signal`은 brand field이고 success가 아니다.
 - Component는 primitive hex를 직접 고르지 않고 semantic role만 사용한다.
 - Light와 dark는 같은 role을 유지하되 서로 다른 값을 매핑한다.
-- 문서에 표시된 text/background pair는 WCAG 2.2 AA 4.5:1 이상이다.
+- 일반 text/background pair의 목표는 WCAG 2.2 AA 4.5:1이다. `scripts/check-design.mjs`는 지원하는 불투명 semantic pair를 측정하며, alpha·gradient·중첩 surface와 전체 접근성은 실제 렌더링에서 별도로 검증한다.
 - Primary action의 hover·active와 disabled pair는 component 내부 조합이 아니라 semantic state token으로 관리한다.
 
 ## System layers
@@ -56,6 +56,29 @@ Foundation → Primitive → Component → Pattern → Page
 
 구현은 Radix behavior, shadcn 방식의 소유 가능한 component source, Tailwind-compatible semantic
 token을 조합한다. 새 component는 카탈로그 specimen과 inventory를 같은 변경에서 추가한다.
+
+## State ownership
+
+| Family | Rest / hover / active | Focus-visible | Disabled / invalid |
+| --- | --- | --- | --- |
+| Primary Button | brand-field / brand-field-hover / brand-field-active, all with on-brand text | 2px focus token, separated from fill | disabled-surface + disabled-text |
+| Secondary / ghost Button | neutral or transparent / control-hover / control-active | 2px focus token | disabled pair; no active action |
+| Danger Button | error / error-hover / error-active with surface-raised foreground | 2px focus token | disabled pair |
+| TextField | surface-raised + control-border; hover/active keep the same pair | 2px focus token | disabled pair; invalid uses error boundary and linked error text |
+| TextLink | interactive / interactive-hover / interactive-active | 2px focus token | no disabled-link API; render plain text when unavailable |
+| LinkedCard | tone pair / brand-soft + text / brand-field-active + on-brand; arrow inherits foreground | separated two-ring focus | no disabled-card API; use StaticCard when unavailable |
+| Disclosure | same transparent/text pair; open state changes content and indicator | 2px focus token | no disabled prop in current API |
+
+The website's primary-action matrix illustrates that family only. CSS and actual rendered contexts determine final contrast; nested content must not override its foreground contract without rechecking.
+
+## Verification and repository surfaces
+
+- 필수 control boundary는 장식용 border와 분리해 3:1 gate로 검증한다.
+- LinkedCard는 tone별 rest와 theme별 hover·active에서 글자와 화살표의 foreground를 함께 유지한다.
+- TextField는 id 생략 시 고유 id를 생성하고 hint/error와 외부 aria-describedby를 연결한다.
+- Button은 기본 type=button이며 form 제출은 명시적으로 type=submit을 선택한다.
+- Reduced motion은 개별 UI package에서도 적용되며 docs의 global CSS에 의존하지 않는다.
+- [Repository surfaces](repository-surfaces.md)는 README·release artwork의 브랜드 적용 계약이다.
 
 ## Governance
 

@@ -1,7 +1,7 @@
 {
   "name": "@whitekiwi/tokens",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "sideEffects": [
     "**/*.css"
   ],
@@ -9,6 +9,23 @@
     "./theme.css": "./src/theme.css"
   },
   "files": [
-    "src/theme.css"
-  ]
+    "src/theme.css",
+    "README.md",
+    "LICENSE"
+  ],
+  "description": "PIP semantic design tokens for WhiteKiwi interfaces",
+  "license": "UNLICENSED",
+  "homepage": "https://design.whitekiwi.link/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WhiteKiwi/kiwi-design-system.git",
+    "directory": "packages/tokens"
+  },
+  "bugs": {
+    "url": "https://github.com/WhiteKiwi/kiwi-design-system/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
 }
