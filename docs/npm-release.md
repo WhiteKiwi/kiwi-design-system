@@ -24,17 +24,19 @@ dependencies and peers determine release order, so tokens publish before UI.
 Stable releases default to `latest`. Prereleases such as `0.2.0-beta.1` use `next`
 and cannot overwrite `latest`. Build metadata is intentionally unsupported.
 
+## License
+
+The owner selected MIT. The repository and both public libraries declare `MIT`,
+and each library includes its full `LICENSE` in the inspected tarball. Third-party
+dependencies and separately licensed material retain their own licenses. License
+readiness does not authorize or confirm an npm publication.
+
 ## Current blockers before publication
 
-1. The owner must choose the distribution license. Set the approved SPDX license
-   identifier in each public package, add its full `LICENSE` text in each package,
-   and update each README's license status. `UNLICENSED` is an explicit temporary
-   status, not an open-source license grant. Preview remains available; the real
-   publish path rejects this status or a missing license file.
-2. The npm account `whitekiwi` must own the `@whitekiwi` scope and have publication
+1. The npm account `whitekiwi` must own the `@whitekiwi` scope and have publication
    rights. First publication/bootstrap, sign-in, 2FA, and trust creation are
    separate owner actions. This configuration does not perform any of them.
-3. Before enabling real releases, create the GitHub environment `npm`, configure
+2. Before enabling real releases, create the GitHub environment `npm`, configure
    required reviewers and release-tag protection, and configure each package's
    npm trusted publisher as described below. The YAML cannot create reviewer
    rules; an environment name alone does not imply approval protection.
@@ -68,7 +70,7 @@ a package must already exist before its trusted publisher can be configured.
 Therefore this workflow deliberately refuses an absent registry package rather
 than pretending OIDC alone can create it.
 
-After license approval, the owner can sign in on their own computer and make the
+The owner can sign in on their own computer and make the
 first publication of the reviewed tarballs using npm's interactive authentication
 and 2FA, in dependency order. Do not paste credentials into this repository or
 add an npm token to GitHub. An alternative is npm's

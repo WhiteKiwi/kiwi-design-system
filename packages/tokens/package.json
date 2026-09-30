@@ -14,7 +14,7 @@
     "LICENSE"
   ],
   "description": "PIP semantic design tokens for WhiteKiwi interfaces",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "homepage": "https://design.whitekiwi.link/",
   "repository": {
     "type": "git",

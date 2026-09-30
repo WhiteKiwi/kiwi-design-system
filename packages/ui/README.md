@@ -31,9 +31,7 @@ application remains responsible for its content, page layout, and font loading.
 [Documentation](https://design.whitekiwi.link/) ·
 [Source and release guide](https://github.com/WhiteKiwi/kiwi-design-system)
 
-## License status
+## License
 
-No distribution license has been selected yet. This package is currently marked
-`UNLICENSED`, and the release workflow blocks publication until an approved
-license identifier and `LICENSE` file have been added. A package preview is not
-a public release.
+[MIT](LICENSE), copyright WhiteKiwi. Third-party dependencies retain their own
+licenses. This license does not imply that a public npm release has occurred.

@@ -43,7 +43,7 @@
     "react-dom": ">=19"
   },
   "description": "PIP React components and styles for WhiteKiwi interfaces",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "homepage": "https://design.whitekiwi.link/",
   "repository": {
     "type": "git",

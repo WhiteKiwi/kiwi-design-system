@@ -92,7 +92,7 @@ pnpm check
 
 `@whitekiwi/tokens` and `@whitekiwi/ui` have a manual preview/publish pipeline. The documentation app and workspace root stay private. This is release preparation, not a claim that packages are already available on npm.
 
-Read [npm release setup](docs/npm-release.md) for license approval, owner bootstrap, protected environment, OIDC trust, and inspected tarballs. Never add registry credentials to the repository.
+Read [npm release setup](docs/npm-release.md) for owner bootstrap, protected environment, OIDC trust, and inspected tarballs. Never add registry credentials to the repository.
 
 ## Publish documentation
 
@@ -125,3 +125,10 @@ The first consumer is [WhiteKiwi Portfolio](https://portfolio.whitekiwi.link/). 
 <p align="center">
   <sub>PIP v0.3 · Implemented · WhiteKiwi</sub>
 </p>
+
+## License
+
+[MIT](LICENSE), copyright WhiteKiwi. The two library packages include the same
+license in their published artifacts. Third-party dependencies, referenced
+projects, and separately licensed assets retain their respective licenses;
+this repository does not relicense them.
