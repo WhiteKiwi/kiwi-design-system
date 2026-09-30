@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 320" role="img" aria-labelledby="title desc">
+  <title id="title">PIP — @whitekiwi/tokens</title>
+  <desc id="desc">A shared visual language. css tokens / framework agnostic.</desc>
+  <rect width="1280" height="320" fill="#F4F5EF"/>
+  <path d="M48 92h1184M48 260h1184" stroke="#11140F" stroke-opacity=".16"/>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="48" y="60" fill="#11140F" font-family="monospace" font-size="20" letter-spacing="2">PIP / WHITEKIWI</text>
+    <text x="48" y="200" fill="#3C6000" font-size="76" font-weight="700" letter-spacing="-3">A shared visual language.</text>
+    <text x="48" y="298" fill="#62685E" font-family="monospace" font-size="18" letter-spacing="1">CSS TOKENS / FRAMEWORK AGNOSTIC</text>
+  </g>
+</svg>

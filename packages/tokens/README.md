@@ -1,38 +1,100 @@
+![PIP — A shared visual language. CSS tokens for any framework.](https://raw.githubusercontent.com/WhiteKiwi/kiwi-design-system/main/assets/npm-tokens.svg)
+
 # @whitekiwi/tokens
 
-PIP's light/dark semantic design tokens: color, spacing, type, radius, motion,
-breakpoints, and interaction state contracts.
+**One visual language. Your framework.**
 
-## Use
+PIP's semantic CSS tokens for warm neutral surfaces, clear typography, and a single
+kiwi accent. Use them on their own or as the foundation for `@whitekiwi/ui`.
 
-After the first public release:
+[Explore PIP](https://design.whitekiwi.link/) · [Source](https://github.com/WhiteKiwi/kiwi-design-system/tree/main/packages/tokens) · [Release guide](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/docs/npm-release.md)
+
+## Choose your starting point
+
+| Package | What it owns | Use it when |
+| --- | --- | --- |
+| **@whitekiwi/tokens** | Palette, semantic colors, spacing, radii, font stacks, themes | You write the UI in CSS, React, Vue, Svelte, or plain HTML |
+| [@whitekiwi/ui](https://github.com/WhiteKiwi/kiwi-design-system/tree/main/packages/ui) | React components and their interaction styles | You want ready-made PIP building blocks |
+
+This package has no JavaScript runtime or React dependency. Tailwind is optional.
+
+## Start with a surface
+
+Once the package is published to your registry:
 
 ```sh
 npm install @whitekiwi/tokens
 ```
 
-Import the CSS once at your application's global entry point:
+Import at the top of your global stylesheet with a package-aware bundler:
 
 ```css
 @import "@whitekiwi/tokens/theme.css";
 
-.example {
+body {
+  margin: 0;
   color: var(--kiwi-color-text);
   background: var(--kiwi-color-canvas);
-  padding: var(--kiwi-space-4);
+  font-family: var(--kiwi-font-sans);
+}
+
+.panel {
+  padding: var(--kiwi-space-6);
+  background: var(--kiwi-color-surface);
+  border: 1px solid var(--kiwi-color-border);
+  border-radius: var(--kiwi-radius-md);
 }
 ```
 
-Set `data-theme="dark"` on the document root to opt into the dark theme. Components
-should consume semantic roles rather than primitive palette values.
+For an unbundled page, copy the exported CSS to your public assets and load it
+with a stylesheet link. Browsers do not resolve npm package names themselves.
 
-This is a CSS-only package. Its public export is `@whitekiwi/tokens/theme.css`;
-there is no JavaScript default export and no Tailwind runtime dependency.
+## Light, dark, or the system
 
-[Documentation](https://design.whitekiwi.link/) ·
-[Source and release guide](https://github.com/WhiteKiwi/kiwi-design-system)
+Set the theme on the root `<html>` element:
+
+| Preference | Root markup |
+| --- | --- |
+| Light | `<html data-theme="light">` |
+| Dark | `<html data-theme="dark">` |
+| System | `<html>` with no `data-theme` attribute |
+
+For system mode, remove the attribute; `data-theme="auto"` does **not** enable
+system detection. Theme colors follow `prefers-color-scheme` only when the
+attribute is absent. Apply a saved explicit preference before first paint to
+avoid a light/dark flash. Theme storage and switching belong to your app.
+
+## Use roles, not raw colors
+
+| Need | Token |
+| --- | --- |
+| Page / readable text | `--kiwi-color-canvas` / `--kiwi-color-text` |
+| Secondary copy | `--kiwi-color-text-muted` |
+| Decorative divider | `--kiwi-color-border` |
+| Form-control boundary | `--kiwi-color-control-border` |
+| Brand surface / its text | `--kiwi-color-brand-field` / `--kiwi-color-on-brand` |
+| Interactive text / focus | `--kiwi-color-interactive` / `--kiwi-color-focus` |
+
+Keep foreground/background pairs together when overriding colors. Fonts are
+stack names, not bundled font files. Load your fonts separately or use the
+system fallbacks. Tokens do not apply a reset, component styles, or a page layout.
+
+The stylesheet includes an optional Tailwind CSS v4 `@theme inline` bridge for
+utilities and breakpoints. Plain CSS consumers use the `--kiwi-*` custom
+properties; browsers ignore that Tailwind-only at-rule. Use a toolchain/browser
+that supports CSS custom properties and `color-mix()`.
+
+## Public surface
+
+- `@whitekiwi/tokens/theme.css` is the only export
+- No root JavaScript import, theme-switching script, or JSON token API
+- Install matching token/UI versions when using both packages
+- Package contents: CSS, this README, package metadata, and MIT license
+
+The repository checks defined theme contrast pairs. Custom colors, opacity,
+backgrounds, and application composition still need accessibility review.
 
 ## License
 
-[MIT](LICENSE), copyright WhiteKiwi. Third-party dependencies retain their own
-licenses. This license does not imply that a public npm release has occurred.
+[MIT](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/packages/tokens/LICENSE), copyright WhiteKiwi.
+Third-party dependencies and separately licensed material retain their own licenses.
