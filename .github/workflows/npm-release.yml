@@ -1,6 +1,8 @@
 name: npm release
 
 on:
+  push:
+    tags: ["v*"]
   workflow_dispatch:
     inputs:
       version:
@@ -13,7 +15,7 @@ on:
         options: [latest, next]
         default: latest
       publish:
-        description: Publish to npm after approval (requires matching vVERSION tag)
+        description: Publish to npm (requires matching vVERSION tag)
         type: boolean
         default: false
 
@@ -25,8 +27,8 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  RELEASE_VERSION: ${{ inputs.version }}
-  RELEASE_TAG: ${{ inputs.tag }}
+  RELEASE_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.version || '' }}
+  RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || '' }}
 
 jobs:
   preview:
@@ -51,10 +53,10 @@ jobs:
       - name: Check every public library
         run: node scripts/release.mjs check
       - name: Verify real publication prerequisites
-        if: inputs.publish
+        if: github.event_name == 'push' || inputs.publish
         run: |
           test "$GITHUB_REPOSITORY" = 'WhiteKiwi/kiwi-design-system'
-          test "$GITHUB_REF" = "refs/tags/v${RELEASE_VERSION}"
+          test "$GITHUB_REF" = "refs/tags/v$(node -p 'require("./packages/tokens/package.json").version')"
           node scripts/release.mjs check --publish
       - name: Pack and inspect exact registry artifacts
         run: node scripts/release.mjs pack
@@ -72,9 +74,9 @@ jobs:
 
   publish:
     needs: preview
-    if: inputs.publish
+    if: github.event_name == 'push' || inputs.publish
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     environment:
       name: npm
     permissions:

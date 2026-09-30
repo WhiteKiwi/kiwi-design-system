@@ -90,7 +90,7 @@ pnpm check
 
 ## npm library releases
 
-`@whitekiwi/tokens` and `@whitekiwi/ui` have a manual preview/publish pipeline. The documentation app and workspace root stay private. This is release preparation, not a claim that packages are already available on npm.
+`@whitekiwi/tokens` and `@whitekiwi/ui` have a verified tag-triggered publish pipeline and a manual preview mode. The documentation app and workspace root stay private. This is release preparation, not a claim that packages are already available on npm.
 
 Read [npm release setup](docs/npm-release.md) for owner bootstrap, protected environment, OIDC trust, and inspected tarballs. Never add registry credentials to the repository.
 

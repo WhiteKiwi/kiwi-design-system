@@ -487,7 +487,7 @@ async function main() {
         ]),
       );
       let verified = false;
-      for (let attempt = 0; attempt < 12; attempt++) {
+      for (let attempt = 0; attempt < 60; attempt++) {
         const metadata = await registryMetadata(pkg.name);
         if (metadata?.versions?.[version]?.dist?.integrity === pkg.integrity) {
           verified = true;

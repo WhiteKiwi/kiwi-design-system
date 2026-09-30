@@ -1,9 +1,14 @@
 # npm library releases
 
-The `npm release` workflow is manual-only. Pushing to `main`, publishing the
-documentation, and creating a GitHub Release do not publish npm packages.
-`publish` defaults to `false`; that mode builds and inspects downloadable tarballs
-without requesting npm credentials or writing to the registry.
+The `npm release` workflow publishes automatically when a new `v*` version tag
+is pushed. Its version must exactly match every library package. Tests, inspected
+tarballs, protected release tags, and npm OIDC authentication remain required.
+The `npm` environment does not require a human reviewer.
+
+Pushing to `main` and publishing the documentation do not publish npm packages.
+Manual dispatch remains available: `publish=false` (the default) builds a preview;
+`publish=true` retries or publishes from an exact version tag. It cannot publish
+from a branch. Preview runs do not request npm credentials or write to the registry.
 
 ## Packages and version policy
 
@@ -31,15 +36,15 @@ and each library includes its full `LICENSE` in the inspected tarball. Third-par
 dependencies and separately licensed material retain their own licenses. License
 readiness does not authorize or confirm an npm publication.
 
-## Current blockers before publication
+## Account and environment setup
 
-1. The npm account `whitekiwi` must own the `@whitekiwi` scope and have publication
-   rights. First publication/bootstrap, sign-in, 2FA, and trust creation are
-   separate owner actions. This configuration does not perform any of them.
-2. Before enabling real releases, create the GitHub environment `npm`, configure
-   required reviewers and release-tag protection, and configure each package's
-   npm trusted publisher as described below. The YAML cannot create reviewer
-   rules; an environment name alone does not imply approval protection.
+The npm owner must own both package names and configure their trusted publishers
+with the exact values below. The initial 0.1.0 packages already exist. Sign-in,
+2FA, and trust creation are separate owner actions.
+
+Keep the GitHub environment named `npm`, its existing deployment ref restrictions,
+and the `v*` tag update/deletion protections. Required reviewers are disabled for
+automatic releases. This configuration does not create tokens or change npm grants.
 
 ## Preview and inspect
 
@@ -92,7 +97,7 @@ on npm with these exact, case-sensitive settings:
 | Allowed action | Direct `npm publish` |
 
 New npm trust configurations default to staged publishing. This workflow uses
-direct `npm publish` behind a manual dispatch and GitHub environment approval,
+direct `npm publish` after tag validation and automated verification,
 so enabling only `npm stage publish` is insufficient. Trust creation expands
 persistent access; it must be approved and performed separately. No trust setup
 command or credential is embedded in the workflow.
@@ -103,31 +108,28 @@ project dependencies, runs no package lifecycle scripts, and consumes the exact
 verified preview artifacts. No `NPM_TOKEN` or `NODE_AUTH_TOKEN` is used. The
 repository must remain public for the required provenance attestation.
 
-## Release an approved version
+## Release a version
 
-1. Review the version, changes, license, and tarball preview. Commit the release
-   changes and create the immutable Git tag `v<version>` at that reviewed commit.
-   Push the commit and tag only when authorized.
-2. Run `npm release` on that exact tag with its version, correct dist-tag, and
-   `publish=true`. A branch ref is rejected. The preview repeats all checks.
-   For example, after explicit release approval, a GitHub CLI dispatch is:
+1. Bump both libraries with `pnpm release:version <version>`, record release notes,
+   and commit the reviewed changes. Run the package preview and inspect its files.
+2. Create and push the immutable Git tag `v<version>` at that exact commit. Tag
+   creation is the publication trigger: stable versions publish to `latest`,
+   prereleases publish to `next`. Do not push a version tag merely to test CI.
+3. The workflow verifies the tag matches the package version, runs all checks,
+   packs and inspects both libraries, and publishes in dependency order using
+   OIDC. There is no manual environment approval step.
+4. Verify the run and package pages for completion, integrity, and provenance.
 
-   ```sh
-   gh workflow run npm-release.yml --ref v0.1.1 \
-     -f version=0.1.1 -f tag=latest -F publish=true
-   ```
-
-3. The `npm` environment reviewer examines the artifacts and approves the publish
-   job. Every package is checked against the registry before the first publish;
-   version collisions and backwards `latest` moves fail closed.
-4. The workflow publishes in dependency order, then compares registry tarball
-   integrity before moving to the dependent library. Review the run and package
-   pages to confirm completion and provenance.
+For a retry of an existing release tag, manually run `npm release` on that exact
+tag with its version, correct dist-tag, and `publish=true`. A preview on a branch
+must leave `publish=false`. Creating a GitHub Release for an existing tag does not
+start a second publication; the trigger is a new tag push.
 
 A partially successful release is not atomic. Retry the same tag/artifacts after
 diagnosing a failure: an already-published version is skipped only if its SHA-512
 integrity matches exactly. A different tarball at the same version is rejected;
-make a new version instead. Registry propagation can delay verification; inspect
+make a new version instead. The publisher waits up to five minutes per package for registry propagation.
+If verification is still delayed, inspect
 the existing release before retrying. A missing/failed registry read never means
 permission to overwrite. npm also reserves versions already staged; the registry
 will reject a conflict, which the owner must resolve before another release.
