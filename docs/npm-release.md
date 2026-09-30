@@ -128,7 +128,7 @@ start a second publication; the trigger is a new tag push.
 A partially successful release is not atomic. Retry the same tag/artifacts after
 diagnosing a failure: an already-published version is skipped only if its SHA-512
 integrity matches exactly. A different tarball at the same version is rejected;
-make a new version instead. The publisher waits up to five minutes per package for registry propagation.
+make a new version instead. The publisher waits up to ten minutes per package for registry propagation.
 If verification is still delayed, inspect
 the existing release before retrying. A missing/failed registry read never means
 permission to overwrite. npm also reserves versions already staged; the registry
