@@ -4,131 +4,70 @@
 
 <p align="center">
   <strong>Quiet canvas. Electric kiwi. Human evidence.</strong><br>
-  WhiteKiwi가 더 빠르게 같은 결정을 내리기 위한 공개 설계 언어.
+  WhiteKiwi의 제품을 하나의 시각 언어로 연결하는 디자인 시스템.
 </p>
 
 <p align="center">
-  <a href="https://design.whitekiwi.link/">Documentation</a> ·
-  <a href="docs/guidelines.md">Guidelines</a> ·
-  <a href="DESIGN.md">Agent contract</a> ·
-  <a href="references/README.md">Reference base</a>
+  <a href="https://design.whitekiwi.link/">Explore PIP</a> ·
+  <a href="docs/guidelines.md">Design principles</a> ·
+  <a href="references/README.md">References</a>
 </p>
 
 ---
 
-## What PIP decides
+## Small parts. One clear system.
 
-PIP은 component gallery보다 **decision system**에 가깝습니다. 색과 간격의 값뿐 아니라 언제 강조하고, 무엇을 움직이며, 외부 component를 어떤 기준으로 채택하는지까지 코드와 문서로 함께 관리합니다.
+PIP은 색과 간격, 컴포넌트의 상태와 움직임을 함께 정의합니다. 화면이 달라도 같은 역할은 같은 방식으로 읽히고, 같은 행동은 일관된 반응을 갖도록 설계했습니다.
 
-| Layer | Owns | Does not own |
-| --- | --- | --- |
-| **Foundation** | color roles, type, space, radius, motion | product-specific composition |
-| **Primitive** | focus, keyboard, disclosure behavior | visual identity |
-| **Component** | semantics, state, reusable API | one-off page stories |
-| **Pattern** | repeated product decisions | speculative abstraction |
-| **Page** | evidence, task, audience context | raw visual values |
+흰 여백과 검은 타이포그래피가 읽기와 구조를 맡고, kiwi green은 중요한 행동과 기억할 장면을 강조합니다. 장식보다 콘텐츠와 실제 결과가 먼저 보이는 인터페이스를 지향합니다.
+
+## Inside PIP
+
+| 구성 | 담고 있는 것 |
+| --- | --- |
+| **[@whitekiwi/tokens](packages/tokens)** | Light·dark 테마, 의미에 따른 색 역할, 간격, 서체, radius와 motion |
+| **[@whitekiwi/ui](packages/ui)** | 토큰 위에 구현한 React 컴포넌트와 상호작용 상태 |
+| **[Public catalog](https://design.whitekiwi.link/)** | 색과 역할, 컴포넌트 예제, 패턴과 상태별 설계 기준 |
+
+컴포넌트는 네 가지 역할로 구성됩니다.
+
+- **Controls** — Button, TextField, TextLink
+- **Feedback** — Badge, Callout
+- **Editorial** — StaticCard, LinkedCard, SectionHeading, CollectionHeading
+- **Disclosure** — 펼치기와 접기를 위한 Disclosure
+
+## A system of responsibilities
 
 ```text
 Foundation → Primitive → Component → Pattern → Page
-    roles      behavior       contract      decision    context
+시각적 역할      동작          인터페이스       공통 구성      제품 맥락
 ```
 
-## Packages
+Foundation은 시각적 기준을, Primitive는 키보드와 포커스 같은 동작을 담당합니다. Component는 이를 명확한 API와 상태로 묶고, Pattern과 Page는 실제 콘텐츠와 제품 맥락에 맞춰 구성합니다.
 
-| Package | Purpose | Current surface |
-| --- | --- | --- |
-| `@whitekiwi/tokens` | Light·dark semantic tokens and state contracts | color, spacing, typography, radius, motion, breakpoints |
-| `@whitekiwi/ui` | Owned React source with explicit behavior | controls, feedback, editorial surfaces, Disclosure |
-| `@whitekiwi/docs` | Public guideline and visual QA surface | foundations, states, patterns, inventory, governance |
+Native HTML의 의미를 기본으로 삼고, 복잡한 동작에는 Radix primitive를 사용합니다. 컴포넌트의 시각적 기준은 외부 라이브러리가 아닌 PIP의 semantic token이 결정합니다.
 
-The source of truth lives in [`packages/tokens/src/theme.css`](packages/tokens/src/theme.css), [`packages/ui/src`](packages/ui/src), and [`docs/guidelines.md`](docs/guidelines.md). The public site demonstrates implemented contracts; it does not silently promote candidates to reality.
+## Clear by design
 
-## Core contracts
+- **One signal.** 한 화면에서 강조의 중심을 하나로 유지합니다.
+- **Honest interaction.** 읽는 표면과 누를 수 있는 표면을 구분하고, 포커스와 상태를 드러냅니다.
+- **Two themes, shared meaning.** Light와 dark는 같은 역할을 유지하면서 각 배경에 맞는 값을 갖습니다.
+- **Content first.** 작은 화면에서도 정보의 우선순위를 유지하고 구성을 다시 잡습니다.
 
-1. Choose one protagonist per viewport: a large kiwi field, kiwi headline, or kiwi metric—not all three.
-2. Keep ordinary screens near 90% neutral area so the signal stays meaningful.
-3. Static surfaces never borrow pointer, lift, arrow, or inversion from navigation.
-4. Interactive families define rest, hover, active, focus-visible, and disabled in both themes.
-5. Components consume semantic roles, not primitive hex values or local color mixes.
-6. Normal text meets 4.5:1; large text, essential boundaries, and focus indicators meet 3:1.
-7. Mobile recomposes the same information priority instead of shrinking the desktop grid.
+명시한 색 조합은 일반 텍스트 4.5:1, 큰 텍스트와 필수 UI 경계 3:1을 기준으로 검증합니다. 키보드·포커스·reduced motion도 컴포넌트 계약에 포함됩니다. 실제 제품의 조합과 사용자 정의 스타일은 별도의 검증 대상입니다. [전체 설계 기준 →](docs/guidelines.md)
 
-For the compact implementation contract used by coding agents, read [`DESIGN.md`](DESIGN.md).
-
-## Component inventory
-
-| Family | Exports | Contract |
-| --- | --- | --- |
-| Controls | `Button`, `TextField`, `TextLink` | visible interaction and validation states |
-| Feedback | `Badge`, `Callout` | neutral, brand, and status tones with labels |
-| Editorial | `StaticCard`, `LinkedCard`, `SectionHeading`, `CollectionHeading` | content and navigation affordance remain distinct |
-| Disclosure | `Disclosure` | Radix-backed keyboard and focus behavior |
-
-See [repository surfaces](docs/repository-surfaces.md) for applying the same identity to README covers and release assets.
-
-## Adoption policy
-
-Native semantic HTML is the first choice. A behavior primitive is justified when focus management, keyboard navigation, layering, or disclosure is genuinely difficult. Registry components are references, not design authority.
+## Repository
 
 ```text
-reference → candidate → approved → implemented
+packages/tokens/  semantic tokens and themes
+packages/ui/      React components and styles
+apps/docs/        public catalog and visual specimens
+docs/            design contracts and release records
+references/      sources and design rationale
 ```
 
-Before adoption, verify canonical source, license, dependencies, semantic markup, keyboard behavior, focus visibility, reduced motion, responsive composition, and compatibility with PIP tokens. The rationale and primary sources are recorded in [`references/README.md`](references/README.md).
-
-## Develop
-
-Requirements: Node.js 24+ and pnpm 10.33.0.
-
-```bash
-pnpm install
-pnpm dev
-pnpm check
-```
-
-`pnpm check` runs formatting/lint checks, TypeScript validation, the UI package build, and the production documentation build, semantic color-pair gates, and rendered component contract tests.
-
-## npm library releases
-
-`@whitekiwi/tokens` and `@whitekiwi/ui` have a verified tag-triggered publish pipeline and a manual preview mode. The documentation app and workspace root stay private. This is release preparation, not a claim that packages are already available on npm.
-
-Read [npm release setup](docs/npm-release.md) for owner bootstrap, protected environment, OIDC trust, and inspected tarballs. Never add registry credentials to the repository.
-
-## Publish documentation
-
-The public documentation is hosted by GitHub Pages at
-[design.whitekiwi.link](https://design.whitekiwi.link/). A successful `main` push CI
-triggers the `Deploy` workflow on GitHub-hosted Ubuntu, which publishes the
-static `apps/docs/out` export. The workflow also checks the public page and a
-referenced JavaScript asset over HTTPS. A manual `Deploy` dispatch is available
-for a reviewed republish. The retired `deploy/` script is kept as a Mac rollback
-helper.
-
-## Repository map
-
-```text
-apps/docs/       public documentation and visual QA surface
-packages/tokens/ semantic foundations for both themes
-packages/ui/     owned React components and styles
-docs/            canonical human-readable guideline
-references/      authoritative source map and rationale
-deploy/          retained Mac rollback activation
-DESIGN.md        compact implementation contract for agents
-```
-
-## Consumer boundary
-
-The first consumer is [WhiteKiwi Portfolio](https://portfolio.whitekiwi.link/). Product-specific story layout stays with the consumer until a second real use proves a reusable pattern. Token or core component changes should ship with documentation and representative visual QA in the same review unit.
+구현의 기준은 [theme.css](packages/tokens/src/theme.css)와 [UI source](packages/ui/src)입니다. [설계 문서](docs/guidelines.md)는 역할과 상태의 계약을, [reference base](references/README.md)는 참고한 시스템과 선택의 근거를 설명합니다.
 
 ---
 
-<p align="center">
-  <sub>PIP v0.3 · Implemented · WhiteKiwi</sub>
-</p>
-
-## License
-
-[MIT](LICENSE), copyright WhiteKiwi. The two library packages include the same
-license in their published artifacts. Third-party dependencies, referenced
-projects, and separately licensed assets retain their respective licenses;
-this repository does not relicense them.
+[MIT](LICENSE) · WhiteKiwi. 외부 의존성과 별도 라이선스의 자산은 각자의 라이선스를 유지합니다.

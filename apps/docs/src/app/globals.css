@@ -679,6 +679,12 @@ a {
 .docs-governance-grid ul li {
   color: var(--kiwi-color-text-muted);
 }
+.docs-governance-grid li small {
+  font-family: var(--kiwi-font-sans);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  letter-spacing: 0;
+}
 .docs-governance-grid ul li {
   display: block;
   padding-left: 1.5rem;
@@ -693,6 +699,12 @@ a {
 }
 .docs-reference-collection + .docs-reference-collection {
   margin-top: clamp(5rem, 9vw, 9rem);
+}
+.docs-explore-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kiwi-space-4) var(--kiwi-space-6);
+  margin-top: var(--kiwi-space-6);
 }
 .docs-reference-collection {
   scroll-margin-top: 5rem;

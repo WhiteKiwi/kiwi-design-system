@@ -6,7 +6,9 @@ Use the public documentation for implemented behavior and the source repository 
 
 ## Documentation
 
-- [PIP documentation](https://design.whitekiwi.link/): Implemented foundations, component specimens, patterns, interaction contracts, inventory, and governance.
+- [Contributing](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/CONTRIBUTING.md): Repository development and validation.
+- [Kiwi Design System skill](https://github.com/WhiteKiwi/skills/tree/main/skills/kiwi-design-system): Separately maintained agent workflow for PIP integration and shared improvements.
+- [PIP documentation](https://design.whitekiwi.link/): Implemented foundations, component specimens, patterns, interaction contracts, inventory, and design standards.
 - [Design guidelines](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/docs/guidelines.md): Canonical visual and interaction rules.
 - [Agent design contract](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/DESIGN.md): Compact repository-local implementation contract.
 - [Reference base](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/references/README.md): Authoritative sources and adoption stance.
@@ -23,3 +25,4 @@ Use the public documentation for implemented behavior and the source repository 
 - Kiwi green is a brand signal, not a success semantic.
 - Static surfaces and navigational surfaces have distinct affordance contracts.
 - External registries are implementation references, not visual authority.
+- Check installed package versions; GitHub main may contain unreleased changes.

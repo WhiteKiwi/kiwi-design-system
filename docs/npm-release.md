@@ -1,5 +1,8 @@
 # npm library releases
 
+For repository development and validation, start with
+[Contributing](../CONTRIBUTING.md). This guide covers versioning and publication.
+
 The `npm release` workflow publishes automatically when a new `v*` version tag
 is pushed. Its version must exactly match every library package. Tests, inspected
 tarballs, protected release tags, and npm OIDC authentication remain required.

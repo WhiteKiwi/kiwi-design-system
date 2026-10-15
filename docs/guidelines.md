@@ -22,7 +22,7 @@ Status: **implemented**
 7. Normal text는 WCAG AA 4.5:1, large text와 필수 UI는 3:1 이상이어야 한다.
 8. 색만으로 상태와 의미를 전달하지 않는다.
 9. Registry reference는 candidate일 뿐이며 license, dependency, keyboard, focus, reduced motion을 검토하기 전에는 approved가 아니다.
-10. Pattern은 반복되는 제품 결정이다. 두 번째 consumer가 생기기 전에는 core component로 승격하지 않는다.
+10. 공통 UI의 의미와 동작은 시스템이, 데이터·업무 로직과 콘텐츠의 맥락은 제품이 소유한다.
 
 ## Color contracts
 
@@ -42,7 +42,7 @@ Foundation → Primitive → Component → Pattern → Page
 - Foundation은 시각 역할과 scale을 소유한다.
 - Primitive는 복잡한 behavior만 책임지고 visual authority가 되지 않는다.
 - Component는 semantic token과 interaction contract를 구현한다.
-- Pattern은 두 consumer 이상에서 반복된 composition을 기록한다.
+- Pattern은 제품에서 공통으로 사용할 composition과 그 판단 근거를 기록한다.
 - Page는 evidence, task와 audience의 product context를 소유한다.
 
 ## Component inventory
@@ -82,9 +82,11 @@ The website's primary-action matrix illustrates that family only. CSS and actual
 
 ## Governance
 
+각 계층의 책임과 구현 상태를 명확히 기록한다. 외부 자료는 참고 근거이며 PIP의 시각적 기준을 대신하지 않는다.
+
 - 새 raw value가 두 번 등장하면 token 후보, 세 번 등장하면 semantic role로 검토한다.
 - Component가 새로운 interaction을 만들면 light·dark의 rest·hover·focus·pressed·disabled matrix를 함께 작성한다.
-- Portfolio-specific story layout은 두 번째 consumer가 생기기 전까지 core component로 승격하지 않는다.
+- Pattern은 공통으로 사용할 구성과 판단 근거를 담고, 제품 전용 데이터·업무 로직은 포함하지 않는다.
 - Core token 변경은 docs, package와 실제 consumer visual QA를 같은 변경 단위에서 검토한다.
 - 외부 자료와 구현 상태는 `reference → candidate → approved → implemented` 순서로 기록한다.
 - 새 interactive family는 light·dark의 rest, hover, active, focus-visible, disabled 표를 문서에 추가한다.

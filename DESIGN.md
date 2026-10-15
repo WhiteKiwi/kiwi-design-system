@@ -27,7 +27,7 @@ Foundation → Primitive → Component → Pattern → Page
 - Foundation은 색, type, space, radius, motion의 역할을 정한다.
 - Primitive는 focus, keyboard, disclosure처럼 어려운 behavior를 해결한다.
 - Component는 semantic token과 명시적인 state contract만 사용한다.
-- Pattern은 반복되는 정보 구조이며 두 번째 consumer가 생긴 뒤 승격한다.
+- Pattern은 제품에서 공통으로 사용할 정보 구조와 조합을 정의한다.
 - Page는 product context에 맞춰 조합하며 raw value를 새로 고르지 않는다.
 
 ## Interaction contract

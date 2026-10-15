@@ -20,7 +20,7 @@ This package has no JavaScript runtime or React dependency. Tailwind is optional
 
 ## Start with a surface
 
-Once the package is published to your registry:
+Install the token package:
 
 ```sh
 npm install @whitekiwi/tokens

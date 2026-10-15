@@ -21,7 +21,7 @@ PIP versions. React and React DOM are peers, so your application owns their runt
 
 ## Build your first screen
 
-Once the packages are published to your registry:
+Install the packages into your React application:
 
 ```sh
 npm install @whitekiwi/ui @whitekiwi/tokens react react-dom
