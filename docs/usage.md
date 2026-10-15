@@ -52,8 +52,8 @@ export function ProfileForm() {
 
 1. 설치한 버전, 기존 API·토큰, 최신 소스와 관련 issue/PR을 확인합니다. 이미 구현됐다면 호환성을 검토한 뒤 업데이트합니다.
 2. 기존 컴포넌트의 조합으로 해결되는 제품 요구는 앱에서 구성합니다.
-3. 공통 결함·접근성 문제·범용 컴포넌트 또는 variant 부족은 [기여 가이드](../CONTRIBUTING.md#decide-where-the-change-belongs)에 따라 이 저장소에서 개선합니다.
-4. 패키지 산출물로 소비 프로젝트를 검증하고, 릴리스 후 배포 버전을 설치해 연결을 완료합니다.
+3. 공통 개선이 유용하다면 필요성·공통화의 이점·최소 범위를 사용자에게 제안합니다. 사용처 수는 조건이 아니며, 이미 요청하거나 승인한 범위는 다시 묻지 않습니다.
+4. 동의한 범위는 [기여 가이드](../CONTRIBUTING.md#propose-contribute-then-adopt)에 따라 이 저장소에 먼저 기여한 뒤 패키지 산출물로 소비 프로젝트를 검증합니다. 릴리스 후 공개 버전을 설치해 적용을 완료합니다.
 
 앱의 layout 조정과 의도적인 테마 설정은 앱 CSS에서 처리할 수 있습니다. 공통 컴포넌트의 결함을 고치기 위해 source를 복사하거나 내부 selector를 덮어써야 한다면 공통 개선을 먼저 검토합니다. 긴급 우회는 이유, 관련 issue/PR, 담당자, 제거 조건을 남깁니다. 후속 배포 버전을 적용할 때 우회 코드를 제거합니다.
 
@@ -70,12 +70,15 @@ export function ProfileForm() {
 - Read https://github.com/WhiteKiwi/kiwi-design-system/blob/main/docs/usage.md
   and https://github.com/WhiteKiwi/kiwi-design-system/blob/main/DESIGN.md.
 - Check installed versions and existing APIs before changing behavior; main may contain unreleased work.
-- For shared bugs, accessibility fixes, or reusable component gaps, follow
+- When a useful shared improvement emerges, briefly propose the need, shared
+  benefit, and smallest scope to the user. No minimum consumer count is required.
+- Get agreement for newly discovered scope; do not ask again for work already
+  requested or approved. Implement the agreed change in the design system first,
+  then adopt it in this app. Follow
   https://github.com/WhiteKiwi/kiwi-design-system/blob/main/CONTRIBUTING.md
-  and improve the design-system repository within the authorized task scope.
-- Keep product data, business logic, and page composition in this app. A second
-  consumer is required for promoting product-specific patterns, not for bug fixes
-  or a general-purpose component supported by a concrete use case.
+  for implementation, verification, and release adoption.
+- Keep product data and business logic in this app. Move only the agreed shared
+  parts of page composition into the design system.
 - Verify the packed packages in this app. Track any temporary workaround and
   remove it when adopting the published fix. Link related PRs and record tested versions.
 ```

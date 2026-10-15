@@ -27,14 +27,14 @@ Foundation → Primitive → Component → Pattern → Page
 - Foundation은 색, type, space, radius, motion의 역할을 정한다.
 - Primitive는 focus, keyboard, disclosure처럼 어려운 behavior를 해결한다.
 - Component는 semantic token과 명시적인 state contract만 사용한다.
-- Pattern은 반복되는 정보 구조이며 두 번째 consumer가 생긴 뒤 승격한다.
+- Pattern은 제품에서 공통으로 사용할 정보 구조와 조합을 정의한다.
 - Page는 product context에 맞춰 조합하며 raw value를 새로 고르지 않는다.
 
 ## Improve while consuming
 
-기존 API와 token을 먼저 확인한다. 공통 결함·접근성 문제·범용 기능 부족은 [기여 가이드](CONTRIBUTING.md)에 따라 이 저장소에서 개선하고 소비 프로젝트에서 검증한다. 제품 전용 데이터·업무 로직·화면 구성은 앱에 둔다.
+기존 API와 token을 먼저 확인한다. 작업 중 공통 개선이 유용하다고 판단하면 필요성·공통화의 이점·최소 범위를 사용자에게 제안한다. 새로 발견한 범위에 동의하면 [기여 가이드](CONTRIBUTING.md)에 따라 이 저장소에 먼저 기여한 뒤 소비 프로젝트에 적용·검증한다. 이미 요청하거나 승인한 범위는 다시 확인하지 않는다.
 
-두 번째 consumer 조건은 제품 전용 Pattern 승격에만 적용한다. 버그 수정과 구체적인 사용 사례가 있는 범용 컴포넌트 추가는 첫 consumer에서도 진행한다. 임시 우회는 관련 issue/PR과 제거 조건을 남기고 공개 버전 적용 시 제거한다.
+사용처 수는 조건이 아니다. 현재 필요와 공통 관리의 이점을 기준으로 컴포넌트·토큰·패턴을 제안한다. 제품 전용 데이터·업무 로직은 앱에 두고 합의한 공통 부분만 옮긴다. 임시 우회는 관련 issue/PR과 제거 조건을 남기고 공개 버전 적용 시 제거한다.
 
 소비 프로젝트에서 이 계약을 찾도록 [사용 가이드의 Agent setup](docs/usage.md#agent-setup)을 연결한다. 설치한 패키지와 `main`의 구현·문서 버전이 다를 수 있음을 확인한다.
 

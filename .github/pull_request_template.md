@@ -4,7 +4,7 @@
 
 ## Scope and compatibility
 
-<!-- Explain why this belongs in PIP. List public API/token changes and migration needs. Pattern promotion needs two real consumers; fixes and general-purpose components do not. -->
+<!-- Explain the current need, shared benefit, and agreed scope. There is no minimum consumer count. List public API/token changes and migration needs, and link the consumer follow-up. -->
 
 ## Verification
 

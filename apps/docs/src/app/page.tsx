@@ -451,7 +451,7 @@ export default function Home() {
 
       <section className="docs-section" id="patterns">
         <SectionHeading
-          description="Pattern은 반복해서 나타난 제품 결정입니다. 제품 전용 구성을 공통 Pattern으로 승격하려면 두 번째 실제 consumer가 필요합니다."
+          description="Pattern은 제품에서 공통으로 사용할 구성과 판단을 담습니다. 사용처 수보다 지금 필요한 이유와 공통 관리의 이점을 보고 제안합니다."
           eyebrow="05 · PATTERNS"
           id="patterns-title"
           title={
@@ -622,9 +622,7 @@ export default function Home() {
               <li>Canonical source와 license를 확인했는가?</li>
               <li>Keyboard, focus, reduced motion을 검증했는가?</li>
               <li>기존 semantic token으로 표현 가능한가?</li>
-              <li>
-                제품 전용 Pattern 승격이라면 두 번째 실제 consumer가 존재하는가?
-              </li>
+              <li>공통 관리의 이점과 변경 범위를 사용자와 합의했는가?</li>
               <li>320px·390px과 두 theme에서 확인했는가?</li>
             </ul>
           </article>

@@ -98,8 +98,11 @@ backgrounds, and application composition still need accessibility review.
 
 Use existing semantic roles before adding a value. Intentional app theming can
 stay in your app; missing shared roles, incorrect theme mappings, and common
-contrast problems belong in the design-system repository. Include the actual
-foreground/background pair and affected consumer when reporting a problem.
+contrast problems belong in the design-system repository. For newly discovered
+scope, briefly propose the need, shared benefit, and smallest change to the user.
+Once agreed, contribute the token improvement first, then adopt it in the app.
+No minimum consumer count is required; do not ask again for work already requested
+or approved. Include the actual foreground/background pair and affected consumer.
 
 The [contribution guide](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/CONTRIBUTING.md)
 covers token changes, both themes, contrast gates, packed-package verification,

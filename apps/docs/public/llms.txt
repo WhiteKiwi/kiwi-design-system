@@ -26,6 +26,6 @@ Use the public documentation for implemented behavior and the source repository 
 - Static surfaces and navigational surfaces have distinct affordance contracts.
 - External registries are implementation references, not visual authority.
 - Check installed package versions; GitHub main may contain unreleased changes.
-- Improve shared bugs, accessibility issues, and reusable component gaps in the design-system repository; keep product data, business logic, and page composition in the consumer.
-- A second real consumer is required only to promote product-specific patterns, not for bug fixes or general-purpose components with a concrete use case.
+- When a useful shared improvement emerges, briefly propose its need, shared benefit, and smallest scope to the user. No minimum consumer count is required.
+- Get agreement for newly discovered scope; do not ask again for work already requested or approved. Contribute the agreed improvement to the design system first, then adopt it in the consumer. Keep product data and business logic in the app; share only the agreed parts of page composition.
 - Verify packed packages in the consumer, track temporary workarounds, and remove them when adopting the published fix. Repository merge, npm publication, and consumer adoption are separate steps.

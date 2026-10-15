@@ -3,16 +3,21 @@ import { TextLink } from "@whitekiwi/ui";
 export function ContributionGuide() {
   return (
     <article className="docs-contribution" id="contribute">
-      <span className="docs-label">USE → IMPROVE → ADOPT</span>
+      <span className="docs-label">PROPOSE → CONTRIBUTE → ADOPT</span>
       <h3>쓰다가 필요한 개선은 함께 반영합니다.</h3>
       <p>
-        공통 결함·접근성 문제·범용 기능 부족은 디자인 시스템에서 개선합니다.
-        제품 전용 데이터와 화면 구성은 앱에 둡니다. 두 번째 consumer 조건은 제품
-        전용 구성을 공통 Pattern으로 승격할 때만 적용합니다.
+        작업 중 공통 개선이 유용하다면 필요성과 최소 범위를 사용자에게
+        제안합니다. 사용처 수는 조건이 아닙니다. 합의한 개선은 디자인 시스템에
+        먼저 기여하고 앱에 적용합니다. 이미 요청하거나 승인한 범위는 다시 묻지
+        않습니다.
       </p>
       <ol>
-        <li>설치 버전과 기존 API를 확인하고 실제 사용 사례를 정리합니다.</li>
-        <li>공통 개선을 구현하고 문서·예제·테스트를 같은 PR에 담습니다.</li>
+        <li>
+          기존 API를 확인하고 공통화의 이점과 최소 변경 범위를 제안합니다.
+        </li>
+        <li>
+          합의한 개선을 이 저장소에 구현하고 문서·예제·테스트를 함께 담습니다.
+        </li>
         <li>
           소비 앱에서 패키지를 검증하고 공개 버전 적용 시 임시 우회를
           제거합니다.
