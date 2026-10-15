@@ -6,9 +6,9 @@ Use the public documentation for implemented behavior and the source repository 
 
 ## Documentation
 
-- [Usage guide](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/docs/usage.md): Package integration, upgrades, and an agent setup snippet for consuming repositories.
-- [Contribution guide](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/CONTRIBUTING.md): Shared change ownership, implementation, verification, PRs, and consumer adoption.
-- [PIP documentation](https://design.whitekiwi.link/): Implemented foundations, component specimens, patterns, interaction contracts, inventory, and governance.
+- [Contributing](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/CONTRIBUTING.md): Repository development and validation.
+- [Kiwi Design System skill](https://github.com/WhiteKiwi/skills/tree/main/skills/kiwi-design-system): Separately maintained agent workflow for PIP integration and shared improvements.
+- [PIP documentation](https://design.whitekiwi.link/): Implemented foundations, component specimens, patterns, interaction contracts, inventory, and design standards.
 - [Design guidelines](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/docs/guidelines.md): Canonical visual and interaction rules.
 - [Agent design contract](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/DESIGN.md): Compact repository-local implementation contract.
 - [Reference base](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/references/README.md): Authoritative sources and adoption stance.
@@ -26,6 +26,3 @@ Use the public documentation for implemented behavior and the source repository 
 - Static surfaces and navigational surfaces have distinct affordance contracts.
 - External registries are implementation references, not visual authority.
 - Check installed package versions; GitHub main may contain unreleased changes.
-- When a useful shared improvement emerges, briefly propose its need, shared benefit, and smallest scope to the user. No minimum consumer count is required.
-- Get agreement for newly discovered scope; do not ask again for work already requested or approved. Contribute the agreed improvement to the design system first, then adopt it in the consumer. Keep product data and business logic in the app; share only the agreed parts of page composition.
-- Verify packed packages in the consumer, track temporary workarounds, and remove them when adopting the published fix. Repository merge, npm publication, and consumer adoption are separate steps.

@@ -4,7 +4,7 @@
 
 ## Scope and compatibility
 
-<!-- Explain the current need, shared benefit, and agreed scope. There is no minimum consumer count. List public API/token changes and migration needs, and link the consumer follow-up. -->
+<!-- Explain the use case and scope. List public API/token changes and migration needs, and link related consumer work. -->
 
 ## Verification
 

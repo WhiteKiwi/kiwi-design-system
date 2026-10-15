@@ -10,7 +10,7 @@ import {
   TextField,
   TextLink,
 } from "@whitekiwi/ui";
-import { ContributionGuide } from "./contribution-guide";
+import { DesignStandards } from "./design-standards";
 import { ThemeToggle } from "./theme-toggle";
 
 const palette = [
@@ -197,7 +197,7 @@ export default function Home() {
         <nav aria-label="Design system sections">
           <a href="#principles">SYSTEM</a>
           <a href="#components">COMPONENTS</a>
-          <a href="#governance">GOVERNANCE</a>
+          <a href="#governance">STANDARDS</a>
         </nav>
         <ThemeToggle />
       </header>
@@ -213,15 +213,12 @@ export default function Home() {
         </div>
         <div>
           <p>
-            WhiteKiwi가 더 빠르게 같은 결정을 내리기 위한 공개 설계 언어입니다.
-            보이는 모양뿐 아니라 token, behavior, pattern과 adoption gate를 함께
-            관리합니다.
+            색과 간격부터 컴포넌트의 상태와 움직임까지. WhiteKiwi의 제품을
+            하나의 시각 언어로 연결합니다. 각 요소의 역할과 동작을 살펴보세요.
           </p>
-          <nav aria-label="Get started with PIP" className="docs-guide-links">
-            <TextLink href="https://github.com/WhiteKiwi/kiwi-design-system/blob/main/docs/usage.md">
-              사용 가이드
-            </TextLink>
-            <TextLink href="#contribute">개선에 참여하기</TextLink>
+          <nav aria-label="Explore PIP" className="docs-explore-links">
+            <TextLink href="#components">컴포넌트 살펴보기</TextLink>
+            <TextLink href="#principles">설계 원칙</TextLink>
           </nav>
         </div>
         <ol className="docs-system-flow" aria-label="System architecture">
@@ -451,7 +448,7 @@ export default function Home() {
 
       <section className="docs-section" id="patterns">
         <SectionHeading
-          description="Pattern은 제품에서 공통으로 사용할 구성과 판단을 담습니다. 사용처 수보다 지금 필요한 이유와 공통 관리의 이점을 보고 제안합니다."
+          description="Pattern은 컴포넌트의 조합에 의미를 더합니다. 정보의 순서, 행동의 위치, 강조의 밀도를 통해 화면의 읽기 흐름을 만듭니다."
           eyebrow="05 · PATTERNS"
           id="patterns-title"
           title={
@@ -582,52 +579,7 @@ export default function Home() {
       </section>
 
       <section className="docs-section docs-governance" id="governance">
-        <SectionHeading
-          description="좋아 보인다는 이유만으로 도입하지 않습니다. 출처, license, behavior, dependency와 실제 product fit을 검토하고 상태를 명확히 기록합니다."
-          eyebrow="08 · GOVERNANCE"
-          id="governance-title"
-          title={
-            <>
-              Reference is
-              <br />
-              not approval.
-            </>
-          }
-        />
-        <div className="docs-governance-grid">
-          <article>
-            <span>ADOPTION STATES</span>
-            <ol>
-              <li>
-                <strong>REFERENCE</strong>
-                <small>배울 가치가 확인된 자료</small>
-              </li>
-              <li>
-                <strong>CANDIDATE</strong>
-                <small>제품 맥락에서 검토 중</small>
-              </li>
-              <li>
-                <strong>APPROVED</strong>
-                <small>도입 결정과 범위가 합의됨</small>
-              </li>
-              <li>
-                <strong>IMPLEMENTED</strong>
-                <small>코드·문서·QA가 함께 완료됨</small>
-              </li>
-            </ol>
-          </article>
-          <article>
-            <span>ADOPTION GATE</span>
-            <ul>
-              <li>Canonical source와 license를 확인했는가?</li>
-              <li>Keyboard, focus, reduced motion을 검증했는가?</li>
-              <li>기존 semantic token으로 표현 가능한가?</li>
-              <li>공통 관리의 이점과 변경 범위를 사용자와 합의했는가?</li>
-              <li>320px·390px과 두 theme에서 확인했는가?</li>
-            </ul>
-          </article>
-        </div>
-        <ContributionGuide />
+        <DesignStandards />
         <div className="docs-reference-collection" id="reference-base">
           <CollectionHeading
             end={`${primaryReferences.length} PRIMARY SOURCES`}

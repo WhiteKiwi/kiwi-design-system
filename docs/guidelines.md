@@ -22,7 +22,7 @@ Status: **implemented**
 7. Normal text는 WCAG AA 4.5:1, large text와 필수 UI는 3:1 이상이어야 한다.
 8. 색만으로 상태와 의미를 전달하지 않는다.
 9. Registry reference는 candidate일 뿐이며 license, dependency, keyboard, focus, reduced motion을 검토하기 전에는 approved가 아니다.
-10. 공통 관리가 유용한 구성은 사용처 수와 관계없이 제안한다. 사용자와 합의한 범위를 디자인 시스템에 먼저 기여한 뒤 소비 프로젝트에 적용한다.
+10. 공통 UI의 의미와 동작은 시스템이, 데이터·업무 로직과 콘텐츠의 맥락은 제품이 소유한다.
 
 ## Color contracts
 
@@ -82,11 +82,11 @@ The website's primary-action matrix illustrates that family only. CSS and actual
 
 ## Governance
 
-공통 개선과 제품 전용 변경의 경계, PR 절차와 소비 프로젝트 검증은 [기여 가이드](../CONTRIBUTING.md)를 따른다. 앱에서 발견한 공통 결함이나 범용 기능 부족을 이 저장소에 반영한다.
+각 계층의 책임과 구현 상태를 명확히 기록한다. 외부 자료는 참고 근거이며 PIP의 시각적 기준을 대신하지 않는다.
 
 - 새 raw value가 두 번 등장하면 token 후보, 세 번 등장하면 semantic role로 검토한다.
 - Component가 새로운 interaction을 만들면 light·dark의 rest·hover·focus·pressed·disabled matrix를 함께 작성한다.
-- 화면 구성의 공통화는 현재 필요와 공통 관리의 이점으로 제안한다. 새 범위는 사용자와 합의하고, 이미 요청하거나 승인한 범위는 다시 묻지 않는다. 제품 전용 데이터·업무 로직은 앱에 유지한다.
+- Pattern은 공통으로 사용할 구성과 판단 근거를 담고, 제품 전용 데이터·업무 로직은 포함하지 않는다.
 - Core token 변경은 docs, package와 실제 consumer visual QA를 같은 변경 단위에서 검토한다.
 - 외부 자료와 구현 상태는 `reference → candidate → approved → implemented` 순서로 기록한다.
 - 새 interactive family는 light·dark의 rest, hover, active, focus-visible, disabled 표를 문서에 추가한다.

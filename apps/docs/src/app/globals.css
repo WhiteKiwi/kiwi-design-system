@@ -679,6 +679,12 @@ a {
 .docs-governance-grid ul li {
   color: var(--kiwi-color-text-muted);
 }
+.docs-governance-grid li small {
+  font-family: var(--kiwi-font-sans);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  letter-spacing: 0;
+}
 .docs-governance-grid ul li {
   display: block;
   padding-left: 1.5rem;
@@ -694,33 +700,11 @@ a {
 .docs-reference-collection + .docs-reference-collection {
   margin-top: clamp(5rem, 9vw, 9rem);
 }
-.docs-guide-links {
+.docs-explore-links {
   display: flex;
   flex-wrap: wrap;
   gap: var(--kiwi-space-4) var(--kiwi-space-6);
   margin-top: var(--kiwi-space-6);
-}
-.docs-contribution {
-  margin-bottom: clamp(5rem, 9vw, 9rem);
-  scroll-margin-top: 5rem;
-}
-.docs-contribution h3 {
-  margin-block: var(--kiwi-space-4);
-  font-size: 1.5rem;
-}
-.docs-contribution p,
-.docs-contribution ol {
-  max-width: 66ch;
-  color: var(--kiwi-color-text-muted);
-  line-height: 1.7;
-}
-.docs-contribution ol {
-  margin-block: var(--kiwi-space-6);
-  padding-left: var(--kiwi-space-6);
-  list-style: decimal;
-}
-.docs-contribution li + li {
-  margin-top: var(--kiwi-space-2);
 }
 .docs-reference-collection {
   scroll-margin-top: 5rem;

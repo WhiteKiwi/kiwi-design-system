@@ -112,27 +112,6 @@ are part of the implementation. They do not certify an entire application.
 Provide meaningful labels and links; verify keyboard flow, announcements, custom
 styles, and mobile layout in the actual product. Do not use color alone for status.
 
-## Improve a shared component
-
-If an existing API cannot express a useful shared requirement, or you find a bug
-or accessibility problem, check the installed version and current source. Briefly
-propose the need, shared benefit, and smallest scope to the user. Once agreed,
-contribute the change to the design system first, then adopt it in your app.
-Do not ask again for work already requested or approved.
-
-Follow the [contribution guide](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/CONTRIBUTING.md)
-for implementation, catalog examples, tests, packed-package verification, and
-release adoption. There is no minimum consumer count. Keep product data and
-business logic in your app; move only the agreed shared parts of page composition
-into the design system.
-
-The [usage guide](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/docs/usage.md)
-includes integration and upgrade steps, plus an
-[agent setup snippet](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/docs/usage.md#agent-setup)
-for your consuming repository. GitHub main may contain changes not yet in your
-installed package. Track temporary workarounds and remove them when adopting the
-published fix.
-
 ## License
 
 [MIT](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/packages/ui/LICENSE), copyright WhiteKiwi.
