@@ -20,7 +20,7 @@ This package has no JavaScript runtime or React dependency. Tailwind is optional
 
 ## Start with a surface
 
-Once the package is published to your registry:
+Install the token package:
 
 ```sh
 npm install @whitekiwi/tokens
@@ -93,6 +93,22 @@ that supports CSS custom properties and `color-mix()`.
 
 The repository checks defined theme contrast pairs. Custom colors, opacity,
 backgrounds, and application composition still need accessibility review.
+
+## Improve a shared token
+
+Use existing semantic roles before adding a value. Intentional app theming can
+stay in your app; missing shared roles, incorrect theme mappings, and common
+contrast problems belong in the design-system repository. Include the actual
+foreground/background pair and affected consumer when reporting a problem.
+
+The [contribution guide](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/CONTRIBUTING.md)
+covers token changes, both themes, contrast gates, packed-package verification,
+and rollout. The [usage guide](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/docs/usage.md)
+connects app integration, upgrades, and
+[consumer agent instructions](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/docs/usage.md#agent-setup).
+Check installed versions against the source: main may include unreleased work.
+Update matching UI/token versions together and remove any temporary workaround
+after verifying the published fix in your app.
 
 ## License
 

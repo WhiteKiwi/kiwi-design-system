@@ -10,6 +10,7 @@ import {
   TextField,
   TextLink,
 } from "@whitekiwi/ui";
+import { ContributionGuide } from "./contribution-guide";
 import { ThemeToggle } from "./theme-toggle";
 
 const palette = [
@@ -210,11 +211,19 @@ export default function Home() {
             <em>ONE CLEAR SYSTEM.</em>
           </h1>
         </div>
-        <p>
-          WhiteKiwi가 더 빠르게 같은 결정을 내리기 위한 공개 설계 언어입니다.
-          보이는 모양뿐 아니라 token, behavior, pattern과 adoption gate를 함께
-          관리합니다.
-        </p>
+        <div>
+          <p>
+            WhiteKiwi가 더 빠르게 같은 결정을 내리기 위한 공개 설계 언어입니다.
+            보이는 모양뿐 아니라 token, behavior, pattern과 adoption gate를 함께
+            관리합니다.
+          </p>
+          <nav aria-label="Get started with PIP" className="docs-guide-links">
+            <TextLink href="https://github.com/WhiteKiwi/kiwi-design-system/blob/main/docs/usage.md">
+              사용 가이드
+            </TextLink>
+            <TextLink href="#contribute">개선에 참여하기</TextLink>
+          </nav>
+        </div>
         <ol className="docs-system-flow" aria-label="System architecture">
           {systemLayers.map(([name, role, description], index) => (
             <li key={name}>
@@ -442,7 +451,7 @@ export default function Home() {
 
       <section className="docs-section" id="patterns">
         <SectionHeading
-          description="Pattern은 예쁜 블록이 아니라 반복해서 나타난 제품 결정입니다. 두 번째 consumer가 생기기 전에는 core component로 성급히 승격하지 않습니다."
+          description="Pattern은 반복해서 나타난 제품 결정입니다. 제품 전용 구성을 공통 Pattern으로 승격하려면 두 번째 실제 consumer가 필요합니다."
           eyebrow="05 · PATTERNS"
           id="patterns-title"
           title={
@@ -613,11 +622,14 @@ export default function Home() {
               <li>Canonical source와 license를 확인했는가?</li>
               <li>Keyboard, focus, reduced motion을 검증했는가?</li>
               <li>기존 semantic token으로 표현 가능한가?</li>
-              <li>두 번째 consumer가 존재하는가?</li>
+              <li>
+                제품 전용 Pattern 승격이라면 두 번째 실제 consumer가 존재하는가?
+              </li>
               <li>320px·390px과 두 theme에서 확인했는가?</li>
             </ul>
           </article>
         </div>
+        <ContributionGuide />
         <div className="docs-reference-collection" id="reference-base">
           <CollectionHeading
             end={`${primaryReferences.length} PRIMARY SOURCES`}

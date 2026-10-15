@@ -30,6 +30,14 @@ Foundation → Primitive → Component → Pattern → Page
 - Pattern은 반복되는 정보 구조이며 두 번째 consumer가 생긴 뒤 승격한다.
 - Page는 product context에 맞춰 조합하며 raw value를 새로 고르지 않는다.
 
+## Improve while consuming
+
+기존 API와 token을 먼저 확인한다. 공통 결함·접근성 문제·범용 기능 부족은 [기여 가이드](CONTRIBUTING.md)에 따라 이 저장소에서 개선하고 소비 프로젝트에서 검증한다. 제품 전용 데이터·업무 로직·화면 구성은 앱에 둔다.
+
+두 번째 consumer 조건은 제품 전용 Pattern 승격에만 적용한다. 버그 수정과 구체적인 사용 사례가 있는 범용 컴포넌트 추가는 첫 consumer에서도 진행한다. 임시 우회는 관련 issue/PR과 제거 조건을 남기고 공개 버전 적용 시 제거한다.
+
+소비 프로젝트에서 이 계약을 찾도록 [사용 가이드의 Agent setup](docs/usage.md#agent-setup)을 연결한다. 설치한 패키지와 `main`의 구현·문서 버전이 다를 수 있음을 확인한다.
+
 ## Interaction contract
 
 모든 interactive family는 light·dark 각각의 rest, hover, active, focus-visible, disabled를 설명해야 한다. Component source에서 primitive hex나 임의의 `color-mix()`로 상태를 만들지 않고 semantic state token을 사용한다.

@@ -21,7 +21,7 @@ PIP versions. React and React DOM are peers, so your application owns their runt
 
 ## Build your first screen
 
-Once the packages are published to your registry:
+Install the packages into your React application:
 
 ```sh
 npm install @whitekiwi/ui @whitekiwi/tokens react react-dom
@@ -111,6 +111,26 @@ Native semantics, focus styles, reduced-motion rules, and defined contrast pairs
 are part of the implementation. They do not certify an entire application.
 Provide meaningful labels and links; verify keyboard flow, announcements, custom
 styles, and mobile layout in the actual product. Do not use color alone for status.
+
+## Improve a shared component
+
+If an existing API cannot express a reusable requirement, or you find a bug or
+accessibility problem, improve it in the design-system repository. Check the
+installed version and current source before copying a component or overriding
+its internal styles. Keep product data, business logic, and page layout in your app.
+
+Follow the [contribution guide](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/CONTRIBUTING.md)
+for implementation, catalog examples, tests, packed-package verification, and
+release adoption. The second-consumer requirement applies only to promoting
+product-specific patterns, not to fixes or general-purpose components with a
+concrete use case.
+
+The [usage guide](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/docs/usage.md)
+includes integration and upgrade steps, plus an
+[agent setup snippet](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/docs/usage.md#agent-setup)
+for your consuming repository. GitHub main may contain changes not yet in your
+installed package. Track temporary workarounds and remove them when adopting the
+published fix.
 
 ## License
 

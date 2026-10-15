@@ -1,5 +1,9 @@
 # npm library releases
 
+For component/token changes, PR preparation, and local consumer verification,
+start with [Contributing](../CONTRIBUTING.md). This guide owns versioning and
+publication; consumers follow [Usage](usage.md#upgrade) to adopt a release.
+
 The `npm release` workflow publishes automatically when a new `v*` version tag
 is pushed. Its version must exactly match every library package. Tests, inspected
 tarballs, protected release tags, and npm OIDC authentication remain required.
