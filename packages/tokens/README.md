@@ -94,6 +94,13 @@ that supports CSS custom properties and `color-mix()`.
 The repository checks defined theme contrast pairs. Custom colors, opacity,
 backgrounds, and application composition still need accessibility review.
 
+## Improve PIP through use
+
+Found a missing role, theme problem, or unclear contract? Bring the real use case
+back to [PIP](https://github.com/WhiteKiwi/kiwi-design-system/issues/new?template=improvement.yml).
+One product example is enough. The [contribution guide](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/CONTRIBUTING.md)
+explains how to turn it into a focused issue or PR and verify it in your product.
+
 ## License
 
 [MIT](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/packages/tokens/LICENSE), copyright WhiteKiwi.

@@ -1,15 +1,10 @@
 # PIP Design Guidelines v0.3
 
-Status: **implemented**
+Status: **implemented** — 디자인 계약의 버전이며 npm 패키지 버전과 별도로 관리한다.
 
 ## Thesis
 
-**Quiet canvas. Electric kiwi. Human evidence.**
-
-- White는 여백과 빠른 이해를 만든다.
-- Black은 정확성과 편집 구조를 만든다.
-- Kiwi green은 호기심과 추진력이 필요한 순간에만 점화한다.
-- UI는 evidence보다 먼저 보이지 않는다.
+목적과 설계 원칙, 시각적 분위기는 [DESIGN.md](../DESIGN.md)를 따른다. 이 문서는 구현과 검토에 사용하는 상세 계약을 소유한다. 작업별 읽기 경로는 [문서 안내](README.md), 검증 명령은 [기여 안내](../CONTRIBUTING.md#검증)에 있다.
 
 ## Release contracts
 
@@ -19,10 +14,19 @@ Status: **implemented**
 4. Navigational card는 전체 영역이 하나의 link이며 rest·hover·focus·pressed 상태를 가진다.
 5. Border는 section 시작, 필수 control boundary와 interaction state에만 쓴다.
 6. Mobile은 desktop 축소판이 아니라 동일한 정보 우선순위의 재구성이다.
-7. Normal text는 WCAG AA 4.5:1, large text와 필수 UI는 3:1 이상이어야 한다.
+7. Normal text는 WCAG AA 4.5:1, large text와 필수 UI 경계·focus는 3:1 이상이어야 한다.
 8. 색만으로 상태와 의미를 전달하지 않는다.
 9. Registry reference는 candidate일 뿐이며 license, dependency, keyboard, focus, reduced motion을 검토하기 전에는 approved가 아니다.
 10. 공통 UI의 의미와 동작은 시스템이, 데이터·업무 로직과 콘텐츠의 맥락은 제품이 소유한다.
+
+## Interaction and responsive contracts
+
+- 모든 interactive family는 light·dark 각각의 rest, hover, active, focus-visible, disabled를 설명한다. API에 없는 상태는 지원하지 않음을 명시한다.
+- Motion은 150–220ms의 짧은 feedback에 한정하며 `prefers-reduced-motion`에서 제거한다. 44px 기본 target을 유지한다.
+- Border보다 간격, 정렬, surface 차이를 먼저 사용한다.
+- 작은 화면에서도 brand thesis, 실제 evidence와 핵심 action을 유지한다. Heading grid·token table·component specimen은 재구성하고, 상세 계약·보조 설명은 접을 수 있다. 제품 전용 사례·긴 migration guide는 뒤로 배치한다.
+- 320px과 390px에서 가로 overflow, 한국어 줄바꿈, focus 순서와 touch target을 확인한다.
+- 외부 primitive나 registry component는 native semantic HTML로 해결할 수 있는지 먼저 검토한다. License, dependency, keyboard, focus, reduced motion, responsive behavior를 확인한 뒤 PIP token과 API에 맞게 소유한다.
 
 ## Color contracts
 
@@ -35,15 +39,7 @@ Status: **implemented**
 
 ## System layers
 
-```text
-Foundation → Primitive → Component → Pattern → Page
-```
-
-- Foundation은 시각 역할과 scale을 소유한다.
-- Primitive는 복잡한 behavior만 책임지고 visual authority가 되지 않는다.
-- Component는 semantic token과 interaction contract를 구현한다.
-- Pattern은 제품에서 공통으로 사용할 composition과 그 판단 근거를 기록한다.
-- Page는 evidence, task와 audience의 product context를 소유한다.
+[DESIGN.md의 System flow](../DESIGN.md#system-flow)가 계층별 책임과 현재 구현 위치를 정의한다. Component는 primitive hex나 임의의 `color-mix()`로 상태를 만들지 않고 semantic state token을 사용한다.
 
 ## Component inventory
 
@@ -84,9 +80,11 @@ The website's primary-action matrix illustrates that family only. CSS and actual
 
 각 계층의 책임과 구현 상태를 명확히 기록한다. 외부 자료는 참고 근거이며 PIP의 시각적 기준을 대신하지 않는다.
 
-- 새 raw value가 두 번 등장하면 token 후보, 세 번 등장하면 semantic role로 검토한다.
+- 새 시각적 값은 기존 semantic role로 표현할 수 있는지 먼저 확인한다. 실제 사용 사례에서 새 역할이 필요하면 token 후보로 검토한다. 사용 횟수나 소비 제품 수를 충족해야만 제안할 수 있는 것은 아니다.
 - Component가 새로운 interaction을 만들면 light·dark의 rest·hover·focus·pressed·disabled matrix를 함께 작성한다.
 - Pattern은 공통으로 사용할 구성과 판단 근거를 담고, 제품 전용 데이터·업무 로직은 포함하지 않는다.
 - Core token 변경은 docs, package와 실제 consumer visual QA를 같은 변경 단위에서 검토한다.
 - 외부 자료와 구현 상태는 `reference → candidate → approved → implemented` 순서로 기록한다.
 - 새 interactive family는 light·dark의 rest, hover, active, focus-visible, disabled 표를 문서에 추가한다.
+
+사용 중 발견한 개선은 [기여 흐름](../CONTRIBUTING.md#사용에서-개선으로)으로 연결한다. 새로운 컴포넌트·조합의 판단 근거는 관련 계약에 남기고, 원칙 자체의 변경은 [DESIGN.md](../DESIGN.md#원칙을-발전시키는-방법)에서 다룬다.

@@ -112,6 +112,13 @@ are part of the implementation. They do not certify an entire application.
 Provide meaningful labels and links; verify keyboard flow, announcements, custom
 styles, and mobile layout in the actual product. Do not use color alone for status.
 
+## Improve PIP through use
+
+Found a missing state, useful composition, or interaction problem? Bring the real
+use case back to [PIP](https://github.com/WhiteKiwi/kiwi-design-system/issues/new?template=improvement.yml).
+One product example is enough. The [contribution guide](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/CONTRIBUTING.md)
+explains how to turn it into a focused issue or PR and verify it in your product.
+
 ## License
 
 [MIT](https://github.com/WhiteKiwi/kiwi-design-system/blob/main/packages/ui/LICENSE), copyright WhiteKiwi.

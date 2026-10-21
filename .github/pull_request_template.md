@@ -1,21 +1,22 @@
 ## Problem and resulting behavior
 
-<!-- Describe the concrete use case or reproduction, installed PIP version, and what changes for consumers. Link related issues and consumer PRs. -->
+<!-- Describe the real use case, expected/current behavior, and PIP version when applicable. Link an existing issue or consumer PR; one real use case is enough. -->
 
 ## Scope and compatibility
 
-<!-- Explain the use case and scope. List public API/token changes and migration needs, and link related consumer work. -->
+<!-- Explain why this belongs in PIP, which existing API/composition was considered, and the smallest shared change. List API/token changes and migration needs. For a new rule, explain its reason, scope, and exceptions. -->
 
 ## Verification
 
-- [ ] `pnpm check`
-- [ ] `pnpm release:check` and `pnpm release:pack`
-- [ ] Relevant package docs, catalog specimens/inventory, and design contracts updated
+<!-- Record source revision, commands, environment, and results. Mark non-applicable checks with a reason; leave unperformed checks explicit. -->
+
+- [ ] Relevant contracts, package docs, and catalog specimens/inventory updated
+- [ ] Documentation links, anchors, examples, and whitespace checked
+- [ ] For code/release changes: `pnpm check`, `pnpm release:check`, and `pnpm release:pack`
+- [ ] For artwork: light/dark presentation, desktop and 320px rendering checked
 - [ ] For UI/token changes: light/dark states, keyboard/focus, reduced motion, 320px/390px and desktop checked
-- [ ] Packed packages tested in a consumer; record PIP commit/version, consumer revision, and results
+- [ ] For package changes: packed packages tested in a consumer; record PIP commit/version, consumer revision, and results
 
-<!-- Mark non-applicable checks with a reason. State unperformed checks and their follow-up; do not check them off. For docs-only changes, verify links/examples and affected pages. -->
+## Return the improvement to the product
 
-## Delivery follow-up
-
-<!-- Note release/migration needs, consumer adoption, and workaround removal. Link an owner or follow-up PR for outstanding work. A merged PR is not an npm release or consumer rollout. -->
+<!-- Link the originating use case and any follow-up issue/PR. Record release/adoption needs and temporary workaround removal conditions. For reusable lessons, link the updated principle or contract. A merged PR is not an npm release or consumer rollout. -->
