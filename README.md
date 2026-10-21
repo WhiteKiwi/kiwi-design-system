@@ -1,72 +1,89 @@
 <p align="center">
-  <img src="assets/pip-cover.svg" alt="PIP — WhiteKiwi Design System" width="100%">
+  <img src="assets/pip-cover.svg" alt="PIP — Small parts. Clear experiences." width="100%">
 </p>
 
 <p align="center">
-  <strong>Quiet canvas. Electric kiwi. Human evidence.</strong><br>
-  WhiteKiwi의 제품을 하나의 시각 언어로 연결하는 디자인 시스템.
+  <strong>작은 조각, 명확한 경험.</strong><br>
+  WhiteKiwi의 제품을 하나의 시각 언어로 연결하는 디자인 시스템, PIP.
 </p>
 
 <p align="center">
-  <a href="https://design.whitekiwi.link/">Explore PIP</a> ·
-  <a href="docs/guidelines.md">Design principles</a> ·
-  <a href="references/README.md">References</a>
+  <a href="https://design.whitekiwi.link/">카탈로그</a> ·
+  <a href="DESIGN.md">설계 원칙</a> ·
+  <a href="docs/README.md">문서 안내</a> ·
+  <a href="CONTRIBUTING.md">기여하기</a>
 </p>
 
 ---
 
-## Small parts. One clear system.
+## 미션
 
-PIP은 색과 간격, 컴포넌트의 상태와 움직임을 함께 정의합니다. 화면이 달라도 같은 역할은 같은 방식으로 읽히고, 같은 행동은 일관된 반응을 갖도록 설계했습니다.
+명확한 기준과 재사용 가능한 구성요소로 만드는 사람의 반복을 줄이고, 쓰는 사람에게 일관되고 이해하기 쉬운 경험을 제공합니다.
 
-흰 여백과 검은 타이포그래피가 읽기와 구조를 맡고, kiwi green은 중요한 행동과 기억할 장면을 강조합니다. 장식보다 콘텐츠와 실제 결과가 먼저 보이는 인터페이스를 지향합니다.
+PIP은 색과 간격부터 컴포넌트의 상태와 움직임까지 함께 정의합니다. 흰 여백과 검은 타이포그래피로 콘텐츠를 드러내고, kiwi green으로 중요한 행동을 강조합니다.
 
-## Inside PIP
+## 필요한 만큼 사용하세요
 
-| 구성 | 담고 있는 것 |
+| 구성 | 사용할 때 |
 | --- | --- |
-| **[@whitekiwi/tokens](packages/tokens)** | Light·dark 테마, 의미에 따른 색 역할, 간격, 서체, radius와 motion |
-| **[@whitekiwi/ui](packages/ui)** | 토큰 위에 구현한 React 컴포넌트와 상호작용 상태 |
-| **[Public catalog](https://design.whitekiwi.link/)** | 색과 역할, 컴포넌트 예제, 패턴과 상태별 설계 기준 |
+| **[@whitekiwi/tokens](packages/tokens/README.md)** | 프레임워크에 관계없이 CSS 토큰과 light·dark 테마를 적용합니다. |
+| **[@whitekiwi/ui](packages/ui/README.md)** | React에서 컨트롤, 피드백, 콘텐츠 표면과 펼치기·접기를 조합합니다. |
+| **[카탈로그](https://design.whitekiwi.link/)** | 실제 컴포넌트와 상태별 예제, 색의 역할을 살펴봅니다. |
 
-컴포넌트는 네 가지 역할로 구성됩니다.
+토큰은 단독으로 사용할 수 있습니다. React UI를 사용할 때는 두 패키지의 버전을 맞춥니다.
 
-- **Controls** — Button, TextField, TextLink
-- **Feedback** — Badge, Callout
-- **Editorial** — StaticCard, LinkedCard, SectionHeading, CollectionHeading
-- **Disclosure** — 펼치기와 접기를 위한 Disclosure
+## 첫 화면 만들기
 
-## A system of responsibilities
+React 19 이상의 앱에 설치합니다. 현재 검증 기준은 React 19입니다.
 
-```text
-Foundation → Primitive → Component → Pattern → Page
-시각적 역할      동작          인터페이스       공통 구성      제품 맥락
+```sh
+npm install @whitekiwi/ui @whitekiwi/tokens
 ```
 
-Foundation은 시각적 기준을, Primitive는 키보드와 포커스 같은 동작을 담당합니다. Component는 이를 명확한 API와 상태로 묶고, Pattern과 Page는 실제 콘텐츠와 제품 맥락에 맞춰 구성합니다.
+앱의 전역 CSS 진입점에서 토큰, UI 순서로 스타일을 불러옵니다.
 
-Native HTML의 의미를 기본으로 삼고, 복잡한 동작에는 Radix primitive를 사용합니다. 컴포넌트의 시각적 기준은 외부 라이브러리가 아닌 PIP의 semantic token이 결정합니다.
-
-## Clear by design
-
-- **One signal.** 한 화면에서 강조의 중심을 하나로 유지합니다.
-- **Honest interaction.** 읽는 표면과 누를 수 있는 표면을 구분하고, 포커스와 상태를 드러냅니다.
-- **Two themes, shared meaning.** Light와 dark는 같은 역할을 유지하면서 각 배경에 맞는 값을 갖습니다.
-- **Content first.** 작은 화면에서도 정보의 우선순위를 유지하고 구성을 다시 잡습니다.
-
-명시한 색 조합은 일반 텍스트 4.5:1, 큰 텍스트와 필수 UI 경계 3:1을 기준으로 검증합니다. 키보드·포커스·reduced motion도 컴포넌트 계약에 포함됩니다. 실제 제품의 조합과 사용자 정의 스타일은 별도의 검증 대상입니다. [전체 설계 기준 →](docs/guidelines.md)
-
-## Repository
-
-```text
-packages/tokens/  semantic tokens and themes
-packages/ui/      React components and styles
-apps/docs/        public catalog and visual specimens
-docs/            design contracts and release records
-references/      sources and design rationale
+```tsx
+import "@whitekiwi/tokens/theme.css";
+import "@whitekiwi/ui/styles.css";
 ```
 
-구현의 기준은 [theme.css](packages/tokens/src/theme.css)와 [UI source](packages/ui/src)입니다. [설계 문서](docs/guidelines.md)는 역할과 상태의 계약을, [reference base](references/README.md)는 참고한 시스템과 선택의 근거를 설명합니다.
+```tsx
+import { StaticCard, TextLink } from "@whitekiwi/ui";
+
+export function Welcome() {
+  return (
+    <StaticCard tone="neutral" padding="spacious">
+      <p>아이디어를 새 프로젝트로 이어가세요.</p>
+      <TextLink href="/projects/new">프로젝트 만들기</TextLink>
+    </StaticCard>
+  );
+}
+```
+
+`/projects/new` 경로와 페이지 레이아웃은 앱에서 구현합니다. 테마 설정은 [토큰 사용법](packages/tokens/README.md#light-dark-or-the-system), 전체 API와 React 서버 렌더링 조건은 [UI 사용법](packages/ui/README.md)에서 확인하세요.
+
+## 함께 지키는 기준
+
+- **반복을 줄입니다.** 기존 토큰과 컴포넌트를 조합하고, 공통으로 필요한 개선을 시스템에 반영합니다.
+- **이해와 행동을 명확하게 합니다.** 콘텐츠의 우선순위, 누를 수 있는 표면, 포커스와 상태를 드러냅니다.
+- **같은 의미를 유지합니다.** 제품·테마·화면 크기가 달라도 같은 역할과 행동을 일관되게 전달합니다.
+
+선택의 이유와 시스템 구조는 [설계 원칙](DESIGN.md), 색 대비·상태·반응형 요구사항은 [가이드라인](docs/guidelines.md)에 정리되어 있습니다. 실제 제품의 조합과 사용자 정의 스타일은 해당 제품에서 검증합니다.
+
+## 쓰면서 함께 다듬습니다
+
+제품에서 발견한 불편, 빠진 상태, 유용한 조합을 PIP의 개선으로 연결합니다. 하나의 실제 사용 사례로도 제안할 수 있습니다. 컴포넌트와 예제, 검증, 설계 기준이 함께 쌓이고 다음 제품 작업에 다시 쓰이도록 합니다.
+
+[개선 제안](https://github.com/WhiteKiwi/kiwi-design-system/issues/new?template=improvement.yml) · [기여 흐름](CONTRIBUTING.md#사용에서-개선으로)
+
+## 더 알아보기
+
+| 하고 싶은 일 | 시작점 |
+| --- | --- |
+| 코드를 실행하고 개선하기 | [기여 안내](CONTRIBUTING.md) |
+| 구조와 작업별 기준 파일 찾기 | [문서 안내](docs/README.md) |
+| 설계의 참고 근거 살펴보기 | [Reference base](references/README.md) |
+| 패키지 릴리스 준비하기 | [릴리스 안내](docs/npm-release.md) |
 
 ---
 
