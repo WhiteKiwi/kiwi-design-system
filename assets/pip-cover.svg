@@ -1,12 +1,210 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 480" role="img" aria-labelledby="title desc">
-  <title id="title">PIP — Small parts. Clear experiences.</title>
-  <desc id="desc">WhiteKiwi design system. A quiet paper canvas, ink typography, and one deep kiwi headline.</desc>
-  <rect width="1440" height="480" fill="#F4F5EF"/>
-  <path d="M64 112h1312M64 436h1312" stroke="#11140F" stroke-opacity=".14"/>
-  <g font-family="Arial, Helvetica, sans-serif">
-    <text x="64" y="76" fill="#11140F" font-size="30" font-weight="700" letter-spacing="2">PIP · WHITEKIWI</text>
-    <text x="1376" y="76" fill="#11140F" text-anchor="end" font-family="monospace" font-size="22" letter-spacing="2">DESIGN SYSTEM</text>
-    <text x="56" y="254" fill="#11140F" font-size="128" font-weight="700" letter-spacing="-5">Small parts.</text>
-    <text x="56" y="390" fill="#3C6000" font-size="128" font-weight="700" letter-spacing="-5">Clear experiences.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="720" viewBox="0 0 1440 720" role="img" aria-labelledby="pip-title pip-desc">
+  <title id="pip-title">PIP by WhiteKiwi — Small parts. Clear experiences.</title>
+  <desc id="pip-desc">The PIP design system: a chalk and kiwi editorial headline on a dark carbon canvas, paired with floating translucent panels showing typography, color tokens, a toggle, geometric components, and layout primitives.</desc>
+  <!-- PIP token palette — packages/tokens/src/theme.css
+       carbon: #0E100E; carbon-raised: #181A18; ink: #11140F;
+       chalk: #F1F4EB; fog: #A5AB9F; ash: #62685E;
+       signal: #C6FF4A; line: #668B15; deep: #3C6000. -->
+  <defs>
+    <radialGradient id="ambient-upper" gradientUnits="userSpaceOnUse" cx="1315" cy="35" r="790">
+      <stop offset="0" stop-color="#668B15" stop-opacity=".48"/>
+      <stop offset=".44" stop-color="#3C6000" stop-opacity=".14"/>
+      <stop offset="1" stop-color="#0E100E" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="ambient-lower" gradientUnits="userSpaceOnUse" cx="1370" cy="790" r="450">
+      <stop offset="0" stop-color="#668B15" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#0E100E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="glass-typo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#A5AB9F" stop-opacity=".23"/>
+      <stop offset=".46" stop-color="#181A18" stop-opacity=".70"/>
+      <stop offset="1" stop-color="#11140F" stop-opacity=".96"/>
+    </linearGradient>
+    <linearGradient id="glass-colors" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#A5AB9F" stop-opacity=".33"/>
+      <stop offset=".54" stop-color="#62685E" stop-opacity=".31"/>
+      <stop offset="1" stop-color="#181A18" stop-opacity=".82"/>
+    </linearGradient>
+    <linearGradient id="glass-focus" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#62685E" stop-opacity=".26"/>
+      <stop offset=".50" stop-color="#181A18" stop-opacity=".87"/>
+      <stop offset="1" stop-color="#11140F" stop-opacity=".96"/>
+    </linearGradient>
+    <linearGradient id="glass-soft" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#A5AB9F" stop-opacity=".17"/>
+      <stop offset=".33" stop-color="#62685E" stop-opacity=".19"/>
+      <stop offset="1" stop-color="#181A18" stop-opacity=".82"/>
+    </linearGradient>
+    <linearGradient id="glow-leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F1F4EB"/>
+      <stop offset=".50" stop-color="#C6FF4A"/>
+      <stop offset="1" stop-color="#668B15"/>
+    </linearGradient>
+    <linearGradient id="light-edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F1F4EB" stop-opacity=".76"/>
+      <stop offset=".46" stop-color="#A5AB9F" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#668B15" stop-opacity=".30"/>
+    </linearGradient>
+    <filter id="shadow" x="-40%" y="-65%" width="190%" height="260%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="11" result="blur"/>
+      <feOffset in="blur" dx="6" dy="9" result="drop"/>
+      <feComponentTransfer in="drop" result="shade"><feFuncA type="linear" slope=".64"/></feComponentTransfer>
+      <feMerge><feMergeNode in="shade"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="halo" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="11"/>
+    </filter>
+    <clipPath id="symbol-circle"><circle cx="0" cy="0" r="42"/></clipPath>
+  </defs>
+
+  <!-- Fixed 2:1 vector canvas. The accents are sourced from PIP design tokens. -->
+  <rect width="1440" height="720" fill="#0E100E"/>
+  <rect width="1440" height="720" fill="url(#ambient-upper)"/>
+  <rect width="1440" height="720" fill="url(#ambient-lower)"/>
+
+  <!-- Fine architectural guide lines provide depth without becoming UI. -->
+  <g fill="none" stroke="#A5AB9F" stroke-width=".8" opacity=".12">
+    <path d="M687 0V720M984 0V719M1187 0V719"/>
+    <path d="M675 280 1417 69M681 411 1420 209M687 545 1420 360M759 658 1420 484"/>
+    <path d="M694 316 1253 170 1411 316 944 565 694 499Z" stroke-dasharray="4 9"/>
+    <path d="M704 466 998 396 1402 553 1138 693Z" stroke-dasharray="5 11"/>
+    <path d="M1102 116V656M1296 178V690" stroke-dasharray="3 9"/>
+  </g>
+  <g stroke="#668B15" stroke-width="1.1" stroke-opacity=".27" fill="none">
+    <path d="M686 0V271M987 0V167M1190 0V193"/>
+    <path d="M1112 178V340M1388 168V558"/>
+    <path d="M695 496 980 413 1386 602" stroke-dasharray="2 9"/>
+  </g>
+  <g fill="#C6FF4A">
+    <circle cx="687" cy="271" r="2.3" opacity=".65"/>
+    <circle cx="987" cy="167" r="2.2" opacity=".42"/>
+    <circle cx="1112" cy="178" r="2.3" opacity=".56"/>
+    <circle cx="1388" cy="558" r="2.4" opacity=".47"/>
+    <circle cx="694" cy="496" r="2.1" opacity=".50"/>
+    <circle cx="980" cy="413" r="2.1" opacity=".44"/>
+    <circle cx="1100" cy="618" r="2.1" opacity=".48"/>
+  </g>
+
+  <!-- Header metadata and separation line. -->
+  <g fill="#F1F4EB">
+    <text x="77" y="132" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" letter-spacing="3.9">PIP / WHITEKIWI</text>
+    <text x="1363" y="132" font-family="Consolas, Menlo, monospace" font-size="19" letter-spacing="2.7" text-anchor="end" opacity=".87">DESIGN SYSTEM</text>
+  </g>
+  <path d="M77 151H1363" stroke="#A5AB9F" stroke-opacity=".33" stroke-width="1"/>
+
+  <!-- Isometric scaffold in the back: restrained, delicate, and slightly translucent. -->
+  <g stroke="#A5AB9F" stroke-opacity=".13" stroke-width=".9" fill="none">
+    <path d="M756 206 1013 147 1268 234 1027 319Z"/>
+    <path d="M750 206 750 529 1027 625 1270 520 1270 234" stroke-dasharray="4 8"/>
+    <path d="M866 180V575M1003 156V629M1139 189V643" stroke-dasharray="4 8"/>
+    <path d="M750 318 1027 413 1270 310M750 427 1027 525 1270 416" stroke-dasharray="4 9"/>
+  </g>
+
+  <!-- Rear ghost cards add distance without competing with the headline. -->
+  <g transform="translate(866 283) skewY(-15)" opacity=".20">
+    <rect width="252" height="148" rx="12" fill="url(#glass-soft)" stroke="#A5AB9F" stroke-opacity=".32"/>
+    <path d="M17 41H232M17 91H232M93 17V130M178 17V130" stroke="#A5AB9F" stroke-opacity=".24" stroke-dasharray="4 8"/>
+  </g>
+  <g transform="translate(1124 339) skewY(10)" opacity=".27">
+    <rect width="183" height="181" rx="14" fill="url(#glass-focus)" stroke="#A5AB9F" stroke-opacity=".37"/>
+    <path d="M17 17H166" stroke="#A5AB9F" stroke-opacity=".38"/>
+  </g>
+
+  <!-- Floating typography sample / anchor card. -->
+  <g transform="translate(794 234) skewY(-17)" filter="url(#shadow)">
+    <rect width="211" height="143" rx="12" fill="url(#glass-typo)" stroke="url(#light-edge)" stroke-width="1.35"/>
+    <path d="M11 2H198" stroke="#F1F4EB" stroke-opacity=".21"/>
+    <text x="30" y="97" fill="#F1F4EB" font-family="Arial, Helvetica, sans-serif" font-size="60" font-weight="600" letter-spacing="-3">Aa</text>
+  </g>
+
+  <!-- Palette card: each swatch is a literal PIP primitive token. -->
+  <g transform="translate(1036 188) skewY(8)" filter="url(#shadow)">
+    <rect width="251" height="83" rx="13" fill="url(#glass-colors)" stroke="url(#light-edge)" stroke-width="1.35"/>
+    <path d="M13 2H237" stroke="#F1F4EB" stroke-opacity=".19"/>
+    <circle cx="33" cy="42" r="19" fill="#C6FF4A"/>
+    <circle cx="79" cy="42" r="19" fill="#668B15"/>
+    <circle cx="125" cy="42" r="19" fill="#A5AB9F"/>
+    <circle cx="171" cy="42" r="19" fill="#62685E"/>
+    <circle cx="217" cy="42" r="19" fill="#11140F"/>
+  </g>
+
+  <!-- Rear component board with visible states and outlined controls. -->
+  <g transform="translate(1128 332) skewY(10)" filter="url(#shadow)">
+    <rect width="207" height="194" rx="13" fill="url(#glass-focus)" stroke="#A5AB9F" stroke-opacity=".56" stroke-width="1.2"/>
+    <path d="M15 2H194" stroke="#F1F4EB" stroke-opacity=".17"/>
+    <g fill="none" stroke="#A5AB9F" stroke-width="1.2">
+      <circle cx="52" cy="59" r="24" stroke-opacity=".72"/>
+      <circle cx="116" cy="65" r="24" stroke-opacity=".31"/>
+      <circle cx="54" cy="148" r="22" stroke-opacity=".43" stroke-dasharray="3 6"/>
+      <circle cx="119" cy="150" r="22" stroke-opacity=".35" stroke-dasharray="3 6"/>
+      <circle cx="177" cy="153" r="20" stroke-opacity=".33" stroke-dasharray="3 6"/>
+    </g>
+  </g>
+
+  <!-- A quiet helper chip between card layers. -->
+  <g transform="translate(888 410) skewY(-10)" opacity=".60">
+    <rect width="42" height="59" rx="10" fill="url(#glass-focus)" stroke="#A5AB9F" stroke-opacity=".27"/>
+  </g>
+
+  <!-- Focal geometric component tile. -->
+  <g transform="translate(948 336) skewY(9)" filter="url(#shadow)">
+    <rect width="178" height="170" rx="13" fill="url(#glass-focus)" stroke="#C6FF4A" stroke-opacity=".70" stroke-width="1.3"/>
+    <path d="M13 3H164" stroke="#F1F4EB" stroke-opacity=".19"/>
+    <g transform="translate(89 86)">
+      <circle r="44" fill="#11140F" opacity=".47"/>
+      <g clip-path="url(#symbol-circle)">
+        <path d="M-42 0V-42H0V0Z" fill="#F1F4EB"/>
+        <path d="M0-42H42V0H0Z" fill="#C6FF4A"/>
+        <path d="M-42 0H0V42H-42Z" fill="#A5AB9F"/>
+        <path d="M0 0H42V42H0Z" fill="#668B15"/>
+        <path d="M-42 0Q-42-42 0-42H-42Z" fill="#F1F4EB" opacity=".30"/>
+        <path d="M0-42Q42-42 42 0H0Z" fill="#F1F4EB" opacity=".23"/>
+        <path d="M0 0Q42 0 42 42H0Z" fill="#F1F4EB" opacity=".08"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- Toggle sample is foreground art, not a clickable control. -->
+  <g transform="translate(711 439) skewY(-12)" filter="url(#shadow)">
+    <rect width="148" height="77" rx="12" fill="url(#glass-soft)" stroke="url(#light-edge)" stroke-width="1.25"/>
+    <path d="M10 2H136" stroke="#F1F4EB" stroke-opacity=".16"/>
+    <rect x="51" y="25" width="61" height="28" rx="14" fill="#C6FF4A"/>
+    <circle cx="66" cy="39" r="11.5" fill="#F1F4EB"/>
+  </g>
+
+  <!-- Blank glass sample crosses the rear board. -->
+  <g transform="translate(1230 354) skewY(-12)" filter="url(#shadow)">
+    <rect width="130" height="89" rx="13" fill="url(#glass-soft)" stroke="#A5AB9F" stroke-opacity=".67" stroke-width="1.2"/>
+    <path d="M12 2H117" stroke="#F1F4EB" stroke-opacity=".23"/>
+  </g>
+
+  <!-- Text / spacing primitive near the lower edge. -->
+  <g transform="translate(864 508) skewY(10)" filter="url(#shadow)">
+    <rect width="209" height="102" rx="12" fill="url(#glass-soft)" stroke="#A5AB9F" stroke-opacity=".60" stroke-width="1.15"/>
+    <path d="M27 29H157M27 53H174M27 75H123" fill="none" stroke="#A5AB9F" stroke-opacity=".70" stroke-linecap="round" stroke-width="2.5"/>
+  </g>
+
+  <!-- One last small plus-shaped primitive to complete the depth stack. -->
+  <g transform="translate(1160 544) skewY(9)" filter="url(#shadow)">
+    <rect width="80" height="85" rx="11" fill="url(#glass-focus)" stroke="#668B15" stroke-opacity=".72" stroke-width="1.1"/>
+    <path d="M40 28V63M23 46H57" fill="none" stroke="#C6FF4A" stroke-opacity=".85" stroke-width="1.2"/>
+  </g>
+
+  <!-- Main editorial statement. At 320px width it remains legible. -->
+  <g font-family="Arial, Helvetica, sans-serif" font-weight="700" letter-spacing="-3.8">
+    <text x="78" y="312" fill="#F1F4EB" font-size="88">Small parts.</text>
+    <text x="78" y="386" fill="#C6FF4A" font-size="81" letter-spacing="-3.5">Clear experiences.</text>
+  </g>
+  <g font-family="Consolas, Menlo, monospace" font-size="21" fill="#F1F4EB" letter-spacing=".30" opacity=".93">
+    <text x="80" y="446">One design language for products,</text>
+    <text x="80" y="475">people, and possibilities.</text>
+  </g>
+  <rect x="80" y="518" width="54" height="5" fill="#C6FF4A"/>
+  <g font-family="Consolas, Menlo, monospace" font-size="18" letter-spacing="2.2" fill="#A5AB9F">
+    <text x="80" y="606">FOUNDATIONS</text>
+    <text x="255" y="606" opacity=".75">|</text>
+    <text x="304" y="606">COMPONENTS</text>
+    <text x="478" y="606" opacity=".75">|</text>
+    <text x="523" y="606">PATTERNS</text>
   </g>
 </svg>
