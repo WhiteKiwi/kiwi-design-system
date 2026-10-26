@@ -173,6 +173,23 @@ assert.ok(
   read("packages/ui/dist/index.js").startsWith('"use client";'),
   "preserve the React client boundary in the shipped bundle",
 );
+const homepage = read("apps/docs/out/index.html");
+for (const kind of ["og", "twitter"]) {
+  const match = homepage.match(
+    new RegExp(`<meta (?:property|name)="${kind}:image" content="([^"]+)"`),
+  );
+  assert.ok(match, `${kind} image must be present in the exported HTML`);
+  const image = new URL(match[1]);
+  assert.equal(image.origin, "https://design.whitekiwi.link");
+  assert.ok(
+    image.pathname.endsWith(".png"),
+    "static hosts need a PNG filename",
+  );
+  const png = readFileSync(new URL(`apps/docs/out${image.pathname}`, root));
+  assert.equal(png.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
+  assert.equal(png.readUInt32BE(16), 1200);
+  assert.equal(png.readUInt32BE(20), 630);
+}
 console.log(
   `${pairs} semantic contrast pairs and rendered component contracts passed (${fileURLToPath(root)})`,
 );

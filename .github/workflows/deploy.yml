@@ -67,3 +67,37 @@ jobs:
           test -n "$asset_path"
           curl --fail --silent --show-error --max-time 20 \
             --output /dev/null "https://design.whitekiwi.link${asset_path}"
+      - name: Verify public social image types
+        run: |
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from urllib.request import urlopen
+          from urllib.parse import urlsplit
+          import struct
+
+          class Metadata(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.images = {}
+              def handle_starttag(self, tag, attrs):
+                  values = dict(attrs)
+                  name = values.get('property', values.get('name'))
+                  if tag == 'meta' and name in ('og:image', 'twitter:image'):
+                      self.images[name] = values['content']
+
+          with urlopen('https://design.whitekiwi.link/', timeout=20) as page:
+              metadata = Metadata()
+              metadata.feed(page.read().decode())
+          assert set(metadata.images) == {'og:image', 'twitter:image'}
+          for name, url in metadata.images.items():
+              parsed = urlsplit(url)
+              assert parsed.scheme == 'https' and parsed.netloc == 'design.whitekiwi.link'
+              assert parsed.path.endswith('.png')
+              with urlopen(url, timeout=20) as image:
+                  assert image.status == 200
+                  assert image.headers.get_content_type() == 'image/png'
+                  header = image.read(24)
+                  assert header[:8] == b'\x89PNG\r\n\x1a\n'
+                  assert struct.unpack('>II', header[16:24]) == (1200, 630)
+              print(name, 'PNG 1200x630 OK')
+          PY

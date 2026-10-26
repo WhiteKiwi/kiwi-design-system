@@ -10,6 +10,10 @@ export const size = socialImageSize;
 export const contentType = socialImageContentType;
 export const dynamic = "force-static";
 
+export function generateImageMetadata() {
+  return [{ id: "social.png", alt, size, contentType }];
+}
+
 export default function OpenGraphImage() {
   return createSocialImage();
 }
