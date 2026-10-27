@@ -67,12 +67,12 @@ jobs:
           test -n "$asset_path"
           curl --fail --silent --show-error --max-time 20 \
             --output /dev/null "https://design.whitekiwi.link${asset_path}"
-      - name: Verify public social image types
+      - name: Verify public social image and icon types
         run: |
           python3 - <<'PY'
           from html.parser import HTMLParser
           from urllib.request import urlopen
-          from urllib.parse import urlsplit
+          from urllib.parse import urlsplit, urljoin
           import struct
 
           class Metadata(HTMLParser):
@@ -84,11 +84,13 @@ jobs:
                   name = values.get('property', values.get('name'))
                   if tag == 'meta' and name in ('og:image', 'twitter:image'):
                       self.images[name] = values['content']
+                  if tag == 'link' and values.get('rel') in ('icon', 'apple-touch-icon') and values.get('type') == 'image/png':
+                      self.images[values['rel']] = urljoin('https://design.whitekiwi.link/', values['href'])
 
           with urlopen('https://design.whitekiwi.link/', timeout=20) as page:
               metadata = Metadata()
               metadata.feed(page.read().decode())
-          assert set(metadata.images) == {'og:image', 'twitter:image'}
+          assert set(metadata.images) == {'og:image', 'twitter:image', 'icon', 'apple-touch-icon'}
           for name, url in metadata.images.items():
               parsed = urlsplit(url)
               assert parsed.scheme == 'https' and parsed.netloc == 'design.whitekiwi.link'
@@ -98,6 +100,7 @@ jobs:
                   assert image.headers.get_content_type() == 'image/png'
                   header = image.read(24)
                   assert header[:8] == b'\x89PNG\r\n\x1a\n'
-                  assert struct.unpack('>II', header[16:24]) == (1200, 630)
-              print(name, 'PNG 1200x630 OK')
+                  size = (180, 180) if name in ('icon', 'apple-touch-icon') else (1200, 630)
+                  assert struct.unpack('>II', header[16:24]) == size
+              print(name, 'PNG', size, 'OK')
           PY

@@ -4,6 +4,10 @@ export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 export const dynamic = "force-static";
 
+export function generateImageMetadata() {
+  return [{ id: "apple.png", size, contentType }];
+}
+
 export default function AppleIcon() {
   return new ImageResponse(
     <div

@@ -174,6 +174,24 @@ assert.ok(
   "preserve the React client boundary in the shipped bundle",
 );
 const homepage = read("apps/docs/out/index.html");
+for (const rel of ["icon", "apple-touch-icon"]) {
+  const link = [...homepage.matchAll(/<link\b[^>]*>/g)]
+    .map(([tag]) =>
+      Object.fromEntries(
+        [...tag.matchAll(/([\w-]+)="([^"]*)"/g)].map((m) => [m[1], m[2]]),
+      ),
+    )
+    .find((attrs) => attrs.rel === rel && attrs.type === "image/png");
+  assert.ok(link, `${rel} needs an exported PNG link`);
+  assert.equal(link.sizes, "180x180");
+  const url = new URL(link.href, "https://design.whitekiwi.link");
+  assert.equal(url.origin, "https://design.whitekiwi.link");
+  assert.ok(url.pathname.endsWith(".png"));
+  const png = readFileSync(new URL(`apps/docs/out${url.pathname}`, root));
+  assert.equal(png.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
+  assert.equal(png.readUInt32BE(16), 180);
+  assert.equal(png.readUInt32BE(20), 180);
+}
 for (const kind of ["og", "twitter"]) {
   const match = homepage.match(
     new RegExp(`<meta (?:property|name)="${kind}:image" content="([^"]+)"`),
