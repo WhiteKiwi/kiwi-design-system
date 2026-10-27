@@ -79,6 +79,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
         <meta content="no-referrer" name="referrer" />
         <link href="/llms.txt" rel="describedby" type="text/markdown" />
+        <link
+          href="/apple-icon/apple.png"
+          rel="icon"
+          sizes="180x180"
+          type="image/png"
+        />
       </head>
       <body>
         <script
