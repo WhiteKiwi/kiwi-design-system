@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import type { HTMLAttributes } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "./cn";
 
 const badge = cva("kiwi-badge", {
@@ -52,5 +52,35 @@ export function Callout({ className, tone, ...props }: CalloutProps) {
       className={cn(callout({ tone }), className)}
       data-ui="callout"
     />
+  );
+}
+
+export type EmptyStateProps = Omit<HTMLAttributes<HTMLDivElement>, "title"> & {
+  title: ReactNode;
+  description?: ReactNode;
+};
+
+/** The consumer distinguishes no results, no data, loading, and errors. */
+export function EmptyState({
+  title,
+  description,
+  children,
+  className,
+  ...props
+}: EmptyStateProps) {
+  return (
+    <div
+      {...props}
+      className={cn("kiwi-empty-state", className)}
+      data-ui="empty-state"
+    >
+      <h3 className="kiwi-empty-state__title">{title}</h3>
+      {description ? (
+        <div className="kiwi-empty-state__description">{description}</div>
+      ) : null}
+      {children ? (
+        <div className="kiwi-empty-state__actions">{children}</div>
+      ) : null}
+    </div>
   );
 }

@@ -11,6 +11,7 @@ import {
   TextLink,
 } from "@whitekiwi/ui";
 import { DesignStandards } from "./design-standards";
+import { SelectionExamples } from "./selection-examples";
 import { ThemeToggle } from "./theme-toggle";
 
 const palette = [
@@ -61,6 +62,9 @@ const inventory = [
   ["Button", "CONTROL", "primary · secondary · ghost · danger"],
   ["TextField", "CONTROL", "hint · invalid · disabled"],
   ["TextLink", "CONTROL", "inline navigation"],
+  ["Select", "CONTROL", "native options · hint · invalid · disabled"],
+  ["SegmentedControl", "CONTROL", "single choice · native keyboard · forms"],
+  ["EmptyState", "FEEDBACK", "explanation · next action"],
   ["Badge", "FEEDBACK", "6 semantic tones"],
   ["Callout", "FEEDBACK", "5 semantic tones"],
   ["StaticCard", "EDITORIAL", "4 surface tones"],
@@ -378,6 +382,8 @@ export default function Home() {
           </div>
           <TextLink href="#contracts">INTERACTION CONTRACT 보기</TextLink>
         </div>
+
+        <SelectionExamples />
 
         <div className="docs-component-block">
           <div className="docs-component-title">

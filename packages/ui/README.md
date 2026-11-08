@@ -73,7 +73,9 @@ and spacing between components. Load fonts separately; system fallbacks work too
 | Job | Exports | Important behavior |
 | --- | --- | --- |
 | Actions and navigation | `Button`, `TextLink` | Button defaults to `type="button"`; set `submit` explicitly for forms |
-| Labeled input | `TextField` | Required `label`; optional `hint` / `error`; generated ID and linked description |
+| Labeled input | `TextField`, `Select` | Required `label`; optional `hint` / `error`; generated ID and linked description |
+| Single selection | `SegmentedControl` | Native radio group; supports form submission/reset and disabled choices |
+| Empty content | `EmptyState` | Title, optional description/actions; no automatic live announcement |
 | Status and guidance | `Badge`, `Callout` | Visual tone is not an automatic live announcement |
 | Content surfaces | `StaticCard`, `LinkedCard` | Article versus anchor; use an `href` for linked cards and avoid nested controls |
 | Editorial structure | `SectionHeading`, `CollectionHeading` | SectionHeading renders an `h2`; keep the surrounding heading hierarchy logical |
@@ -85,6 +87,47 @@ compact sizing. Cards support neutral, raised, brand, and inverse tones, with
 compact, normal, or spacious padding. `TextField` forwards native input props;
 its `className` styles the wrapper, not the input. An `error` takes precedence over
 `hint` and marks the input invalid, but does not perform validation for you.
+
+## Selection and empty results
+
+`Select` forwards native select props, including `value`, `defaultValue`, `onChange`,
+`required`, `multiple`, `name`, `form`, and React 19 `ref`. Supply native `option` /
+`optgroup` children. Its wrapper `className`, label, generated ID, `hint`, `error`,
+and external `aria-describedby` follow TextField. The native picker owns keyboard
+and mobile interaction; this is not a searchable combobox.
+
+```tsx
+<Select label="Billing cycle" name="cycle" defaultValue="monthly" hint="Choose a period.">
+  <option value="monthly">Monthly</option>
+  <option value="yearly">Yearly</option>
+</Select>
+```
+
+`SegmentedControl` takes a required `label` and `options` (`value`, `label`, optional
+`disabled`). Use `value` with `onValueChange` for controlled state, or `defaultValue`
+for native uncontrolled selection. Give choices unique values. `name` is generated
+when omitted, keeping separate groups independent. An explicit `name` controls
+form submission; `form` associates each radio with an external form. `required`
+and group/option `disabled` preserve native validation and submission behavior.
+`hideLabel` visually hides the legend without removing the accessible name.
+
+```tsx
+<SegmentedControl label="Period" name="period" defaultValue="month"
+  options={[{ value: "month", label: "This month" }, { value: "year", label: "This year" }]} />
+<EmptyState title="No matching records" description="Try a wider date range.">
+  <Button onClick={clearFilters}>Clear filters</Button>
+</EmptyState>
+```
+
+Import these exports and provide the app's `clearFilters` handler in a client
+module. Radio keys and form reset work natively in uncontrolled mode. A controlled
+form owns resetting its React state. Do not use this component for navigation or
+ARIA tabs. EmptyState renders an `h3`, description and optional action area;
+place it under an appropriate heading. The app distinguishes empty, unknown,
+loading, and failed results and owns live announcements.
+
+Non-React consumers can load only the stylesheet and use the documented
+[native patterns](../../docs/native-patterns.md), with no React browser runtime.
 
 ## Themes and server rendering
 
@@ -102,7 +145,8 @@ Keep the server and client tree consistent for React's generated field IDs.
 ## Public surface and limits
 
 - `@whitekiwi/ui`: components, `cn`, and the named types `ButtonProps`,
-  `TextFieldProps`, `BadgeProps`, and `CalloutProps`
+  `TextFieldProps`, `SelectProps`, `SegmentedControlProps`, `SegmentedControlOption`,
+  `EmptyStateProps`, `BadgeProps`, and `CalloutProps`
 - `@whitekiwi/ui/styles.css`: component styles, imported separately
 - `@whitekiwi/tokens/theme.css`: required token stylesheet from its own package
 - No CommonJS build, global reset, router, font download, or theme persistence

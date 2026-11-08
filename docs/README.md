@@ -7,6 +7,7 @@
 | 작업 | 먼저 읽을 기준 | 변경·확인할 위치 |
 | --- | --- | --- |
 | 제품에 PIP 적용 | [토큰 사용법](../packages/tokens/README.md), [UI 사용법](../packages/ui/README.md) | 소비 제품의 설치 버전·CSS import·테마·화면; [portable skill](https://github.com/WhiteKiwi/skills/tree/main/skills/kiwi-design-system)의 integration 경로 |
+| 비React 제품의 공통 UI | [Native patterns](native-patterns.md) | versioned component CSS와 native markup·상태·소비자 검증 |
 | 사용 중 개선점 발견 | [기여 흐름](../CONTRIBUTING.md#사용에서-개선으로), [설계 원칙](../DESIGN.md) | 기존 issue/PR·API를 확인하고 재현 사례와 원하는 결과를 남김; 명확한 변경은 PR, 열린 판단은 issue |
 | 토큰·테마 변경 | [색 계약](guidelines.md#color-contracts) | [theme.css](../packages/tokens/src/theme.css), 영향을 받는 UI와 카탈로그, [대비 검사](../scripts/check-design.mjs) |
 | 컴포넌트·API·상태 변경 | [UI 사용법](../packages/ui/README.md), [상태 계약](guidelines.md#state-ownership) | [UI source](../packages/ui/src), [exports](../packages/ui/src/index.ts), package README, 카탈로그 예제·목록과 관련 검사 |
@@ -23,6 +24,7 @@
 | [README](../README.md) | 정체성·미션·대표 슬로건, 패키지 선택과 최소 사용 예제 |
 | [DESIGN](../DESIGN.md) | 설계 원칙·시각적 분위기·계층별 책임과 선택 이유 |
 | [guidelines](guidelines.md) | 색·상태·반응형·접근성의 상세 계약, 컴포넌트 목록과 도입 기준 |
+| [Native patterns](native-patterns.md) | 비React 소비자의 지원 markup·CSS·행동 경계 |
 | 패키지 [tokens](../packages/tokens/README.md) / [ui](../packages/ui/README.md) README | 설치·공개 API·실제 사용법·제약 |
 | [카탈로그 소스](../apps/docs/src/app) | 구현된 컴포넌트와 계약을 보여 주는 예제 |
 | [CONTRIBUTING](../CONTRIBUTING.md) | 기여 흐름·개발 환경·변경 단위·검증과 PR 작성 |
@@ -44,6 +46,7 @@
 
 ## 릴리스 기록
 
+- [0.2.0](releases-0.2.0.md) — native 선택과 빈 상태, 비React 패턴과 소비자 적용 흐름.
 - [0.1.1](releases-0.1.1.md) — 패키지 사용 안내와 라이선스 구성 개선.
 
 패키지 버전은 각 `packages/*/package.json`이 소유합니다. 가이드라인의 `v0.3`은 디자인 계약 버전이며 npm 버전과 다릅니다. 그 밖의 변경 이력은 Git과 PR에서 조회합니다.
