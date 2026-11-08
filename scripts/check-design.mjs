@@ -86,6 +86,10 @@ for (const [name, theme] of [
   ]) {
     gate("on-brand", state, 4.5);
   }
+  for (const state of ["control-hover", "control-active"]) {
+    gate("text", state, 4.5);
+  }
+  gate("canvas", "text", 4.5);
   for (const status of ["error", "success", "warning", "info"]) {
     gate(status, `${status}-soft`, 4.5);
   }
@@ -116,9 +120,8 @@ for (const [name, theme] of [
 const require = createRequire(new URL("apps/docs/package.json", root));
 const React = require("react");
 const { renderToStaticMarkup } = require("react-dom/server");
-const { Button, TextField } = await import(
-  new URL("packages/ui/dist/index.js", root)
-);
+const { Button, TextField, Select, SegmentedControl, EmptyState } =
+  await import(new URL("packages/ui/dist/index.js", root));
 const render = (component, props) =>
   renderToStaticMarkup(React.createElement(component, props));
 assert.match(render(Button, { children: "Save" }), /type="button"/);
@@ -169,6 +172,84 @@ assert.match(
   render(TextField, { label: "External validation", "aria-invalid": true }),
   /aria-invalid="true"/,
 );
+// These contracts protect labels and values consumed by assistive tech and forms.
+const select = render(Select, {
+  label: "Cycle",
+  id: "cycle",
+  name: "cycle",
+  hint: "Hint",
+  error: "Choose a cycle",
+  "aria-describedby": "external",
+  disabled: true,
+  children: React.createElement("option", { value: "monthly" }, "Monthly"),
+});
+assert.match(select, /<label[^>]*for="cycle"/);
+assert.match(
+  select,
+  /<select[^>]*aria-describedby="external cycle-description"/,
+);
+assert.match(select, /aria-invalid="true"/);
+assert.match(select, /<select[^>]*disabled=""/);
+assert.match(select, />Choose a cycle<\/span>/);
+assert.match(
+  render(Select, { label: "External", "aria-invalid": true }),
+  /aria-invalid="true"/,
+);
+const selects = renderToStaticMarkup(
+  React.createElement(
+    React.Fragment,
+    null,
+    React.createElement(Select, { label: "First", name: "shared" }),
+    React.createElement(Select, { label: "Second", name: "shared" }),
+  ),
+);
+assert.equal(
+  new Set([...selects.matchAll(/<select[^>]+id="([^"]+)"/g)].map((m) => m[1]))
+    .size,
+  2,
+);
+const options = [
+  { value: "month", label: "Monthly" },
+  { value: "year", label: "Yearly", disabled: true },
+];
+const segments = render(SegmentedControl, {
+  label: "Period",
+  name: "period",
+  form: "external-form",
+  defaultValue: "month",
+  options,
+});
+assert.match(segments, /<legend[^>]*>Period<\/legend>/);
+assert.equal([...segments.matchAll(/type="radio"/g)].length, 2);
+assert.equal([...segments.matchAll(/name="period"/g)].length, 2);
+assert.equal(
+  [...segments.matchAll(/<input[^>]*form="external-form"/g)].length,
+  2,
+);
+assert.match(segments, /<input[^>]*checked=""[^>]*value="month"/);
+assert.match(segments, /<input[^>]*disabled=""[^>]*value="year"/);
+const groups = renderToStaticMarkup(
+  React.createElement(
+    React.Fragment,
+    null,
+    React.createElement(SegmentedControl, { label: "One", options }),
+    React.createElement(SegmentedControl, { label: "Two", options }),
+  ),
+);
+assert.equal(
+  new Set([...groups.matchAll(/<input[^>]*name="([^"]+)"/g)].map((m) => m[1]))
+    .size,
+  2,
+);
+const empty = render(EmptyState, {
+  title: "No records",
+  description: "Change period",
+  children: React.createElement(Button, null, "Reset"),
+});
+assert.match(empty, /<h3[^>]*>No records<\/h3>/);
+assert.match(empty, /Change period/);
+assert.match(empty, /<button/);
+assert.doesNotMatch(empty, /role="(?:alert|status)"/);
 assert.ok(
   read("packages/ui/dist/index.js").startsWith('"use client";'),
   "preserve the React client boundary in the shipped bundle",

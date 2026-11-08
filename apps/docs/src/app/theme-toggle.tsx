@@ -1,5 +1,6 @@
 "use client";
 
+import { SegmentedControl } from "@whitekiwi/ui";
 import { useEffect, useState } from "react";
 
 type Theme = "auto" | "light" | "dark";
@@ -18,18 +19,13 @@ export function ThemeToggle() {
   }, [theme]);
 
   return (
-    <fieldset className="docs-theme-toggle">
-      <legend className="docs-sr-only">Theme</legend>
-      {themes.map((value) => (
-        <button
-          aria-pressed={theme === value}
-          key={value}
-          onClick={() => setTheme(value)}
-          type="button"
-        >
-          {value.toUpperCase()}
-        </button>
-      ))}
-    </fieldset>
+    <SegmentedControl
+      className="docs-theme-toggle"
+      label="Theme"
+      hideLabel
+      value={theme}
+      onValueChange={(value) => setTheme(value as Theme)}
+      options={themes.map((value) => ({ value, label: value.toUpperCase() }))}
+    />
   );
 }
