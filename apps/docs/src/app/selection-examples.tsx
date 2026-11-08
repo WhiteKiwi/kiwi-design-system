@@ -1,9 +1,10 @@
 "use client";
 
 import { Button, EmptyState, SegmentedControl, Select } from "@whitekiwi/ui";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export function SelectionExamples() {
+  const cycleRef = useRef<HTMLSelectElement>(null);
   const [period, setPeriod] = useState("month");
   const [submitted, setSubmitted] = useState("");
   return (
@@ -14,6 +15,7 @@ export function SelectionExamples() {
       </div>
       <div className="docs-field-grid">
         <Select
+          ref={cycleRef}
           label="납부 주기"
           name="cycle"
           hint="월별·연간 내역을 같은 기준으로 봅니다."
@@ -45,6 +47,9 @@ export function SelectionExamples() {
           </option>
         </Select>
       </div>
+      <Button variant="secondary" onClick={() => cycleRef.current?.focus()}>
+        납부 주기로 이동
+      </Button>
       <SegmentedControl
         label="조회 기간"
         value={period}
