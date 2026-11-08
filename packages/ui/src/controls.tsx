@@ -7,6 +7,7 @@ import type {
   FieldsetHTMLAttributes,
   InputHTMLAttributes,
   ReactNode,
+  Ref,
   SelectHTMLAttributes,
 } from "react";
 import { useId } from "react";
@@ -120,6 +121,7 @@ export function TextField({
 }
 
 export type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
+  ref?: Ref<HTMLSelectElement>;
   error?: string;
   hint?: string;
   label: ReactNode;
@@ -127,6 +129,7 @@ export type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
 
 /** Native selection keeps browser keyboard, form, and mobile picker behavior. */
 export function Select({
+  ref,
   "aria-describedby": describedBy,
   "aria-invalid": invalid,
   className,
@@ -150,6 +153,7 @@ export function Select({
       </label>
       <select
         {...props}
+        ref={ref}
         id={fieldId}
         className="kiwi-field__input"
         aria-describedby={descriptionIds}

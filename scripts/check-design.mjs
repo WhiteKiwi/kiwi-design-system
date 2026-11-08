@@ -226,8 +226,8 @@ assert.equal(
   [...segments.matchAll(/<input[^>]*form="external-form"/g)].length,
   2,
 );
-assert.match(segments, /<input[^>]*checked=""[^>]*value="month"/);
-assert.match(segments, /<input[^>]*disabled=""[^>]*value="year"/);
+assert.match(segments, /<input(?=[^>]*checked="")(?=[^>]*value="month")[^>]*>/);
+assert.match(segments, /<input(?=[^>]*disabled="")(?=[^>]*value="year")[^>]*>/);
 const groups = renderToStaticMarkup(
   React.createElement(
     React.Fragment,
