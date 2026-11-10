@@ -50,6 +50,8 @@ async function system(value) {
 }
 const { ThemeControl } = await import("../packages/ui/dist/index.js");
 const {
+  bindThemeControl,
+  themeControlMarkup,
   commitThemePreference,
   effectiveThemePreference,
   subscribeThemePreference,
@@ -253,7 +255,62 @@ for (const failure of [true, "unavailable"]) {
   unreadable = false;
 }
 assert.equal(notifications, 2, "only subscribed commits notify listeners");
+// The icon itself may be the binding scope, including sync and motion cleanup.
+const scopedKey = "native-icon-scope";
+saved.set(scopedKey, "light");
+const scopedContainer = document.createElement("div");
+// Stale dark markup proves initial binding synchronizes the scope element.
+scopedContainer.innerHTML = themeControlMarkup({ theme: "dark" });
+document.body.append(scopedContainer);
+const scopedButton = scopedContainer.querySelector("button");
+const unbind = bindThemeControl(scopedKey, scopedButton);
+function expectScopedTheme(theme) {
+  assert.equal(document.documentElement.dataset.theme, theme);
+  assert.equal(
+    document.querySelector('meta[name="theme-color"]').content,
+    theme === "dark" ? "#0e0e0e" : "#f4f5ef",
+  );
+  assert.equal(scopedButton.dataset.resolvedTheme, theme);
+  assert.equal(
+    scopedButton.getAttribute("aria-label"),
+    theme === "dark" ? "밝게 전환" : "어둡게 전환",
+  );
+  assert.equal(scopedButton.title, scopedButton.getAttribute("aria-label"));
+  assert.equal(saved.get(scopedKey), theme);
+}
+expectScopedTheme("light");
+scopedButton.click();
+expectScopedTheme("dark");
+scopedButton.click();
+expectScopedTheme("light");
+assert.equal(scopedButton.classList.contains("kiwi-theme--motion"), false);
+await frame();
+assert.equal(scopedButton.classList.contains("kiwi-theme--motion"), false);
+await frame();
+assert.equal(scopedButton.classList.contains("kiwi-theme--motion"), true);
+// Cross-tab sync must also include the scope element.
+saved.set(scopedKey, "dark");
+window.dispatchEvent(new window.StorageEvent("storage", { key: scopedKey }));
+expectScopedTheme("dark");
+unbind();
+assert.equal(scopedButton.classList.contains("kiwi-theme--motion"), false);
+assert.equal(frames.size, 0);
+scopedButton.click();
+expectScopedTheme("dark");
+// The scope's change listener is removed too.
+const radio = document.createElement("input");
+radio.type = "radio";
+radio.value = "light";
+scopedButton.append(radio);
+radio.dispatchEvent(new window.Event("change", { bubbles: true }));
+expectScopedTheme("dark");
+// Unbinding also stops storage-driven attribute updates.
+saved.set(scopedKey, "light");
+window.dispatchEvent(new window.StorageEvent("storage", { key: scopedKey }));
+assert.equal(scopedButton.dataset.resolvedTheme, "dark");
+assert.equal(document.documentElement.dataset.theme, "dark");
+scopedContainer.remove();
 await window.happyDOM.close();
 console.log(
-  "React ThemeControl: throwing/unavailable storage, clicks, reset, media, cross-tab and hydration readiness passed.",
+  "ThemeControl: storage, clicks, reset, media, cross-tab, hydration readiness and native icon scope passed.",
 );

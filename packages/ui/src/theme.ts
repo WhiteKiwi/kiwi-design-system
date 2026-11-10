@@ -421,11 +421,16 @@ export function bindThemeControl(
   scope: ParentNode = document,
 ): () => void {
   assertThemeStorageKey(storageKey);
+  const iconButtons = () => {
+    const selector = "button.kiwi-theme--icon";
+    return [
+      ...(scope instanceof Element && scope.matches(selector) ? [scope] : []),
+      ...scope.querySelectorAll(selector),
+    ];
+  };
   const sync = (preference: ThemePreference) => {
     const theme = resolvedTheme(preference, prefersDark());
-    for (const button of scope.querySelectorAll<HTMLButtonElement>(
-      "button.kiwi-theme--icon",
-    )) {
+    for (const button of iconButtons()) {
       button.setAttribute("data-resolved-theme", theme);
       button.setAttribute("aria-label", themeToggleLabel(theme));
       button.setAttribute("title", themeToggleLabel(theme));
@@ -463,14 +468,14 @@ export function bindThemeControl(
   sync(initial);
   let frame = window.requestAnimationFrame(() => {
     frame = window.requestAnimationFrame(() => {
-      for (const button of scope.querySelectorAll("button.kiwi-theme--icon")) {
+      for (const button of iconButtons()) {
         button.classList.add("kiwi-theme--motion");
       }
     });
   });
   return () => {
     window.cancelAnimationFrame(frame);
-    for (const button of scope.querySelectorAll("button.kiwi-theme--icon")) {
+    for (const button of iconButtons()) {
       button.classList.remove("kiwi-theme--motion");
     }
     scope.removeEventListener("click", onClick);

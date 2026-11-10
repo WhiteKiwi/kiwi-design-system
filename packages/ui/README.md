@@ -203,7 +203,11 @@ export function AppHeader() {
 
 `commitThemePreference(storageKey, preference)` updates the effective in-memory preference first, then best-effort storage, the attribute,
 and `theme-color` from an imperative caller. `bindThemeControl(storageKey)`
-does the same for either native variant. `themeControlMarkup({ id, theme })`
+does the same for either native variant. Its optional second argument scopes the
+binding to a container or the icon button itself, including initial/storage sync
+and motion readiness. Call the returned cleanup to remove listeners and motion
+readiness. Omitting the scope binds to `document`.
+`themeControlMarkup({ id, theme })`
 accepts an optional stable SVG ID prefix and resolved `"light" | "dark"` theme
 for static previews or server output. IDs are sanitized to letters, digits,
 underscores, and hyphens; provide a distinct prefix per control after sanitizing.
