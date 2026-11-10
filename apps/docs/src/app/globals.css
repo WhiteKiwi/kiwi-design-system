@@ -42,7 +42,13 @@ a {
 }
 .docs-header > a,
 .docs-header nav a {
+  white-space: nowrap;
   text-decoration: none;
+}
+.docs-header > a {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .docs-header nav {
   display: flex;
@@ -798,7 +804,9 @@ a {
 
 @media (max-width: 64rem) {
   .docs-header {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--kiwi-space-3);
+    padding-inline: var(--kiwi-space-3);
   }
   .docs-header nav {
     display: none;
@@ -903,7 +911,7 @@ a {
 
 @media (max-width: 30rem) {
   .docs-header > a {
-    max-width: 7rem;
+    max-width: none;
   }
   .docs-swatch-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));

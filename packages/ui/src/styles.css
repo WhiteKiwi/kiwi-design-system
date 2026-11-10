@@ -469,12 +469,13 @@ input.kiwi-field__input[type="time"]::-webkit-date-and-time-value {
   padding: 0;
 }
 .kiwi-theme .kiwi-segmented__options {
-  flex-wrap: nowrap;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
   gap: 0;
   height: 2.75rem;
 }
 .kiwi-theme .kiwi-segmented__option {
-  flex: 1 0 auto;
   min-width: 2.75rem;
   height: 2.75rem;
 }
@@ -483,7 +484,7 @@ input.kiwi-field__input[type="time"]::-webkit-date-and-time-value {
   height: 2.75rem;
   min-width: 2.75rem;
   min-height: 2.75rem;
-  padding: 0 var(--kiwi-space-2);
+  padding: 0 var(--kiwi-space-4);
   border-radius: 0;
   white-space: nowrap;
   overflow-wrap: normal;
