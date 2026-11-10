@@ -6,10 +6,10 @@
   --kiwi-milk: #fbfcf8;
   --kiwi-ink: #11140f;
   --kiwi-ash: #62685e;
-  --kiwi-carbon: #0e100e;
-  --kiwi-carbon-raised: #181a18;
-  --kiwi-fog: #a5ab9f;
-  --kiwi-chalk: #f1f4eb;
+  --kiwi-carbon: #0e0e0e;
+  --kiwi-carbon-raised: #181818;
+  --kiwi-fog: #a8a8a6;
+  --kiwi-chalk: #f2f2f0;
   --kiwi-signal: #c6ff4a;
   --kiwi-soft: #e9f8c9;
   --kiwi-line: #668b15;
@@ -84,7 +84,7 @@
   color-scheme: dark;
   --kiwi-color-canvas: var(--kiwi-carbon);
   --kiwi-color-surface: var(--kiwi-carbon-raised);
-  --kiwi-color-surface-raised: #202320;
+  --kiwi-color-surface-raised: #202020;
   --kiwi-color-text: var(--kiwi-chalk);
   --kiwi-color-text-muted: var(--kiwi-fog);
   --kiwi-color-control-border: var(--kiwi-fog);
@@ -104,8 +104,8 @@
   --kiwi-color-interactive: var(--kiwi-signal);
   --kiwi-color-interactive-hover: #d8ff84;
   --kiwi-color-interactive-active: #b7ef3f;
-  --kiwi-color-control-hover: #29321e;
-  --kiwi-color-control-active: #344325;
+  --kiwi-color-control-hover: #2a2a2a;
+  --kiwi-color-control-active: #333333;
   --kiwi-color-disabled-surface: color-mix(
     in srgb,
     var(--kiwi-chalk) 8%,
@@ -133,7 +133,7 @@
     color-scheme: dark;
     --kiwi-color-canvas: var(--kiwi-carbon);
     --kiwi-color-surface: var(--kiwi-carbon-raised);
-    --kiwi-color-surface-raised: #202320;
+    --kiwi-color-surface-raised: #202020;
     --kiwi-color-text: var(--kiwi-chalk);
     --kiwi-color-text-muted: var(--kiwi-fog);
     --kiwi-color-control-border: var(--kiwi-fog);
@@ -153,8 +153,8 @@
     --kiwi-color-interactive: var(--kiwi-signal);
     --kiwi-color-interactive-hover: #d8ff84;
     --kiwi-color-interactive-active: #b7ef3f;
-    --kiwi-color-control-hover: #29321e;
-    --kiwi-color-control-active: #344325;
+    --kiwi-color-control-hover: #2a2a2a;
+    --kiwi-color-control-active: #333333;
     --kiwi-color-disabled-surface: color-mix(
       in srgb,
       var(--kiwi-chalk) 8%,
