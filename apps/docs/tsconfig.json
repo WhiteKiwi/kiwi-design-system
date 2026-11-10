@@ -4,7 +4,8 @@
     "baseUrl": ".",
     "incremental": true,
     "paths": {
-      "@whitekiwi/ui": ["../../packages/ui/src/index.ts"]
+      "@whitekiwi/ui": ["../../packages/ui/src/index.ts"],
+      "@whitekiwi/ui/theme": ["../../packages/ui/src/theme.ts"]
     },
     "plugins": [{ "name": "next" }]
   },

@@ -1,7 +1,9 @@
-// biome-ignore-all lint/security/noDangerouslySetInnerHtml: static JSON-LD is escaped per Next.js guidance
+// biome-ignore-all lint/security/noDangerouslySetInnerHtml: JSON-LD is escaped and the theme bootstrap is a fixed script
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { pipThemeBootstrap } from "@whitekiwi/ui/theme";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { docsThemeStorageKey } from "./theme-storage";
 import "@whitekiwi/tokens/theme.css";
 import "@whitekiwi/ui/styles.css";
 import "./globals.css";
@@ -71,8 +73,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <head>
+        <meta name="theme-color" content="#f4f5ef" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: pipThemeBootstrap(docsThemeStorageKey),
+          }}
+          id="pip-theme-bootstrap"
+        />
         <meta
           content="default-src 'self'; base-uri 'self'; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com; font-src 'self'; form-action 'none'; img-src 'self' data: https://www.google-analytics.com; manifest-src 'self'; object-src 'none'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self'; upgrade-insecure-requests"
           httpEquiv="Content-Security-Policy"

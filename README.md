@@ -60,7 +60,7 @@ export function Welcome() {
 }
 ```
 
-`/projects/new` 경로와 페이지 레이아웃은 앱에서 구현합니다. 테마 설정은 [토큰 사용법](packages/tokens/README.md#light-dark-or-the-system), 전체 API와 React 서버 렌더링 조건은 [UI 사용법](packages/ui/README.md)에서 확인하세요.
+`/projects/new` 경로와 페이지 레이아웃은 앱에서 구현합니다. 테마 설정은 [토큰 사용법](packages/tokens/README.md#light-dark-or-auto), 전체 API와 React 서버 렌더링 조건은 [UI 사용법](packages/ui/README.md)에서 확인하세요.
 
 ## 함께 지키는 기준
 

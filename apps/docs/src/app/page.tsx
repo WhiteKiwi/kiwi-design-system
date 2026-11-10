@@ -9,10 +9,11 @@ import {
   StaticCard,
   TextField,
   TextLink,
+  ThemeControl,
 } from "@whitekiwi/ui";
 import { DesignStandards } from "./design-standards";
 import { SelectionExamples } from "./selection-examples";
-import { ThemeToggle } from "./theme-toggle";
+import { docsThemeStorageKey } from "./theme-storage";
 
 const palette = [
   {
@@ -64,6 +65,7 @@ const inventory = [
   ["TextLink", "CONTROL", "inline navigation"],
   ["Select", "CONTROL", "native options · hint · invalid · disabled"],
   ["SegmentedControl", "CONTROL", "single choice · native keyboard · forms"],
+  ["ThemeControl", "CONTROL", "자동 · 밝게 · 어둡게 · header track"],
   ["EmptyState", "FEEDBACK", "explanation · next action"],
   ["Badge", "FEEDBACK", "6 semantic tones"],
   ["Callout", "FEEDBACK", "5 semantic tones"],
@@ -203,7 +205,12 @@ export default function Home() {
           <a href="#components">COMPONENTS</a>
           <a href="#governance">STANDARDS</a>
         </nav>
-        <ThemeToggle />
+        <ThemeControl
+          className="docs-theme-toggle"
+          hideLabel
+          label="화면 테마"
+          storageKey={docsThemeStorageKey}
+        />
       </header>
 
       <section className="docs-hero" id="top">
@@ -400,6 +407,26 @@ export default function Home() {
             />
           </div>
           <TextLink href="#contracts">INTERACTION CONTRACT 보기</TextLink>
+        </div>
+
+        <div className="docs-component-block" id="theme-control">
+          <div className="docs-component-title">
+            <span>화면 테마</span>
+            <code>CONNECTED TRACK · HEADER</code>
+          </div>
+          <div className="docs-theme-specimen">
+            <span>PIP</span>
+            <ThemeControl
+              hideLabel
+              label="화면 테마"
+              storageKey={docsThemeStorageKey}
+            />
+          </div>
+          <ThemeControl label="화면 테마" storageKey={docsThemeStorageKey} />
+          <p>
+            밝게와 어둡게는 루트에 data-theme를 두고 그 값만 저장합니다. 자동은
+            속성과 저장값을 지워 기기 설정을 따릅니다.
+          </p>
         </div>
 
         <SelectionExamples />
