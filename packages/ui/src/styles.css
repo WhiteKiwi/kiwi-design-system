@@ -144,6 +144,24 @@
   color: var(--kiwi-color-text);
   font: inherit;
 }
+input.kiwi-field__input[type="date"],
+input.kiwi-field__input[type="time"],
+input.kiwi-field__input[type="datetime-local"] {
+  appearance: none;
+  -webkit-appearance: none;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+input.kiwi-field__input[type="date"]::-webkit-datetime-edit,
+input.kiwi-field__input[type="time"]::-webkit-datetime-edit,
+input.kiwi-field__input[type="datetime-local"]::-webkit-datetime-edit,
+input.kiwi-field__input[type="date"]::-webkit-date-and-time-value,
+input.kiwi-field__input[type="time"]::-webkit-date-and-time-value {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
 .kiwi-field__description {
   color: var(--kiwi-color-text-muted);
 }

@@ -51,6 +51,16 @@ function luminance(rgb) {
     );
 }
 const styles = read("packages/ui/src/styles.css");
+assert.match(
+  styles,
+  /input\.kiwi-field__input\[type="date"\],\s*input\.kiwi-field__input\[type="time"\],\s*input\.kiwi-field__input\[type="datetime-local"\]\s*\{[^}]*appearance:\s*none;[^}]*-webkit-appearance:\s*none;[^}]*min-width:\s*0;[^}]*width:\s*100%;[^}]*max-width:\s*100%;/,
+  "date and time inputs must shrink to the field on iOS Safari",
+);
+assert.doesNotMatch(
+  styles.split(".kiwi-field {")[1]?.split("}")[0] ?? "",
+  /overflow\s*:\s*hidden/,
+  "the field itself must not clip the focus ring",
+);
 function declarations(selector) {
   const body = styles.split(`${selector} {`)[1]?.split("}")[0];
   assert.ok(body, `Missing component selector ${selector}`);

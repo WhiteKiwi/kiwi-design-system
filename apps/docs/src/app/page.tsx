@@ -21,9 +21,9 @@ const palette = [
       ["PAPER", "#F4F5EF"],
       ["MILK", "#FBFCF8"],
       ["ASH", "#62685E"],
-      ["FOG", "#A5AB9F"],
+      ["FOG", "#A8A8A6"],
       ["INK", "#11140F"],
-      ["CARBON", "#0E100E"],
+      ["CARBON", "#0E0E0E"],
     ],
   },
   {
@@ -378,6 +378,25 @@ export default function Home() {
               name="invalid-preview"
               placeholder="Enter key"
               readOnly
+            />
+            <TextField
+              defaultValue="2026-11-10"
+              hint="날짜와 시간은 필드 너비 안에 머뭅니다."
+              label="DATE"
+              name="date-preview"
+              type="date"
+            />
+            <TextField
+              defaultValue="23:59"
+              label="TIME"
+              name="time-preview"
+              type="time"
+            />
+            <TextField
+              defaultValue="2026-11-10T23:59"
+              label="DATETIME"
+              name="datetime-preview"
+              type="datetime-local"
             />
           </div>
           <TextLink href="#contracts">INTERACTION CONTRACT 보기</TextLink>
