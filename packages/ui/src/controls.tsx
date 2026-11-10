@@ -23,10 +23,15 @@ import {
   browserStorage,
   commitThemePreference,
   isThemePreference,
+  prefersDark,
   readStoredTheme,
+  resolvedTheme,
   subscribeThemePreference,
   type ThemePreference,
+  themeToggleLabel,
 } from "./theme";
+
+import { themeGlyphMarkup } from "./theme-glyphs";
 
 const button = cva("kiwi-button", {
   variants: {
@@ -272,18 +277,20 @@ export type ThemeControlProps = Omit<
   "children" | "defaultValue" | "onChange" | "value"
 > & {
   storageKey: string;
+  variant?: "icon" | "segmented";
   label?: ReactNode;
   hideLabel?: boolean;
   onPreferenceChange?: (preference: ThemePreference) => void;
 };
 
-function serverThemePreference(): ThemePreference {
-  return "auto";
+function serverThemeSnapshot(): string {
+  return "auto:light";
 }
 
-/** Header theme choice. light and dark are explicit; auto follows the device. */
+/** Icon for headers; segmented is reserved for settings/catalogs. */
 export function ThemeControl({
   storageKey,
+  variant = "icon",
   label = "화면 테마",
   hideLabel = false,
   className,
@@ -296,18 +303,49 @@ export function ThemeControl({
       subscribeThemePreference(storageKey, onStoreChange),
     [storageKey],
   );
-  const getSnapshot = useCallback(
-    () => readStoredTheme(browserStorage(), storageKey),
-    [storageKey],
-  );
-  const preference = useSyncExternalStore(
+  const glyphId = useId();
+  const getSnapshot = useCallback(() => {
+    const preference = readStoredTheme(browserStorage(), storageKey);
+    return `${preference}:${resolvedTheme(preference, prefersDark())}`;
+  }, [storageKey]);
+  const snapshot = useSyncExternalStore(
     subscribe,
     getSnapshot,
-    serverThemePreference,
+    serverThemeSnapshot,
   );
+  const [preference, theme] = snapshot.split(":") as [
+    ThemePreference,
+    "light" | "dark",
+  ];
   useLayoutEffect(() => {
     applyThemeDom(readStoredTheme(browserStorage(), storageKey));
   }, [storageKey]);
+
+  if (variant === "icon") {
+    const name = themeToggleLabel(theme);
+    const buttonProps = { ...props } as ButtonHTMLAttributes<HTMLButtonElement>;
+    delete buttonProps["aria-pressed"];
+    return (
+      <button
+        {...buttonProps}
+        type="button"
+        className={cn("kiwi-theme kiwi-theme--icon", className)}
+        data-ui="theme-control"
+        data-resolved-theme={theme}
+        aria-label={name}
+        title={name}
+        onClick={() => {
+          const next = theme === "light" ? "dark" : "light";
+          commitThemePreference(storageKey, next);
+          onPreferenceChange?.(next);
+        }}
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: fixed shared SVG geometry with a React-generated useId suffix only
+        dangerouslySetInnerHTML={{
+          __html: themeGlyphMarkup(`kiwi-theme-${glyphId}`),
+        }}
+      />
+    );
+  }
 
   return (
     <SegmentedControl

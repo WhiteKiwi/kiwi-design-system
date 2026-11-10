@@ -140,6 +140,9 @@ const {
   ThemeControl,
 } = await import(new URL("packages/ui/dist/index.js", root));
 const {
+  bindThemeControl,
+  commitThemePreference,
+  resolvedTheme,
   canvasColor,
   pipThemeBootstrap,
   pipThemeControlScript,
@@ -279,6 +282,7 @@ assert.doesNotMatch(empty, /role="(?:alert|status)"/);
 const theme = render(ThemeControl, {
   storageKey: "pip-theme",
   label: "화면 테마",
+  variant: "segmented",
 });
 assert.match(theme, /class="kiwi-segmented kiwi-theme"/);
 assert.match(theme, /<legend[^>]*>화면 테마<\/legend>/);
@@ -293,14 +297,21 @@ assert.doesNotMatch(theme, /system|data-theme="auto"|data-theme="system"/);
 const hiddenTheme = render(ThemeControl, {
   storageKey: "pip-theme",
   hideLabel: true,
+  variant: "segmented",
 });
 assert.match(hiddenTheme, /<legend class="kiwi-sr-only">화면 테마<\/legend>/);
 const themeGroups = renderToStaticMarkup(
   React.createElement(
     React.Fragment,
     null,
-    React.createElement(ThemeControl, { storageKey: "pip-theme" }),
-    React.createElement(ThemeControl, { storageKey: "pip-theme" }),
+    React.createElement(ThemeControl, {
+      storageKey: "pip-theme",
+      variant: "segmented",
+    }),
+    React.createElement(ThemeControl, {
+      storageKey: "pip-theme",
+      variant: "segmented",
+    }),
   ),
 );
 assert.equal(
@@ -311,6 +322,54 @@ assert.equal(
   ).size,
   2,
 );
+const iconTheme = render(ThemeControl, { storageKey: "pip-theme" });
+for (const markup of [iconTheme, themeControlMarkup()]) {
+  assert.match(markup, /^<button[^>]*type="button"/);
+  assert.match(markup, /aria-label="어둡게 전환"/);
+  assert.match(markup, /title="어둡게 전환"/);
+  assert.doesNotMatch(markup, /aria-pressed|type="radio"|<legend/);
+  assert.equal([...markup.matchAll(/<svg/g)].length, 1);
+  assert.match(markup, /<mask/);
+  assert.match(markup, /kiwi-theme__occluder/);
+}
+const iconGroups = renderToStaticMarkup(
+  React.createElement(
+    React.Fragment,
+    null,
+    React.createElement(ThemeControl, { storageKey: "pip-theme" }),
+    React.createElement(ThemeControl, { storageKey: "pip-theme" }),
+  ),
+);
+for (const markup of [
+  iconGroups,
+  themeControlMarkup() + themeControlMarkup(),
+]) {
+  const ids = [...markup.matchAll(/id="([^"]+)"/g)].map((match) => match[1]);
+  assert.equal(ids.length, 4);
+  assert.equal(new Set(ids).size, 4);
+  for (const id of ids) {
+    assert.match(id, /^[A-Za-z0-9_-]+$/);
+    assert.ok(markup.includes(`url(#${id})`));
+  }
+}
+const stableIcon = themeControlMarkup({ id: "preview-:r0:", theme: "dark" });
+assert.equal(
+  stableIcon,
+  themeControlMarkup({ id: "preview-:r0:", theme: "dark" }),
+);
+assert.match(stableIcon, /data-resolved-theme="dark"/);
+assert.match(stableIcon, /aria-label="밝게 전환" title="밝게 전환"/);
+assert.match(stableIcon, /id="preview-r0-mask"/);
+assert.match(stableIcon, /url\(#preview-r0-mask\)/);
+assert.doesNotMatch(stableIcon, /(?:id="|url\(#[^)" ]*):/);
+assert.match(
+  themeControlMarkup({ variant: "segmented" }),
+  /value="auto" checked/,
+);
+assert.equal(resolvedTheme("auto", true), "dark");
+assert.equal(resolvedTheme("auto", false), "light");
+assert.equal(resolvedTheme("light", true), "light");
+assert.equal(resolvedTheme("dark", false), "dark");
 assert.throws(() => render(ThemeControl, { storageKey: "bad key" }));
 assert.equal(themeCanvas.light, "#f4f5ef");
 assert.equal(themeCanvas.dark, "#0e0e0e");
@@ -344,7 +403,15 @@ assert.deepEqual(
 const nativePatterns = read("docs/native-patterns.md");
 const bootstrap = pipThemeBootstrap("app-theme");
 const helper = pipThemeControlScript("app-theme");
-assert.ok(nativePatterns.includes(themeControlMarkup()));
+// Per-instance IDs vary; the documented default is otherwise byte-for-byte.
+assert.ok(
+  nativePatterns.includes(
+    themeControlMarkup().replaceAll(/kiwi-theme-\d+/g, "kiwi-theme-example"),
+  ),
+);
+assert.ok(
+  nativePatterns.includes(themeControlMarkup({ variant: "segmented" })),
+);
 assert.ok(nativePatterns.includes(bootstrap));
 assert.ok(nativePatterns.includes(helper));
 for (const source of [bootstrap, helper, themeControlMarkup()]) {
@@ -361,20 +428,42 @@ function runThemeScript(source, { saved = null, prefersDark = false } = {}) {
       this[name] = value;
     },
   };
-  const radios = ["auto", "light", "dark"].map((value) => ({
-    type: "radio",
-    value,
-    checked: value === "auto",
-    closest(selector) {
-      return selector === ".kiwi-theme" ? radios : null;
+  class MockElement {}
+  class MockInput extends MockElement {}
+  const icon = new MockElement();
+  Object.assign(icon, {
+    disabled: false,
+    attributes: new Map(),
+    setAttribute(name, value) {
+      this.attributes.set(name, value);
     },
-  }));
+    getAttribute(name) {
+      return this.attributes.get(name) ?? null;
+    },
+    closest(selector) {
+      return selector === "button.kiwi-theme--icon" ? this : null;
+    },
+  });
+  const radios = ["auto", "light", "dark"].map((value) =>
+    Object.assign(new MockInput(), {
+      type: "radio",
+      value,
+      checked: value === "auto",
+      closest(selector) {
+        return selector === ".kiwi-theme" ? radios : null;
+      },
+    }),
+  );
   const map = new Map(saved === null ? [] : [["app-theme", saved]]);
   let wrote = false;
   const localStorage = {
     getItem: (key) => (map.has(key) ? map.get(key) : null),
     setItem: (key, value) => {
       wrote = true;
+      assert.ok(
+        value === "light" || value === "dark",
+        "only explicit themes may be stored",
+      );
       map.set(key, value);
     },
     removeItem: (key) => map.delete(key),
@@ -382,14 +471,23 @@ function runThemeScript(source, { saved = null, prefersDark = false } = {}) {
   const listeners = {};
   const document = {
     documentElement: {
-      setAttribute: (name, value) => attributes.set(name, value),
+      setAttribute: (name, value) => {
+        if (name === "data-theme")
+          assert.ok(value === "light" || value === "dark");
+        attributes.set(name, value);
+      },
       removeAttribute: (name) => attributes.delete(name),
     },
     head: { appendChild() {} },
     querySelector: (selector) =>
       selector === 'meta[name="theme-color"]' ? meta : null,
     querySelectorAll: (selector) =>
-      selector === ".kiwi-theme input[type='radio']" ? radios : [],
+      selector === ".kiwi-theme input[type='radio']"
+        ? radios
+        : selector === "button.kiwi-theme--icon"
+          ? [icon]
+          : [],
+    contains: (target) => target === icon || radios.includes(target),
     createElement: () => ({
       setAttribute(name, value) {
         this[name] = value;
@@ -398,6 +496,9 @@ function runThemeScript(source, { saved = null, prefersDark = false } = {}) {
     addEventListener: (type, listener) => {
       listeners[type] = listener;
     },
+  };
+  document.removeEventListener = (type) => {
+    delete listeners[type];
   };
   const mediaListeners = [];
   const context = vm.createContext({
@@ -415,7 +516,24 @@ function runThemeScript(source, { saved = null, prefersDark = false } = {}) {
     },
   });
   vm.runInContext(source, context);
-  return { attributes, meta, radios, map, wrote, listeners, mediaListeners };
+  return {
+    attributes,
+    meta,
+    radios,
+    icon,
+    map,
+    wrote,
+    listeners,
+    mediaListeners,
+    context,
+    document,
+    MockElement,
+    MockInput,
+    changeSystem(dark) {
+      prefersDark = dark;
+      for (const listener of mediaListeners) listener();
+    },
+  };
 }
 const darkBoot = runThemeScript(bootstrap, { saved: "dark" });
 assert.equal(darkBoot.attributes.get("data-theme"), "dark");
@@ -451,13 +569,96 @@ bound.listeners.change({ target: bound.radios[0] });
 assert.equal(bound.map.has("app-theme"), false);
 assert.equal(bound.attributes.has("data-theme"), false);
 assert.equal([...bound.map.values()].includes("auto"), false);
+function verifyIconBinding(binding, reset) {
+  const label = () => binding.icon.attributes.get("aria-label");
+  const title = () => binding.icon.attributes.get("title");
+  assert.equal(label(), "어둡게 전환");
+  assert.equal(title(), label());
+  binding.changeSystem(true);
+  assert.equal(label(), "밝게 전환");
+  assert.equal(title(), label());
+  assert.equal(binding.icon.attributes.get("data-resolved-theme"), "dark");
+  assert.equal(binding.meta.content, "#0e0e0e");
+  assert.equal(binding.attributes.has("data-theme"), false);
+  assert.equal(binding.map.size, 0);
+  // The shown theme owns the next action, even if storage changed without an event.
+  binding.map.set("app-theme", "light");
+  // Delegation must also accept a click originating on the SVG child.
+  const child = new binding.MockElement();
+  child.closest = () => binding.icon;
+  binding.listeners.click({ target: child });
+  assert.equal(binding.map.get("app-theme"), "light");
+  assert.equal(binding.attributes.get("data-theme"), "light");
+  assert.equal(label(), "어둡게 전환");
+  binding.changeSystem(false);
+  binding.changeSystem(true);
+  assert.equal(binding.map.get("app-theme"), "light");
+  assert.equal(binding.meta.content, "#f4f5ef");
+  assert.equal(label(), "어둡게 전환");
+  binding.listeners.click({ target: binding.icon });
+  assert.equal(binding.map.get("app-theme"), "dark");
+  assert.equal(label(), "밝게 전환");
+  reset();
+  assert.equal(binding.map.size, 0);
+  assert.equal(binding.attributes.has("data-theme"), false);
+  assert.equal(binding.meta.content, "#0e0e0e");
+  binding.changeSystem(false);
+  assert.equal(label(), "어둡게 전환");
+  assert.equal(binding.meta.content, "#f4f5ef");
+  binding.map.set("app-theme", "dark");
+  binding.listeners.storage({ key: "app-theme" });
+  assert.equal(label(), "밝게 전환");
+  assert.equal(title(), label());
+}
+const iconBound = runThemeScript(helper);
+verifyIconBinding(iconBound, () =>
+  iconBound.listeners.change({ target: iconBound.radios[0] }),
+);
+// Run the module binding against the same sandbox environment as the inline script.
+const moduleBound = runThemeScript("");
+const originalGlobals = new Map(
+  ["window", "document", "Element", "HTMLInputElement"].map((key) => [
+    key,
+    Object.getOwnPropertyDescriptor(globalThis, key),
+  ]),
+);
+try {
+  globalThis.window = moduleBound.context.window;
+  globalThis.document = moduleBound.document;
+  globalThis.Element = moduleBound.MockElement;
+  globalThis.HTMLInputElement = moduleBound.MockInput;
+  const stop = bindThemeControl("app-theme");
+  verifyIconBinding(moduleBound, () =>
+    commitThemePreference("app-theme", "auto"),
+  );
+  moduleBound.listeners.change({ target: moduleBound.radios[0] });
+  assert.equal(moduleBound.map.size, 0);
+  assert.equal(moduleBound.radios[0].checked, true);
+  stop();
+  assert.equal(moduleBound.listeners.click, undefined);
+  assert.equal(moduleBound.listeners.change, undefined);
+} finally {
+  for (const [key, descriptor] of originalGlobals) {
+    if (descriptor) Object.defineProperty(globalThis, key, descriptor);
+    else delete globalThis[key];
+  }
+}
+assert.match(
+  styles,
+  /@media \(prefers-reduced-motion: reduce\)\s*\{\s*\.kiwi-theme__core,[\s\S]*?\.kiwi-theme__occluder\s*\{\s*transition: none;/,
+);
+assert.match(styles, /--kiwi-theme-duration: (?:3\d\d|4[0-4]\d|450)ms/);
+assert.match(
+  styles,
+  /\.kiwi-theme--icon\s*\{[^}]*color: var\(--kiwi-color-text\)/,
+);
 const themeRules = [...styles.matchAll(/\.kiwi-theme[^{]*\{[^}]*\}/g)].map(
   (match) => match[0],
 );
 assert.ok(themeRules.length >= 4, "theme track rules missing");
 for (const rule of themeRules) {
   assert.doesNotMatch(rule, /#[\da-f]{3,8}/i);
-  assert.doesNotMatch(rule, /system/);
+  assert.doesNotMatch(rule, /system|kiwi-signal|--kiwi-color-interactive/);
 }
 assert.match(
   styles,
@@ -495,6 +696,28 @@ assert.ok(homepage.includes(pipThemeBootstrap("pip-theme")));
 for (const label of ["자동", "밝게", "어둡게", "화면 테마"]) {
   assert.ok(homepage.includes(label), `catalog is missing ${label}`);
 }
+// Inspect actual exported elements, excluding Next's serialized client payload.
+const staticHomepage = homepage.replace(
+  /<script\b[^>]*>[\s\S]*?<\/script>/g,
+  "",
+);
+const specimens = [
+  ...staticHomepage.matchAll(
+    /<div class="docs-theme-specimen docs-theme-preview"[^>]*>[\s\S]*?<\/header><\/div>/g,
+  ),
+].map(([markup]) => markup);
+assert.equal(specimens.length, 2, "both previews must ship without client JS");
+for (const [index, theme] of ["light", "dark"].entries()) {
+  const specimen = specimens[index];
+  assert.match(specimen, / inert=""/);
+  assert.ok(specimen.includes(`data-theme="${theme}"`));
+  assert.ok(specimen.includes(`data-resolved-theme="${theme}"`));
+  const label = theme === "light" ? "어둡게 전환" : "밝게 전환";
+  assert.ok(specimen.includes(`aria-label="${label}" title="${label}"`));
+  assert.ok(specimen.includes(`id="docs-theme-${theme}-mask"`));
+  assert.ok(specimen.includes(`url(#docs-theme-${theme}-mask)`));
+}
+assert.doesNotMatch(staticHomepage, /<iframe/);
 assert.doesNotMatch(homepage, /data-theme="auto"|data-theme="system"/);
 const bootstrapAt = homepage.indexOf('id="pip-theme-bootstrap"');
 const cssAt = homepage.search(/rel="stylesheet"|<style[\s>]/);

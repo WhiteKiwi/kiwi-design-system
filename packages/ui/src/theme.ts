@@ -1,3 +1,5 @@
+import { themeGlyphMarkup } from "./theme-glyphs";
+
 export const themeCanvas = {
   light: "#f4f5ef",
   dark: "#0e0e0e",
@@ -71,13 +73,22 @@ export function normalizeStoredTheme(
   return "auto";
 }
 
+export function resolvedTheme(
+  preference: ThemePreference,
+  prefersDark: boolean,
+): "light" | "dark" {
+  return preference === "auto" ? (prefersDark ? "dark" : "light") : preference;
+}
+
+export function themeToggleLabel(theme: "light" | "dark"): string {
+  return theme === "light" ? "어둡게 전환" : "밝게 전환";
+}
+
 export function canvasColor(
   preference: ThemePreference,
   prefersDark: boolean,
 ): string {
-  if (preference === "dark") return themeCanvas.dark;
-  if (preference === "light") return themeCanvas.light;
-  return prefersDark ? themeCanvas.dark : themeCanvas.light;
+  return themeCanvas[resolvedTheme(preference, prefersDark)];
 }
 
 export function browserStorage(): ThemeStorage | null {
@@ -89,7 +100,7 @@ export function browserStorage(): ThemeStorage | null {
   }
 }
 
-function prefersDark(): boolean {
+export function prefersDark(): boolean {
   return (
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -228,12 +239,13 @@ export function pipThemeControlScript(storageKey: string): string {
       }
       return "auto";
     }
+    function resolve(preference) {
+      return preference === "auto"
+        ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+        : preference;
+    }
     function colorFor(preference) {
-      var dark =
-        preference === "dark" ||
-        (preference === "auto" &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches);
-      return dark ? "${themeCanvas.dark}" : "${themeCanvas.light}";
+      return resolve(preference) === "dark" ? "${themeCanvas.dark}" : "${themeCanvas.light}";
     }
     function apply(preference) {
       if (preference === "light" || preference === "dark") {
@@ -257,11 +269,28 @@ export function pipThemeControlScript(storageKey: string): string {
       } catch (error) {}
     }
     function sync(preference) {
+      var theme = resolve(preference);
+      var buttons = document.querySelectorAll("button.kiwi-theme--icon");
+      for (var index = 0; index < buttons.length; index += 1) {
+        var label = theme === "light" ? "어둡게 전환" : "밝게 전환";
+        buttons[index].setAttribute("data-resolved-theme", theme);
+        buttons[index].setAttribute("aria-label", label);
+        buttons[index].setAttribute("title", label);
+      }
       var inputs = document.querySelectorAll(".kiwi-theme input[type='radio']");
       for (var index = 0; index < inputs.length; index += 1) {
         inputs[index].checked = inputs[index].value === preference;
       }
     }
+    document.addEventListener("click", function (event) {
+      var target = event.target;
+      var button = target && target.closest && target.closest("button.kiwi-theme--icon");
+      if (!button || button.disabled) return;
+      var value = button.getAttribute("data-resolved-theme") === "dark" ? "light" : "dark";
+      write(value);
+      apply(value);
+      sync(value);
+    });
     document.addEventListener("change", function (event) {
       var input = event.target;
       if (!input || !input.closest || !input.closest(".kiwi-theme")) return;
@@ -281,7 +310,9 @@ export function pipThemeControlScript(storageKey: string): string {
     window
       .matchMedia("(prefers-color-scheme: dark)")
       .addEventListener("change", function () {
-        if (read() === "auto") apply("auto");
+        var preference = read();
+        if (preference === "auto") apply(preference);
+        sync(preference);
       });
     var initial = read();
     apply(initial);
@@ -299,17 +330,32 @@ function escapeHtml(value: string): string {
     .replaceAll(">", "&gt;");
 }
 
+let markupId = 0;
+
 export function themeControlMarkup({
+  variant = "icon",
   name = "theme",
   legend = "화면 테마",
   hideLegend = true,
+  id,
+  theme = "light",
 }: {
+  variant?: "icon" | "segmented";
   name?: string;
   legend?: string;
   hideLegend?: boolean;
+  id?: string;
+  theme?: "light" | "dark";
 } = {}): string {
   if (!storageKeyPattern.test(name)) {
     throw new Error("Theme radio name must be a short unquoted token.");
+  }
+  if (variant === "icon") {
+    const glyphId = id ?? `kiwi-theme-${++markupId}`;
+    const label = themeToggleLabel(theme);
+    return `<button type="button" class="kiwi-theme kiwi-theme--icon" data-resolved-theme="${theme}" aria-label="${label}" title="${label}">
+${themeGlyphMarkup(glyphId)}
+</button>`;
   }
   const legendClass = hideLegend ? "kiwi-sr-only" : "kiwi-field__label";
   const option = (value: ThemePreference, label: string, checked = false) =>
@@ -330,6 +376,14 @@ export function bindThemeControl(
 ): () => void {
   assertThemeStorageKey(storageKey);
   const sync = (preference: ThemePreference) => {
+    const theme = resolvedTheme(preference, prefersDark());
+    for (const button of scope.querySelectorAll<HTMLButtonElement>(
+      "button.kiwi-theme--icon",
+    )) {
+      button.setAttribute("data-resolved-theme", theme);
+      button.setAttribute("aria-label", themeToggleLabel(theme));
+      button.setAttribute("title", themeToggleLabel(theme));
+    }
     for (const input of scope.querySelectorAll<HTMLInputElement>(
       ".kiwi-theme input[type='radio']",
     )) {
@@ -344,6 +398,16 @@ export function bindThemeControl(
     commitThemePreference(storageKey, target.value);
     sync(target.value);
   };
+  const onClick = (event: Event) => {
+    if (!(event.target instanceof Element)) return;
+    const button = event.target.closest<HTMLButtonElement>(
+      "button.kiwi-theme--icon",
+    );
+    if (!button || button.disabled || !scope.contains(button)) return;
+    const theme = button.getAttribute("data-resolved-theme");
+    commitThemePreference(storageKey, theme === "dark" ? "light" : "dark");
+  };
+  scope.addEventListener("click", onClick);
   scope.addEventListener("change", onChange);
   const stop = subscribeThemePreference(storageKey, () => {
     sync(readStoredTheme(browserStorage(), storageKey));
@@ -352,6 +416,7 @@ export function bindThemeControl(
   applyThemeDom(initial);
   sync(initial);
   return () => {
+    scope.removeEventListener("click", onClick);
     scope.removeEventListener("change", onChange);
     stop();
   };

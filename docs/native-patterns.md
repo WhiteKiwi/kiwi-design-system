@@ -56,10 +56,40 @@ This is not a tablist: route changes and panel focus belong to the consumer.
 
 ## Screen theme
 
-Use the same connected track as `ThemeControl`. Visible labels are 자동, 밝게,
-and 어둡게. Values are `auto`, `light`, and `dark`. Give each group a unique
-radio `name`. The legend is `화면 테마`; keep `kiwi-sr-only` in a header, or
-use `kiwi-field__label` when the legend should be visible.
+Use the default icon button in product headers: a 44×44 ghost target with a
+resolved sun/moon and Korean action name/title. Click fixes the opposite theme.
+The helper below synchronizes the initial light placeholder before interaction.
+It follows system changes live until an explicit preference is stored.
+
+```html
+<button type="button" class="kiwi-theme kiwi-theme--icon" data-resolved-theme="light" aria-label="어둡게 전환" title="어둡게 전환">
+<svg class="kiwi-theme__glyph" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="20" height="20" aria-hidden="true" focusable="false">
+  <defs>
+    <mask id="kiwi-theme-example-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="320" height="256">
+      <rect width="320" height="256" fill="white" />
+      <circle class="kiwi-theme__occluder" cx="304" cy="90.667" r="56" fill="black" />
+    </mask>
+    <clipPath id="kiwi-theme-example-clip"><circle cx="128" cy="128" r="56" /></clipPath>
+  </defs>
+  <g class="kiwi-theme__core" fill="none" stroke="currentColor" stroke-width="16">
+    <circle cx="128" cy="128" r="56" mask="url(#kiwi-theme-example-mask)" />
+    <g clip-path="url(#kiwi-theme-example-clip)"><circle class="kiwi-theme__occluder" cx="304" cy="90.667" r="56" /></g>
+  </g>
+  <g class="kiwi-theme__rays" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round">
+    <path d="M128 16v24m0 176v24M16 128h24m176 0h24M48 48l16 16m128 128 16 16M48 208l16-16M192 64l16-16" />
+  </g>
+</svg>
+</button>
+```
+
+IDs are unique per `themeControlMarkup()` call. When copying this example more
+than once, replace every `kiwi-theme-example` suffix consistently per instance.
+The inline Phosphor Regular 2.1.1 (MIT) placeholder and 380ms masked morph await
+the designer's final pick; reduced motion disables transitions.
+
+Use `themeControlMarkup({ variant: "segmented" })` for settings/catalogs only,
+**never in product headers**. Radio names must be unique per independent group.
+`legend` and `hideLegend` still configure this variant.
 
 ```html
 <fieldset class="kiwi-segmented kiwi-theme">
@@ -141,12 +171,13 @@ when the device preference changes. React apps call `ThemeControl` and
       }
       return "auto";
     }
+    function resolve(preference) {
+      return preference === "auto"
+        ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+        : preference;
+    }
     function colorFor(preference) {
-      var dark =
-        preference === "dark" ||
-        (preference === "auto" &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches);
-      return dark ? "#0e0e0e" : "#f4f5ef";
+      return resolve(preference) === "dark" ? "#0e0e0e" : "#f4f5ef";
     }
     function apply(preference) {
       if (preference === "light" || preference === "dark") {
@@ -170,11 +201,28 @@ when the device preference changes. React apps call `ThemeControl` and
       } catch (error) {}
     }
     function sync(preference) {
+      var theme = resolve(preference);
+      var buttons = document.querySelectorAll("button.kiwi-theme--icon");
+      for (var index = 0; index < buttons.length; index += 1) {
+        var label = theme === "light" ? "어둡게 전환" : "밝게 전환";
+        buttons[index].setAttribute("data-resolved-theme", theme);
+        buttons[index].setAttribute("aria-label", label);
+        buttons[index].setAttribute("title", label);
+      }
       var inputs = document.querySelectorAll(".kiwi-theme input[type='radio']");
       for (var index = 0; index < inputs.length; index += 1) {
         inputs[index].checked = inputs[index].value === preference;
       }
     }
+    document.addEventListener("click", function (event) {
+      var target = event.target;
+      var button = target && target.closest && target.closest("button.kiwi-theme--icon");
+      if (!button || button.disabled) return;
+      var value = button.getAttribute("data-resolved-theme") === "dark" ? "light" : "dark";
+      write(value);
+      apply(value);
+      sync(value);
+    });
     document.addEventListener("change", function (event) {
       var input = event.target;
       if (!input || !input.closest || !input.closest(".kiwi-theme")) return;
@@ -194,7 +242,9 @@ when the device preference changes. React apps call `ThemeControl` and
     window
       .matchMedia("(prefers-color-scheme: dark)")
       .addEventListener("change", function () {
-        if (read() === "auto") apply("auto");
+        var preference = read();
+        if (preference === "auto") apply(preference);
+        sync(preference);
       });
     var initial = read();
     apply(initial);
@@ -206,7 +256,9 @@ when the device preference changes. React apps call `ThemeControl` and
 
 `@whitekiwi/ui/theme` exports `themeControlMarkup`, `pipThemeBootstrap`, and
 `pipThemeControlScript` for the same text. `bindThemeControl(storageKey)` is
-the module form of the helper.
+the module form of the helper. Bind either once per page; both support icon
+and segmented controls. `commitThemePreference(storageKey, "auto")` clears the
+key and root attribute; the icon has no reset UI.
 
 ## Empty content
 
@@ -225,7 +277,7 @@ or failed. The app owns loading/error distinctions and live-region announcements
 
 Finance had a local labeled Select and Empty component; Finance filters, Namecard's
 side/theme choices and the PIP catalog's ThemeToggle independently implemented
-single selection. Screen theme now uses the shared `ThemeControl` track above. These are small reusable contracts without product data.
+single selection. Screen theme now uses the shared `ThemeControl` variants above. These are small reusable contracts without product data.
 Finance's calculations/calendar, Workspace's host actions, and Ticketman's booking
 workflow remain product-owned. Existing native dialogs/toasts have different
 lifecycle and announcement requirements; this release does not replace them with

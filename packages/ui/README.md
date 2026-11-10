@@ -75,7 +75,7 @@ and spacing between components. Load fonts separately; system fallbacks work too
 | Actions and navigation | `Button`, `TextLink` | Button defaults to `type="button"`; set `submit` explicitly for forms |
 | Labeled input | `TextField`, `Select` | Required `label`; optional `hint` / `error`; generated ID and linked description |
 | Single selection | `SegmentedControl` | Native radio group; supports form submission/reset and disabled choices |
-| Screen theme | `ThemeControl` | Connected header track: 자동 / 밝게 / 어둡게. Stores only `light` or `dark` |
+| Screen theme | `ThemeControl` | 44×44 header icon by default; settings-only segmented option. Stores only `light` or `dark` |
 | Empty content | `EmptyState` | Title, optional description/actions; no automatic live announcement |
 | Status and guidance | `Badge`, `Callout` | Visual tone is not an automatic live announcement |
 | Content surfaces | `StaticCard`, `LinkedCard` | Article versus anchor; use an `href` for linked cards and avoid nested controls |
@@ -132,12 +132,27 @@ Non-React consumers can load only the stylesheet and use the documented
 
 ## Screen theme
 
-`ThemeControl` is the shared header control for 자동, 밝게, and 어둡게. The
-internal values are `auto`, `light`, and `dark`. It is a connected segment
-track, 2.75rem (44px) tall, with each option at least 44×44. The selected
-segment uses the inverted text/canvas pair. The legend defaults to `화면 테마`;
-pass `hideLabel` when the header should keep that name screen-reader only.
-Focus-visible uses `--kiwi-color-focus` and no other color.
+`ThemeControl` defaults to `variant="icon"`: one ghost button, a 44×44 hit
+target and a 20px sun/moon reflecting the resolved page theme. The glyph uses
+`--kiwi-color-text`; hover/active use control state tokens. Its Korean accessible
+name and title describe the action: `어둡게 전환` in light, `밝게 전환` in dark.
+Clicking fixes the opposite of the shown theme. There is no reset UI or
+`aria-pressed`. Without a stored choice, system changes update the glyph and
+`theme-color` live. Focus uses the focus token with a 0.2rem offset.
+
+Use `variant="segmented"` only in settings or catalogs, **never in product
+headers**. It preserves 자동 / 밝게 / 어둡게 radios, `label`, `hideLabel`, and
+fieldset attributes. `label` / `hideLabel` do not name the icon variant; its
+accessible name follows the resolved theme. Existing calls without `variant`
+intentionally change appearance in 0.2.4; add `variant="segmented"` for settings.
+Native `disabled` works for either variant.
+
+The inline geometry is a Phosphor Regular 2.1.1 placeholder (MIT,
+[copyright Phosphor Icons](https://unpkg.com/@phosphor-icons/core@2.1.1/LICENSE)).
+Sun/moon proportions are adapted to one circle, rays, and a sliding mask,
+without a runtime icon dependency. Glyph and 380ms ease-out morph are pending
+the designer's final pick. Reduced motion removes transitions; shared motion
+and token values are unchanged.
 
 `light` and `dark` set `<html data-theme="light">` or `data-theme="dark"`.
 `auto` removes the attribute so the page follows `prefers-color-scheme`. The
@@ -176,13 +191,20 @@ export function RootLayout({ children }: { children: React.ReactNode }) {
 import { ThemeControl } from "@whitekiwi/ui";
 
 export function AppHeader() {
-  return <ThemeControl hideLabel storageKey="app-theme" />;
+  return <ThemeControl storageKey="app-theme" />;
 }
 ```
 
 `commitThemePreference(storageKey, preference)` updates storage, the attribute,
 and `theme-color` from an imperative caller. `bindThemeControl(storageKey)`
-does the same for the native markup.
+does the same for either native variant. `themeControlMarkup({ id, theme })`
+accepts an optional stable SVG ID prefix and resolved `"light" | "dark"` theme
+for static previews or server output. IDs are sanitized to letters, digits,
+underscores, and hyphens; provide a distinct prefix per control after sanitizing.
+Without options it emits the light icon placeholder with a generated unique ID;
+binding synchronizes it with the page theme. Call
+`commitThemePreference(storageKey, "auto")` to clear the key and return to the
+system preference without an icon reset UI.
 
 ## Themes and server rendering
 

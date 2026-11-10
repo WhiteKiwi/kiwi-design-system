@@ -463,6 +463,72 @@ input.kiwi-field__input[type="time"]::-webkit-date-and-time-value {
   max-width: 100%;
   min-inline-size: 0;
 }
+/* Placeholder glyph + 380ms morph: pending the designer's final pick. */
+.kiwi-theme--icon {
+  --kiwi-theme-duration: 380ms;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-width: 2.75rem;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--kiwi-radius-sm);
+  background: transparent;
+  color: var(--kiwi-color-text);
+  cursor: pointer;
+}
+.kiwi-theme--icon:hover:not(:disabled) {
+  background: var(--kiwi-color-control-hover);
+}
+.kiwi-theme--icon:active:not(:disabled) {
+  background: var(--kiwi-color-control-active);
+}
+.kiwi-theme--icon:focus-visible {
+  outline: 2px solid var(--kiwi-color-focus);
+  outline-offset: 0.2rem;
+}
+.kiwi-theme--icon:disabled {
+  background: var(--kiwi-color-disabled-surface);
+  color: var(--kiwi-color-disabled-text);
+  cursor: not-allowed;
+}
+.kiwi-theme__glyph {
+  width: 1.25rem;
+  height: 1.25rem;
+  overflow: visible;
+}
+.kiwi-theme__core,
+.kiwi-theme__rays {
+  transform-origin: 128px 128px;
+  transition:
+    transform var(--kiwi-theme-duration) var(--kiwi-ease-out),
+    opacity var(--kiwi-theme-duration) var(--kiwi-ease-out),
+    stroke-width var(--kiwi-theme-duration) var(--kiwi-ease-out);
+}
+.kiwi-theme__occluder {
+  transition: transform var(--kiwi-theme-duration) var(--kiwi-ease-out);
+}
+.kiwi-theme--icon[data-resolved-theme="dark"] .kiwi-theme__core {
+  transform: translate(8px, -8px) scale(1.714286);
+  stroke-width: 9.333333;
+}
+.kiwi-theme--icon[data-resolved-theme="dark"] .kiwi-theme__occluder {
+  transform: translateX(-138.667px);
+}
+.kiwi-theme--icon[data-resolved-theme="dark"] .kiwi-theme__rays {
+  transform: rotate(45deg) scale(0.6);
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .kiwi-theme__core,
+  .kiwi-theme__rays,
+  .kiwi-theme__occluder {
+    transition: none;
+  }
+}
 .kiwi-theme > legend:not(.kiwi-sr-only) {
   display: table;
   margin-bottom: var(--kiwi-space-2);

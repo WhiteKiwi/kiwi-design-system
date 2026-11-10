@@ -22,7 +22,7 @@ Status: **implemented** — 디자인 계약의 버전이며 npm 패키지 버�
 ## Interaction and responsive contracts
 
 - 모든 interactive family는 light·dark 각각의 rest, hover, active, focus-visible, disabled를 설명한다. API에 없는 상태는 지원하지 않음을 명시한다.
-- Motion은 150–220ms의 짧은 feedback에 한정하며 `prefers-reduced-motion`에서 제거한다. 44px 기본 target을 유지한다.
+- Motion은 기본 150–220ms의 짧은 feedback을 사용하며 (ThemeControl의 임시 morph는 component 범위에서 380ms), `prefers-reduced-motion`에서 제거한다. 44px 기본 target을 유지한다.
 - Border보다 간격, 정렬, surface 차이를 먼저 사용한다.
 - 작은 화면에서도 brand thesis, 실제 evidence와 핵심 action을 유지한다. Heading grid·token table·component specimen은 재구성하고, 상세 계약·보조 설명은 접을 수 있다. 제품 전용 사례·긴 migration guide는 뒤로 배치한다.
 - 320px과 390px에서 가로 overflow, 한국어 줄바꿈, focus 순서와 touch target을 확인한다.
@@ -62,7 +62,7 @@ token을 조합한다. 새 component는 카탈로그 specimen과 inventory를 �
 | Danger Button | error / error-hover / error-active with surface-raised foreground | 2px focus token | disabled pair |
 | TextField / Select | surface-raised + control-border; hover/active keep the same pair | 2px focus token | disabled pair; invalid uses error boundary and linked error text |
 | SegmentedControl | surface-raised/text; control-hover/control-active; selected text/canvas | 2px focus ring outside selected label | native disabled group/option; selected disabled retains boundary |
-| ThemeControl | connected track; same pairs as SegmentedControl; selected fill is inverted text/canvas | 2px `--kiwi-color-focus` only | native disabled fieldset; no per-option disabled API |
+| ThemeControl | icon: transparent/text, control-hover/control-active; settings-only segmented uses SegmentedControl pairs | 2px `--kiwi-color-focus` only | native disabled button/fieldset; no per-option disabled API |
 | TextLink | interactive / interactive-hover / interactive-active | 2px focus token | no disabled-link API; render plain text when unavailable |
 | LinkedCard | tone pair / brand-soft + text / brand-field-active + on-brand; arrow inherits foreground | separated two-ring focus | no disabled-card API; use StaticCard when unavailable |
 | Disclosure | same transparent/text pair; open state changes content and indicator | 2px focus token | no disabled prop in current API |
@@ -74,7 +74,9 @@ The website's primary-action matrix illustrates that family only. CSS and actual
 - 필수 control boundary는 장식용 border와 분리해 3:1 gate로 검증한다.
 - LinkedCard는 tone별 rest와 theme별 hover·active에서 글자와 화살표의 foreground를 함께 유지한다.
 - SegmentedControl은 native radio group이다. Tab·방향키·폼 제출/초기화는 브라우저가 맡으며 tablist나 navigation으로 사용하지 않는다. 긴 선택지는 잘리거나 가로로 넘치지 않고 줄바꿈한다.
-- ThemeControl은 헤더용 connected segment track이다. 보이는 이름은 자동·밝게·어둡게이고 값은 `auto`·`light`·`dark`이다. `light`/`dark`만 `<html data-theme>`와 앱이 고른 localStorage 키에 남긴다. `auto`는 attribute와 그 키를 제거한다. `data-theme="auto"`는 쓰지 않는다. focus-visible은 `--kiwi-color-focus`만 사용한다. 높이는 2.75rem(44px)이고 각 선택은 최소 44×44이다.
+- ThemeControl의 기본 `variant="icon"`은 제품 헤더용 44×44 ghost button과 약 20px 해·달이다. 실제 resolved theme가 light면 해와 `어둡게 전환`, dark면 달과 `밝게 전환` aria-label/title을 쓴다. `aria-pressed`는 없다. 색은 `--kiwi-color-text`, hover/active fill은 control-hover/control-active, focus는 2px focus token과 0.2rem offset이다. 클릭은 보이는 테마의 반대 `light`/`dark`를 저장하고 고정한다. 저장값이 없으면 기기 설정에 따라 아이콘과 theme-color가 실시간 갱신된다.
+- `variant="segmented"`의 자동·밝게·어둡게 radio track은 설정·카탈로그 전용이며 제품 헤더에는 사용하지 않는다. `label`/`hideLabel`은 segmented에서 유지한다. `light`/`dark`만 루트 attribute와 앱 localStorage 키에 남기며, `auto`는 둘을 제거한다. `commitThemePreference(key, "auto")`로 초기화할 수 있고 icon에는 초기화 UI가 없다. `data-theme="auto"`/`"system"`을 쓰지 않는다. Bootstrap은 CSS 전에 실행한다.
+- Phosphor Regular 2.1.1 (MIT) 비율을 참고한 임시 glyph는 단일 SVG의 core·rays·sliding mask로 morph한다. Glyph와 component 범위의 380ms ease-out motion은 디자이너 최종 선택 대기 상태이며 shared motion token은 바꾸지 않는다. Reduced motion에서는 transition을 제거한다.
 - EmptyState는 설명과 다음 행동을 담고 자동으로 loading·error·live region 의미를 부여하지 않는다. 실제 데이터 없음과 미수집은 제품이 구분한다.
 - TextField와 Select는 id 생략 시 고유 id를 생성하고 hint/error와 외부 aria-describedby를 연결한다.
 - Button은 기본 type=button이며 form 제출은 명시적으로 type=submit을 선택한다.
