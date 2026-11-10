@@ -498,6 +498,8 @@ input.kiwi-field__input[type="time"]::-webkit-date-and-time-value {
   width: 22px;
   height: 22px;
   overflow: visible;
+  /* Official .theme-toggle > svg { stroke-linecap: round } keeps rays rounded. */
+  stroke-linecap: round;
 }
 .kiwi-theme__glyph > :is(.moon, .sun, .sun-beams) {
   transform-origin: center center;

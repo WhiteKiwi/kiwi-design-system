@@ -335,6 +335,9 @@ for (const markup of [iconTheme, themeControlMarkup()]) {
   assert.match(markup, /viewBox="0 0 24 24"/);
   assert.match(markup, /width="22" height="22"/);
   assert.equal([...markup.matchAll(/<line /g)].length, 8);
+  assert.match(markup, /<svg class="kiwi-theme__glyph"/);
+  assert.match(markup, /<g class="sun-beams" stroke="currentColor">/);
+  assert.doesNotMatch(markup, /<(?:svg|g|line)[^>]*transform=/);
   assert.doesNotMatch(markup, /kiwi-theme--motion/);
 }
 const iconGroups = renderToStaticMarkup(
@@ -747,10 +750,12 @@ try {
     else delete globalThis[key];
   }
 }
-const glyphStyles = styles.slice(
-  styles.indexOf(".kiwi-theme__glyph {"),
-  styles.indexOf(".kiwi-theme > legend"),
-);
+const glyphStyles = styles
+  .slice(
+    styles.indexOf(".kiwi-theme__glyph {"),
+    styles.indexOf(".kiwi-theme > legend"),
+  )
+  .replace(/\/\*[\s\S]*?\*\//g, "");
 const [restStyles, motionStyles] = glyphStyles.split(
   "@media (prefers-reduced-motion: no-preference)",
 );
@@ -760,7 +765,17 @@ assert.doesNotMatch(
   "pre-ready and reduced-motion glyphs have no transitions",
 );
 assert.match(restStyles, /width: 22px;\s*height: 22px/);
+assert.match(restStyles, /\.kiwi-theme__glyph \{[^}]*stroke-linecap: round;/);
 assert.match(restStyles, /stroke-width: 2px/);
+for (const [, selector, declarations] of glyphStyles.matchAll(
+  /([^{}]+)\{([^{}]+)\}/g,
+)) {
+  if (!selector.includes(".sun-beams")) continue;
+  assert.doesNotMatch(declarations, /scale\s*(?:\(|:)/);
+  if (!selector.includes('data-resolved-theme="dark"')) {
+    assert.doesNotMatch(declarations, /(?:^|;)\s*transform\s*:/);
+  }
+}
 assert.match(restStyles, /transform: scale\(1\.75\)/);
 assert.match(restStyles, /transform: translateX\(-7px\)/);
 assert.match(

@@ -49,7 +49,11 @@ async function system(value) {
   });
 }
 const { ThemeControl } = await import("../packages/ui/dist/index.js");
-const { commitThemePreference } = await import("../packages/ui/dist/theme.js");
+const {
+  commitThemePreference,
+  effectiveThemePreference,
+  subscribeThemePreference,
+} = await import("../packages/ui/dist/theme.js");
 for (const mode of ["all-throw", "write-throw", "unavailable"]) {
   const key = `react-${mode}`;
   const saved = new Map();
@@ -184,6 +188,71 @@ assert.equal(document.documentElement.dataset.theme, "light");
 await act(() => storedRoot.unmount());
 assert.equal(frames.size, 0);
 storedContainer.remove();
+// Refresh remembered keys after their last subscriber leaves, without applying DOM.
+const saved = new Map();
+let unreadable = false;
+Object.defineProperty(window, "localStorage", {
+  configurable: true,
+  get() {
+    if (unreadable === "unavailable") throw new Error("storage unavailable");
+    return {
+      getItem(key) {
+        if (unreadable) throw new Error("get");
+        return saved.get(key) ?? null;
+      },
+      setItem(key, value) {
+        saved.set(key, value);
+      },
+      removeItem(key) {
+        saved.delete(key);
+      },
+    };
+  },
+});
+let notifications = 0;
+const onChange = () => {
+  notifications += 1;
+};
+for (const eventKey of ["unmounted-stored", null]) {
+  const key = eventKey ?? "unmounted-clear";
+  saved.set(key, "light");
+  const stop = subscribeThemePreference(key, onChange);
+  assert.equal(effectiveThemePreference(key), "light");
+  stop();
+  const domBefore = document.documentElement.outerHTML;
+  if (eventKey === null) saved.clear();
+  else saved.set(key, "dark");
+  window.dispatchEvent(new window.StorageEvent("storage", { key: eventKey }));
+  assert.equal(document.documentElement.outerHTML, domBefore);
+  const stopAgain = subscribeThemePreference(key, onChange);
+  assert.equal(
+    effectiveThemePreference(key),
+    eventKey === null ? "auto" : "dark",
+  );
+  stopAgain();
+  if (eventKey === null) {
+    assert.equal(effectiveThemePreference("unmounted-stored"), "auto");
+  }
+}
+for (const failure of [true, "unavailable"]) {
+  const key = `unmounted-unreadable-${failure}`;
+  const stop = subscribeThemePreference(key, onChange);
+  commitThemePreference(key, "dark");
+  stop();
+  unreadable = failure;
+  saved.clear();
+  const domBefore = document.documentElement.outerHTML;
+  for (const eventKey of [key, null]) {
+    window.dispatchEvent(new window.StorageEvent("storage", { key: eventKey }));
+    assert.equal(effectiveThemePreference(key), "dark");
+    assert.equal(document.documentElement.outerHTML, domBefore);
+  }
+  const stopAgain = subscribeThemePreference(key, onChange);
+  assert.equal(effectiveThemePreference(key), "dark");
+  stopAgain();
+  unreadable = false;
+}
+assert.equal(notifications, 2, "only subscribed commits notify listeners");
 await window.happyDOM.close();
 console.log(
   "React ThemeControl: throwing/unavailable storage, clicks, reset, media, cross-tab and hydration readiness passed.",

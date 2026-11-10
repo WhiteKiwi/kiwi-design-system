@@ -150,7 +150,8 @@ Native `disabled` works for either variant.
 The glyph and picked motion A port the official GUI Challenges / Adam Argyle
 [theme-switch](https://github.com/argyleink/gui-challenges/tree/82317d0d04c4f38ddf781439e282aa67ecb5b7f6/theme-switch),
 commit `82317d0d04c4f38ddf781439e282aa67ecb5b7f6`: original 24×24 sun, eight thin
-rays and crescent mask, displayed at 22px. The original motion uses 250ms sun /
+round-capped rays (2-unit lines, 2px stroke) and crescent mask, displayed at 22px.
+Light rays keep their original scale; only the whole SVG is sized to 22px. The original motion uses 250ms sun /
 150ms rays / 500ms mask after 250ms delay to dark; to light, 500ms elastic sun
 and rays with a 250ms mask. Easing values are inlined without Open Props.
 Transitions start only after initial sync has painted; first paint and hydration
@@ -211,7 +212,9 @@ binding synchronizes it with the page theme. Call
 `commitThemePreference(storageKey, "auto")` to clear the key and return to the
 system preference without an icon reset UI. Storage failures (including unavailable
 localStorage) retain the effective choice for toggling and labels. Readable
-cross-tab storage events refresh it; media changes follow only an effective `auto`.
+cross-tab storage events refresh cached keys even after the last control unmounts,
+including storage clear events. Only subscribed keys apply DOM changes or notify
+controls. Media changes follow only an effective `auto`.
 
 ## Themes and server rendering
 

@@ -163,10 +163,13 @@ function ensureEnvironmentWatch() {
   watching = true;
   const media = window.matchMedia("(prefers-color-scheme: dark)");
   window.addEventListener("storage", (event) => {
-    for (const storageKey of listeners.keys()) {
+    for (const storageKey of effectivePreferences.keys()) {
       if (event.key !== null && event.key !== storageKey) continue;
-      applyThemeDom(refreshThemePreference(storageKey));
-      emit(storageKey);
+      const preference = refreshThemePreference(storageKey);
+      if (listeners.has(storageKey)) {
+        applyThemeDom(preference);
+        emit(storageKey);
+      }
     }
   });
   media.addEventListener("change", () => {
