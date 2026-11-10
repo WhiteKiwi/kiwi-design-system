@@ -133,7 +133,7 @@ Non-React consumers can load only the stylesheet and use the documented
 ## Screen theme
 
 `ThemeControl` defaults to `variant="icon"`: one ghost button, a 44×44 hit
-target and a 20px sun/moon reflecting the resolved page theme. The glyph uses
+target and a 22px sun/moon reflecting the resolved page theme. The glyph uses
 `--kiwi-color-text`; hover/active use control state tokens. Its Korean accessible
 name and title describe the action: `어둡게 전환` in light, `밝게 전환` in dark.
 Clicking fixes the opposite of the shown theme. There is no reset UI or
@@ -147,12 +147,17 @@ accessible name follows the resolved theme. Existing calls without `variant`
 intentionally change appearance in 0.2.4; add `variant="segmented"` for settings.
 Native `disabled` works for either variant.
 
-The inline geometry is a Phosphor Regular 2.1.1 placeholder (MIT,
-[copyright Phosphor Icons](https://unpkg.com/@phosphor-icons/core@2.1.1/LICENSE)).
-Sun/moon proportions are adapted to one circle, rays, and a sliding mask,
-without a runtime icon dependency. Glyph and 380ms ease-out morph are pending
-the designer's final pick. Reduced motion removes transitions; shared motion
-and token values are unchanged.
+The glyph and picked motion A port the official GUI Challenges / Adam Argyle
+[theme-switch](https://github.com/argyleink/gui-challenges/tree/82317d0d04c4f38ddf781439e282aa67ecb5b7f6/theme-switch),
+commit `82317d0d04c4f38ddf781439e282aa67ecb5b7f6`: original 24×24 sun, eight thin
+rays and crescent mask, displayed at 22px. The original motion uses 250ms sun /
+150ms rays / 500ms mask after 250ms delay to dark; to light, 500ms elastic sun
+and rays with a 250ms mask. Easing values are inlined without Open Props.
+Transitions start only after initial sync has painted; first paint and hydration
+stay instant, as does reduced motion. Shared motion tokens are unchanged.
+Upstream repository LICENSE is Apache-2.0; theme-switch/package.json declares ISC
+(inconsistent metadata). See [third-party notice](THIRD_PARTY.md) and the included
+[Apache-2.0 text](LICENSE-APACHE-2.0). WhiteKiwi's package remains MIT.
 
 `light` and `dark` set `<html data-theme="light">` or `data-theme="dark"`.
 `auto` removes the attribute so the page follows `prefers-color-scheme`. The
@@ -195,16 +200,18 @@ export function AppHeader() {
 }
 ```
 
-`commitThemePreference(storageKey, preference)` updates storage, the attribute,
+`commitThemePreference(storageKey, preference)` updates the effective in-memory preference first, then best-effort storage, the attribute,
 and `theme-color` from an imperative caller. `bindThemeControl(storageKey)`
 does the same for either native variant. `themeControlMarkup({ id, theme })`
 accepts an optional stable SVG ID prefix and resolved `"light" | "dark"` theme
 for static previews or server output. IDs are sanitized to letters, digits,
 underscores, and hyphens; provide a distinct prefix per control after sanitizing.
-Without options it emits the light icon placeholder with a generated unique ID;
+Without options it emits the light icon with a generated unique ID;
 binding synchronizes it with the page theme. Call
 `commitThemePreference(storageKey, "auto")` to clear the key and return to the
-system preference without an icon reset UI.
+system preference without an icon reset UI. Storage failures (including unavailable
+localStorage) retain the effective choice for toggling and labels. Readable
+cross-tab storage events refresh it; media changes follow only an effective `auto`.
 
 ## Themes and server rendering
 

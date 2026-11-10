@@ -12,19 +12,20 @@ import type {
 } from "react";
 import {
   useCallback,
+  useEffect,
   useId,
   useLayoutEffect,
+  useState,
   useSyncExternalStore,
 } from "react";
 import { cn } from "./cn";
 import {
   applyThemeDom,
   assertThemeStorageKey,
-  browserStorage,
   commitThemePreference,
+  effectiveThemePreference,
   isThemePreference,
   prefersDark,
-  readStoredTheme,
   resolvedTheme,
   subscribeThemePreference,
   type ThemePreference,
@@ -304,8 +305,16 @@ export function ThemeControl({
     [storageKey],
   );
   const glyphId = useId();
+  const [motionKey, setMotionKey] = useState<string | null>(null);
+  useEffect(() => {
+    setMotionKey(null);
+    let frame = window.requestAnimationFrame(() => {
+      frame = window.requestAnimationFrame(() => setMotionKey(storageKey));
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [storageKey]);
   const getSnapshot = useCallback(() => {
-    const preference = readStoredTheme(browserStorage(), storageKey);
+    const preference = effectiveThemePreference(storageKey);
     return `${preference}:${resolvedTheme(preference, prefersDark())}`;
   }, [storageKey]);
   const snapshot = useSyncExternalStore(
@@ -318,7 +327,7 @@ export function ThemeControl({
     "light" | "dark",
   ];
   useLayoutEffect(() => {
-    applyThemeDom(readStoredTheme(browserStorage(), storageKey));
+    applyThemeDom(effectiveThemePreference(storageKey));
   }, [storageKey]);
 
   if (variant === "icon") {
@@ -329,7 +338,11 @@ export function ThemeControl({
       <button
         {...buttonProps}
         type="button"
-        className={cn("kiwi-theme kiwi-theme--icon", className)}
+        className={cn(
+          "kiwi-theme kiwi-theme--icon",
+          motionKey === storageKey && "kiwi-theme--motion",
+          className,
+        )}
         data-ui="theme-control"
         data-resolved-theme={theme}
         aria-label={name}

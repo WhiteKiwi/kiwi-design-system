@@ -330,7 +330,12 @@ for (const markup of [iconTheme, themeControlMarkup()]) {
   assert.doesNotMatch(markup, /aria-pressed|type="radio"|<legend/);
   assert.equal([...markup.matchAll(/<svg/g)].length, 1);
   assert.match(markup, /<mask/);
-  assert.match(markup, /kiwi-theme__occluder/);
+  assert.match(markup, /class="moon"/);
+  assert.match(markup, /class="sun" cx="12" cy="12" r="6"/);
+  assert.match(markup, /viewBox="0 0 24 24"/);
+  assert.match(markup, /width="22" height="22"/);
+  assert.equal([...markup.matchAll(/<line /g)].length, 8);
+  assert.doesNotMatch(markup, /kiwi-theme--motion/);
 }
 const iconGroups = renderToStaticMarkup(
   React.createElement(
@@ -345,8 +350,8 @@ for (const markup of [
   themeControlMarkup() + themeControlMarkup(),
 ]) {
   const ids = [...markup.matchAll(/id="([^"]+)"/g)].map((match) => match[1]);
-  assert.equal(ids.length, 4);
-  assert.equal(new Set(ids).size, 4);
+  assert.equal(ids.length, 2);
+  assert.equal(new Set(ids).size, 2);
   for (const id of ids) {
     assert.match(id, /^[A-Za-z0-9_-]+$/);
     assert.ok(markup.includes(`url(#${id})`));
@@ -419,7 +424,10 @@ for (const source of [bootstrap, helper, themeControlMarkup()]) {
   assert.doesNotMatch(source, /setItem\([^)]*auto/);
 }
 assert.throws(() => pipThemeBootstrap(""));
-function runThemeScript(source, { saved = null, prefersDark = false } = {}) {
+function runThemeScript(
+  source,
+  { saved = null, prefersDark = false, throwing = false } = {},
+) {
   const attributes = new Map();
   const meta = {
     name: "theme-color",
@@ -432,6 +440,18 @@ function runThemeScript(source, { saved = null, prefersDark = false } = {}) {
   class MockInput extends MockElement {}
   const icon = new MockElement();
   Object.assign(icon, {
+    classList: {
+      values: new Set(),
+      add(value) {
+        this.values.add(value);
+      },
+      remove(value) {
+        this.values.delete(value);
+      },
+      contains(value) {
+        return this.values.has(value);
+      },
+    },
     disabled: false,
     attributes: new Map(),
     setAttribute(name, value) {
@@ -457,8 +477,12 @@ function runThemeScript(source, { saved = null, prefersDark = false } = {}) {
   const map = new Map(saved === null ? [] : [["app-theme", saved]]);
   let wrote = false;
   const localStorage = {
-    getItem: (key) => (map.has(key) ? map.get(key) : null),
+    getItem: (key) => {
+      if (throwing) throw new Error("getItem");
+      return map.has(key) ? map.get(key) : null;
+    },
     setItem: (key, value) => {
+      if (throwing) throw new Error("setItem");
       wrote = true;
       assert.ok(
         value === "light" || value === "dark",
@@ -466,7 +490,10 @@ function runThemeScript(source, { saved = null, prefersDark = false } = {}) {
       );
       map.set(key, value);
     },
-    removeItem: (key) => map.delete(key),
+    removeItem: (key) => {
+      if (throwing) throw new Error("removeItem");
+      return map.delete(key);
+    },
   };
   const listeners = {};
   const document = {
@@ -501,11 +528,18 @@ function runThemeScript(source, { saved = null, prefersDark = false } = {}) {
     delete listeners[type];
   };
   const mediaListeners = [];
+  const frames = new Map();
+  let frameId = 0;
   const context = vm.createContext({
     document,
     localStorage,
     window: {
       localStorage,
+      requestAnimationFrame: (callback) => {
+        frames.set(++frameId, callback);
+        return frameId;
+      },
+      cancelAnimationFrame: (id) => frames.delete(id),
       matchMedia: () => ({
         matches: prefersDark,
         addEventListener: (_type, listener) => mediaListeners.push(listener),
@@ -529,6 +563,21 @@ function runThemeScript(source, { saved = null, prefersDark = false } = {}) {
     document,
     MockElement,
     MockInput,
+    frame() {
+      const pending = [...frames.values()];
+      frames.clear();
+      for (const callback of pending) callback();
+    },
+    unavailableStorage() {
+      Object.defineProperty(context.window, "localStorage", {
+        get() {
+          throw new Error("unavailable");
+        },
+      });
+    },
+    throwStorage() {
+      throwing = true;
+    },
     changeSystem(dark) {
       prefersDark = dark;
       for (const listener of mediaListeners) listener();
@@ -570,6 +619,11 @@ assert.equal(bound.map.has("app-theme"), false);
 assert.equal(bound.attributes.has("data-theme"), false);
 assert.equal([...bound.map.values()].includes("auto"), false);
 function verifyIconBinding(binding, reset) {
+  assert.equal(binding.icon.classList.contains("kiwi-theme--motion"), false);
+  binding.frame();
+  assert.equal(binding.icon.classList.contains("kiwi-theme--motion"), false);
+  binding.frame();
+  assert.equal(binding.icon.classList.contains("kiwi-theme--motion"), true);
   const label = () => binding.icon.attributes.get("aria-label");
   const title = () => binding.icon.attributes.get("title");
   assert.equal(label(), "어둡게 전환");
@@ -614,6 +668,44 @@ const iconBound = runThemeScript(helper);
 verifyIconBinding(iconBound, () =>
   iconBound.listeners.change({ target: iconBound.radios[0] }),
 );
+function verifyThrowingStorage(binding, reset) {
+  function expect(theme, explicit) {
+    assert.equal(binding.attributes.get("data-theme"), explicit);
+    assert.equal(
+      binding.meta.content,
+      theme === "dark" ? "#0e0e0e" : "#f4f5ef",
+    );
+    assert.equal(binding.icon.attributes.get("data-resolved-theme"), theme);
+    assert.equal(
+      binding.icon.attributes.get("aria-label"),
+      theme === "dark" ? "밝게 전환" : "어둡게 전환",
+    );
+  }
+  reset();
+  binding.changeSystem(false);
+  expect("light", undefined);
+  binding.listeners.click({ target: binding.icon });
+  expect("dark", "dark");
+  binding.changeSystem(true);
+  binding.changeSystem(false);
+  expect("dark", "dark");
+  binding.listeners.storage({ key: "app-theme" });
+  expect("dark", "dark");
+  binding.listeners.click({ target: binding.icon });
+  expect("light", "light");
+  reset();
+  expect("light", undefined);
+  binding.changeSystem(true);
+  expect("dark", undefined);
+}
+const throwingInline = runThemeScript(helper, { throwing: true });
+verifyThrowingStorage(throwingInline, () =>
+  throwingInline.listeners.change({ target: throwingInline.radios[0] }),
+);
+throwingInline.unavailableStorage();
+verifyThrowingStorage(throwingInline, () =>
+  throwingInline.listeners.change({ target: throwingInline.radios[0] }),
+);
 // Run the module binding against the same sandbox environment as the inline script.
 const moduleBound = runThemeScript("");
 const originalGlobals = new Map(
@@ -634,7 +726,19 @@ try {
   moduleBound.listeners.change({ target: moduleBound.radios[0] });
   assert.equal(moduleBound.map.size, 0);
   assert.equal(moduleBound.radios[0].checked, true);
+  moduleBound.throwStorage();
+  verifyThrowingStorage(moduleBound, () =>
+    commitThemePreference("app-theme", "auto"),
+  );
+  moduleBound.unavailableStorage();
+  verifyThrowingStorage(moduleBound, () =>
+    commitThemePreference("app-theme", "auto"),
+  );
   stop();
+  assert.equal(
+    moduleBound.icon.classList.contains("kiwi-theme--motion"),
+    false,
+  );
   assert.equal(moduleBound.listeners.click, undefined);
   assert.equal(moduleBound.listeners.change, undefined);
 } finally {
@@ -643,11 +747,57 @@ try {
     else delete globalThis[key];
   }
 }
-assert.match(
-  styles,
-  /@media \(prefers-reduced-motion: reduce\)\s*\{\s*\.kiwi-theme__core,[\s\S]*?\.kiwi-theme__occluder\s*\{\s*transition: none;/,
+const glyphStyles = styles.slice(
+  styles.indexOf(".kiwi-theme__glyph {"),
+  styles.indexOf(".kiwi-theme > legend"),
 );
-assert.match(styles, /--kiwi-theme-duration: (?:3\d\d|4[0-4]\d|450)ms/);
+const [restStyles, motionStyles] = glyphStyles.split(
+  "@media (prefers-reduced-motion: no-preference)",
+);
+assert.doesNotMatch(
+  restStyles,
+  /transition\s*:/,
+  "pre-ready and reduced-motion glyphs have no transitions",
+);
+assert.match(restStyles, /width: 22px;\s*height: 22px/);
+assert.match(restStyles, /stroke-width: 2px/);
+assert.match(restStyles, /transform: scale\(1\.75\)/);
+assert.match(restStyles, /transform: translateX\(-7px\)/);
+assert.match(
+  restStyles,
+  /@supports \(cx: 1px\)[\s\S]*transform: none;\s*cx: 17px/,
+);
+for (const match of motionStyles.matchAll(/([^{}]+)\{([^{}]+)\}/g)) {
+  if (match[2].includes("transition"))
+    assert.ok(match[1].includes(".kiwi-theme--motion"));
+}
+assert.match(
+  motionStyles,
+  /transform 500ms cubic-bezier\(0?\.5, 1\.25, 0?\.75, 1\.25\)/,
+);
+assert.match(
+  motionStyles,
+  /transform 500ms cubic-bezier\(0?\.5, 1\.5, 0?\.75, 1\.25\)/,
+);
+assert.match(motionStyles, /opacity 500ms cubic-bezier\(0?\.25, 0, 0?\.3, 1\)/);
+assert.match(
+  motionStyles,
+  /transition: transform 250ms cubic-bezier\(0, 0, 0, 1\)/,
+);
+assert.match(motionStyles, /transition: cx 250ms cubic-bezier\(0, 0, 0, 1\)/);
+assert.match(
+  motionStyles,
+  /data-resolved-theme="dark"\] \.sun \{\s*transition-timing-function: cubic-bezier\(0?\.25, 0, 0?\.3, 1\);\s*transition-duration: 250ms/,
+);
+assert.match(restStyles, /rotateZ\(-25deg\)/);
+assert.match(
+  motionStyles,
+  /data-resolved-theme="dark"\] \.sun-beams \{\s*transition-duration: 150ms/,
+);
+assert.match(
+  motionStyles,
+  /transition-delay: 250ms;\s*transition-duration: 500ms/,
+);
 assert.match(
   styles,
   /\.kiwi-theme--icon\s*\{[^}]*color: var\(--kiwi-color-text\)/,
@@ -686,6 +836,13 @@ assert.match(
 const themeEntry = read("packages/ui/dist/theme.js");
 assert.doesNotMatch(themeEntry, /^["']use client["']/);
 assert.doesNotMatch(themeEntry, /from ["']react["']/);
+// Shared chunks keep imperative resets and React on one store, and remain server-safe.
+for (const match of themeEntry.matchAll(/from "(\.\/[^"\n]+\.js)"/g)) {
+  const dependency = read(`packages/ui/dist/${match[1].slice(2)}`);
+  assert.doesNotMatch(dependency, /^["']use client["']/);
+  assert.doesNotMatch(dependency, /from ["']react["']/);
+}
+
 assert.ok(
   read("packages/ui/dist/index.js").startsWith('"use client";'),
   "preserve the React client boundary in the shipped bundle",

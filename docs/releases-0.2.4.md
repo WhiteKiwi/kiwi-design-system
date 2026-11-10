@@ -13,11 +13,20 @@ remain 0.2.3-compatible; shared motion tokens are unchanged.
   unchanged. Auto omits `data-theme`, stores nothing, and follows system changes
   live for both the icon and `theme-color`. `commitThemePreference(key, "auto")`
   clears a fixed choice; the icon has no reset UI.
-- Inline glyph geometry adapts Phosphor Regular sun/moon 2.1.1, MIT,
-  [copyright Phosphor Icons](https://unpkg.com/@phosphor-icons/core@2.1.1/LICENSE),
-  as a placeholder without a runtime dependency. One SVG morphs with a sliding
-  crescent mask rather than crossfading icons. Glyph and component-scoped 380ms
-  ease-out motion are pending the designer's final pick. Reduced motion is instant.
+- Picked motion A ports the official GUI Challenges / Adam Argyle
+  [theme-switch](https://github.com/argyleink/gui-challenges/tree/82317d0d04c4f38ddf781439e282aa67ecb5b7f6/theme-switch),
+  commit `82317d0d04c4f38ddf781439e282aa67ecb5b7f6`. Original 24×24 geometry is
+  displayed at 22px; sun, eight rays and crescent mask use the official elastic
+  motion (250ms sun, 150ms rays, 500ms mask after 250ms delay to dark;
+  500ms sun/rays and 250ms mask to light). First paint, hydration and reduced
+  motion are instant; transitions wait until initial sync has painted.
+  Repository LICENSE is Apache-2.0, while theme-switch/package.json declares ISC
+  (inconsistent upstream metadata). The package includes a
+  [notice](../packages/ui/THIRD_PARTY.md) and Apache-2.0 text; WhiteKiwi stays MIT.
+- React and vanilla retain the effective preference in memory when storage
+  get/set/remove throws or storage is unavailable. Both clicks and reset keep
+  the document, theme-color, glyph and action label in sync. Readable cross-tab
+  events refresh memory; media changes follow only while preference is auto.
 - React and native bindings support both variants; `@whitekiwi/ui/theme` stays
   React-free. The catalog header adopts the icon and specimens show both themes.
 

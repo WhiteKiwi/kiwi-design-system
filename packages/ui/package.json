@@ -21,7 +21,9 @@
     "dist",
     "src/styles.css",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "THIRD_PARTY.md",
+    "LICENSE-APACHE-2.0"
   ],
   "scripts": {
     "build": "tsup",

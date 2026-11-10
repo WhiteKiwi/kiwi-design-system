@@ -463,9 +463,8 @@ input.kiwi-field__input[type="time"]::-webkit-date-and-time-value {
   max-width: 100%;
   min-inline-size: 0;
 }
-/* Placeholder glyph + 380ms morph: pending the designer's final pick. */
+/* GUI Challenges / Adam Argyle theme-switch port; see ../THIRD_PARTY.md. */
 .kiwi-theme--icon {
-  --kiwi-theme-duration: 380ms;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -496,37 +495,61 @@ input.kiwi-field__input[type="time"]::-webkit-date-and-time-value {
   cursor: not-allowed;
 }
 .kiwi-theme__glyph {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 22px;
+  height: 22px;
   overflow: visible;
 }
-.kiwi-theme__core,
-.kiwi-theme__rays {
-  transform-origin: 128px 128px;
-  transition:
-    transform var(--kiwi-theme-duration) var(--kiwi-ease-out),
-    opacity var(--kiwi-theme-duration) var(--kiwi-ease-out),
-    stroke-width var(--kiwi-theme-duration) var(--kiwi-ease-out);
+.kiwi-theme__glyph > :is(.moon, .sun, .sun-beams) {
+  transform-origin: center center;
 }
-.kiwi-theme__occluder {
-  transition: transform var(--kiwi-theme-duration) var(--kiwi-ease-out);
+.kiwi-theme__glyph > .sun-beams {
+  stroke-width: 2px;
 }
-.kiwi-theme--icon[data-resolved-theme="dark"] .kiwi-theme__core {
-  transform: translate(8px, -8px) scale(1.714286);
-  stroke-width: 9.333333;
+.kiwi-theme--icon[data-resolved-theme="dark"] .sun {
+  transform: scale(1.75);
 }
-.kiwi-theme--icon[data-resolved-theme="dark"] .kiwi-theme__occluder {
-  transform: translateX(-138.667px);
-}
-.kiwi-theme--icon[data-resolved-theme="dark"] .kiwi-theme__rays {
-  transform: rotate(45deg) scale(0.6);
+.kiwi-theme--icon[data-resolved-theme="dark"] .sun-beams {
+  transform: rotateZ(-25deg);
   opacity: 0;
 }
-@media (prefers-reduced-motion: reduce) {
-  .kiwi-theme__core,
-  .kiwi-theme__rays,
-  .kiwi-theme__occluder {
-    transition: none;
+.kiwi-theme--icon[data-resolved-theme="dark"] .moon > circle {
+  transform: translateX(-7px);
+}
+@supports (cx: 1px) {
+  .kiwi-theme--icon[data-resolved-theme="dark"] .moon > circle {
+    transform: none;
+    cx: 17px;
+  }
+}
+/* Bindings enable motion only after initial theme sync has painted in two rAFs.
+   No transitions before readiness (including SSR/hydration) or in reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .kiwi-theme--motion .sun {
+    transition: transform 500ms cubic-bezier(0.5, 1.25, 0.75, 1.25);
+  }
+  .kiwi-theme--motion .sun-beams {
+    transition:
+      transform 500ms cubic-bezier(0.5, 1.5, 0.75, 1.25),
+      opacity 500ms cubic-bezier(0.25, 0, 0.3, 1);
+  }
+  .kiwi-theme--motion .moon > circle {
+    transition: transform 250ms cubic-bezier(0, 0, 0, 1);
+  }
+  @supports (cx: 1px) {
+    .kiwi-theme--motion .moon > circle {
+      transition: cx 250ms cubic-bezier(0, 0, 0, 1);
+    }
+  }
+  .kiwi-theme--motion[data-resolved-theme="dark"] .sun {
+    transition-timing-function: cubic-bezier(0.25, 0, 0.3, 1);
+    transition-duration: 250ms;
+  }
+  .kiwi-theme--motion[data-resolved-theme="dark"] .sun-beams {
+    transition-duration: 150ms;
+  }
+  .kiwi-theme--motion[data-resolved-theme="dark"] .moon > circle {
+    transition-delay: 250ms;
+    transition-duration: 500ms;
   }
 }
 .kiwi-theme > legend:not(.kiwi-sr-only) {

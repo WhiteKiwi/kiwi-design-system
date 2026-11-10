@@ -122,6 +122,35 @@ export function applyThemeDom(preference: ThemePreference): void {
   meta.setAttribute("content", canvasColor(preference, prefersDark()));
 }
 
+// Persistence initializes the preference once; failed reads/writes never erase it.
+const effectivePreferences = new Map<string, ThemePreference>();
+
+export function effectiveThemePreference(storageKey: string): ThemePreference {
+  if (!effectivePreferences.has(storageKey)) {
+    effectivePreferences.set(
+      storageKey,
+      normalizeStoredTheme(browserStorage(), storageKey),
+    );
+  }
+  return effectivePreferences.get(storageKey) ?? "auto";
+}
+
+function refreshThemePreference(storageKey: string): ThemePreference {
+  try {
+    const storage = browserStorage();
+    if (storage) {
+      const saved = storage.getItem(storageKey);
+      effectivePreferences.set(
+        storageKey,
+        saved === "light" || saved === "dark" ? saved : "auto",
+      );
+    }
+  } catch {
+    // Keep the effective preference when persistence is unreadable.
+  }
+  return effectiveThemePreference(storageKey);
+}
+
 const listeners = new Map<string, Set<() => void>>();
 let watching = false;
 
@@ -134,13 +163,15 @@ function ensureEnvironmentWatch() {
   watching = true;
   const media = window.matchMedia("(prefers-color-scheme: dark)");
   window.addEventListener("storage", (event) => {
-    if (!event.key || !listeners.has(event.key)) return;
-    applyThemeDom(readStoredTheme(browserStorage(), event.key));
-    emit(event.key);
+    for (const storageKey of listeners.keys()) {
+      if (event.key !== null && event.key !== storageKey) continue;
+      applyThemeDom(refreshThemePreference(storageKey));
+      emit(storageKey);
+    }
   });
   media.addEventListener("change", () => {
     for (const storageKey of listeners.keys()) {
-      if (readStoredTheme(browserStorage(), storageKey) === "auto") {
+      if (effectiveThemePreference(storageKey) === "auto") {
         applyThemeDom("auto");
       }
       emit(storageKey);
@@ -153,7 +184,7 @@ export function subscribeThemePreference(
   onChange: () => void,
 ): () => void {
   assertThemeStorageKey(storageKey);
-  normalizeStoredTheme(browserStorage(), storageKey);
+  effectiveThemePreference(storageKey);
   ensureEnvironmentWatch();
   const group = listeners.get(storageKey) ?? new Set<() => void>();
   group.add(onChange);
@@ -169,6 +200,7 @@ export function commitThemePreference(
   preference: ThemePreference,
 ): void {
   assertThemeStorageKey(storageKey);
+  effectivePreferences.set(storageKey, preference);
   writeStoredTheme(browserStorage(), storageKey, preference);
   applyThemeDom(preference);
   emit(storageKey);
@@ -225,19 +257,21 @@ export function pipThemeControlScript(storageKey: string): string {
         return null;
       }
     }
+    var effective = "auto";
     function read() {
       var storage = store();
+      if (!storage) return effective;
       var saved = null;
       try {
-        saved = storage ? storage.getItem(key) : null;
-      } catch (error) {}
-      if (saved === "light" || saved === "dark") return saved;
+        saved = storage.getItem(key);
+      } catch (error) { return effective; }
+      if (saved === "light" || saved === "dark") return (effective = saved);
       if (saved !== null && storage) {
         try {
           storage.removeItem(key);
         } catch (error) {}
       }
-      return "auto";
+      return (effective = "auto");
     }
     function resolve(preference) {
       return preference === "auto"
@@ -260,6 +294,7 @@ export function pipThemeControlScript(storageKey: string): string {
       meta.setAttribute("content", colorFor(preference));
     }
     function write(preference) {
+      effective = preference;
       var storage = store();
       if (!storage) return;
       try {
@@ -302,7 +337,7 @@ export function pipThemeControlScript(storageKey: string): string {
       sync(value);
     });
     window.addEventListener("storage", function (event) {
-      if (event.key !== key) return;
+      if (event.key !== null && event.key !== key) return;
       var preference = read();
       apply(preference);
       sync(preference);
@@ -310,13 +345,21 @@ export function pipThemeControlScript(storageKey: string): string {
     window
       .matchMedia("(prefers-color-scheme: dark)")
       .addEventListener("change", function () {
-        var preference = read();
+        var preference = effective;
         if (preference === "auto") apply(preference);
         sync(preference);
       });
     var initial = read();
     apply(initial);
     sync(initial);
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        var buttons = document.querySelectorAll("button.kiwi-theme--icon");
+        for (var index = 0; index < buttons.length; index += 1) {
+          buttons[index].classList.add("kiwi-theme--motion");
+        }
+      });
+    });
   } catch (error) {}
 })();`,
     storageKey,
@@ -410,12 +453,23 @@ export function bindThemeControl(
   scope.addEventListener("click", onClick);
   scope.addEventListener("change", onChange);
   const stop = subscribeThemePreference(storageKey, () => {
-    sync(readStoredTheme(browserStorage(), storageKey));
+    sync(effectiveThemePreference(storageKey));
   });
-  const initial = normalizeStoredTheme(browserStorage(), storageKey);
+  const initial = effectiveThemePreference(storageKey);
   applyThemeDom(initial);
   sync(initial);
+  let frame = window.requestAnimationFrame(() => {
+    frame = window.requestAnimationFrame(() => {
+      for (const button of scope.querySelectorAll("button.kiwi-theme--icon")) {
+        button.classList.add("kiwi-theme--motion");
+      }
+    });
+  });
   return () => {
+    window.cancelAnimationFrame(frame);
+    for (const button of scope.querySelectorAll("button.kiwi-theme--icon")) {
+      button.classList.remove("kiwi-theme--motion");
+    }
     scope.removeEventListener("click", onClick);
     scope.removeEventListener("change", onChange);
     stop();

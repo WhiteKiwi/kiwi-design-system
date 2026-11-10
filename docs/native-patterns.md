@@ -58,34 +58,39 @@ This is not a tablist: route changes and panel focus belong to the consumer.
 
 Use the default icon button in product headers: a 44×44 ghost target with a
 resolved sun/moon and Korean action name/title. Click fixes the opposite theme.
-The helper below synchronizes the initial light placeholder before interaction.
+The helper below synchronizes the initial light markup before interaction.
 It follows system changes live until an explicit preference is stored.
 
 ```html
 <button type="button" class="kiwi-theme kiwi-theme--icon" data-resolved-theme="light" aria-label="어둡게 전환" title="어둡게 전환">
-<svg class="kiwi-theme__glyph" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="20" height="20" aria-hidden="true" focusable="false">
-  <defs>
-    <mask id="kiwi-theme-example-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="320" height="256">
-      <rect width="320" height="256" fill="white" />
-      <circle class="kiwi-theme__occluder" cx="304" cy="90.667" r="56" fill="black" />
-    </mask>
-    <clipPath id="kiwi-theme-example-clip"><circle cx="128" cy="128" r="56" /></clipPath>
-  </defs>
-  <g class="kiwi-theme__core" fill="none" stroke="currentColor" stroke-width="16">
-    <circle cx="128" cy="128" r="56" mask="url(#kiwi-theme-example-mask)" />
-    <g clip-path="url(#kiwi-theme-example-clip)"><circle class="kiwi-theme__occluder" cx="304" cy="90.667" r="56" /></g>
-  </g>
-  <g class="kiwi-theme__rays" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round">
-    <path d="M128 16v24m0 176v24M16 128h24m176 0h24M48 48l16 16m128 128 16 16M48 208l16-16M192 64l16-16" />
-  </g>
-</svg>
+<svg class="kiwi-theme__glyph" aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24">
+        <mask class="moon" id="kiwi-theme-example-mask">
+          <rect x="0" y="0" width="100%" height="100%" fill="white" />
+          <circle cx="24" cy="10" r="6" fill="black" />
+        </mask>
+        <circle class="sun" cx="12" cy="12" r="6" mask="url(#kiwi-theme-example-mask)" fill="currentColor" />
+        <g class="sun-beams" stroke="currentColor">
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+         </g>
+      </svg>
 </button>
 ```
 
 IDs are unique per `themeControlMarkup()` call. When copying this example more
 than once, replace every `kiwi-theme-example` suffix consistently per instance.
-The inline Phosphor Regular 2.1.1 (MIT) placeholder and 380ms masked morph await
-the designer's final pick; reduced motion disables transitions.
+The 22px glyph ports the original 24×24 GUI Challenges / Adam Argyle theme-switch
+SVG and picked motion A. See [UI attribution and timings](../packages/ui/README.md#screen-theme).
+Bindings enable transitions after initial sync has painted (two animation frames);
+first paint, hydration and reduced motion stay instant. Failed or unavailable
+storage retains the effective preference in memory, including after reset to auto.
+Readable storage events refresh it; system changes follow only effective auto.
 
 Use `themeControlMarkup({ variant: "segmented" })` for settings/catalogs only,
 **never in product headers**. Radio names must be unique per independent group.
@@ -157,19 +162,21 @@ when the device preference changes. React apps call `ThemeControl` and
         return null;
       }
     }
+    var effective = "auto";
     function read() {
       var storage = store();
+      if (!storage) return effective;
       var saved = null;
       try {
-        saved = storage ? storage.getItem(key) : null;
-      } catch (error) {}
-      if (saved === "light" || saved === "dark") return saved;
+        saved = storage.getItem(key);
+      } catch (error) { return effective; }
+      if (saved === "light" || saved === "dark") return (effective = saved);
       if (saved !== null && storage) {
         try {
           storage.removeItem(key);
         } catch (error) {}
       }
-      return "auto";
+      return (effective = "auto");
     }
     function resolve(preference) {
       return preference === "auto"
@@ -192,6 +199,7 @@ when the device preference changes. React apps call `ThemeControl` and
       meta.setAttribute("content", colorFor(preference));
     }
     function write(preference) {
+      effective = preference;
       var storage = store();
       if (!storage) return;
       try {
@@ -234,7 +242,7 @@ when the device preference changes. React apps call `ThemeControl` and
       sync(value);
     });
     window.addEventListener("storage", function (event) {
-      if (event.key !== key) return;
+      if (event.key !== null && event.key !== key) return;
       var preference = read();
       apply(preference);
       sync(preference);
@@ -242,13 +250,21 @@ when the device preference changes. React apps call `ThemeControl` and
     window
       .matchMedia("(prefers-color-scheme: dark)")
       .addEventListener("change", function () {
-        var preference = read();
+        var preference = effective;
         if (preference === "auto") apply(preference);
         sync(preference);
       });
     var initial = read();
     apply(initial);
     sync(initial);
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        var buttons = document.querySelectorAll("button.kiwi-theme--icon");
+        for (var index = 0; index < buttons.length; index += 1) {
+          buttons[index].classList.add("kiwi-theme--motion");
+        }
+      });
+    });
   } catch (error) {}
 })();
 </script>

@@ -13,7 +13,7 @@
     "lint": "biome check .",
     "typecheck": "pnpm -r --if-present typecheck",
     "check": "pnpm lint && pnpm typecheck && pnpm build && pnpm test && pnpm test:release",
-    "test": "node scripts/check-design.mjs",
+    "test": "node scripts/check-design.mjs && node scripts/theme-control.test.mjs",
     "release:check": "node scripts/release.mjs check",
     "release:pack": "node scripts/release.mjs pack",
     "release:version": "node scripts/release.mjs version",
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.2",
+    "happy-dom": "^21.0.4",
     "typescript": "^5.9.3"
   },
   "license": "MIT"
