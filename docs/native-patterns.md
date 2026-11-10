@@ -56,10 +56,45 @@ This is not a tablist: route changes and panel focus belong to the consumer.
 
 ## Screen theme
 
-Use the same connected track as `ThemeControl`. Visible labels are 자동, 밝게,
-and 어둡게. Values are `auto`, `light`, and `dark`. Give each group a unique
-radio `name`. The legend is `화면 테마`; keep `kiwi-sr-only` in a header, or
-use `kiwi-field__label` when the legend should be visible.
+Use the default icon button in product headers: a 44×44 ghost target with a
+resolved sun/moon and Korean action name/title. Click fixes the opposite theme.
+The helper below synchronizes the initial light markup before interaction.
+It follows system changes live until an explicit preference is stored.
+
+```html
+<button type="button" class="kiwi-theme kiwi-theme--icon" data-resolved-theme="light" aria-label="어둡게 전환" title="어둡게 전환">
+<svg class="kiwi-theme__glyph" aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24">
+        <mask class="moon" id="kiwi-theme-example-mask">
+          <rect x="0" y="0" width="100%" height="100%" fill="white" />
+          <circle cx="24" cy="10" r="6" fill="black" />
+        </mask>
+        <circle class="sun" cx="12" cy="12" r="6" mask="url(#kiwi-theme-example-mask)" fill="currentColor" />
+        <g class="sun-beams" stroke="currentColor">
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+         </g>
+      </svg>
+</button>
+```
+
+IDs are unique per `themeControlMarkup()` call. When copying this example more
+than once, replace every `kiwi-theme-example` suffix consistently per instance.
+The 22px glyph ports the original 24×24 GUI Challenges / Adam Argyle theme-switch
+SVG and picked motion A. See [UI attribution and timings](../packages/ui/README.md#screen-theme).
+Bindings enable transitions after initial sync has painted (two animation frames);
+first paint, hydration and reduced motion stay instant. Failed or unavailable
+storage retains the effective preference in memory, including after reset to auto.
+Readable storage events refresh it; system changes follow only effective auto.
+
+Use `themeControlMarkup({ variant: "segmented" })` for settings/catalogs only,
+**never in product headers**. Radio names must be unique per independent group.
+`legend` and `hideLegend` still configure this variant.
 
 ```html
 <fieldset class="kiwi-segmented kiwi-theme">
@@ -127,26 +162,29 @@ when the device preference changes. React apps call `ThemeControl` and
         return null;
       }
     }
+    var effective = "auto";
     function read() {
       var storage = store();
+      if (!storage) return effective;
       var saved = null;
       try {
-        saved = storage ? storage.getItem(key) : null;
-      } catch (error) {}
-      if (saved === "light" || saved === "dark") return saved;
+        saved = storage.getItem(key);
+      } catch (error) { return effective; }
+      if (saved === "light" || saved === "dark") return (effective = saved);
       if (saved !== null && storage) {
         try {
           storage.removeItem(key);
         } catch (error) {}
       }
-      return "auto";
+      return (effective = "auto");
+    }
+    function resolve(preference) {
+      return preference === "auto"
+        ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+        : preference;
     }
     function colorFor(preference) {
-      var dark =
-        preference === "dark" ||
-        (preference === "auto" &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches);
-      return dark ? "#0e0e0e" : "#f4f5ef";
+      return resolve(preference) === "dark" ? "#0e0e0e" : "#f4f5ef";
     }
     function apply(preference) {
       if (preference === "light" || preference === "dark") {
@@ -161,6 +199,7 @@ when the device preference changes. React apps call `ThemeControl` and
       meta.setAttribute("content", colorFor(preference));
     }
     function write(preference) {
+      effective = preference;
       var storage = store();
       if (!storage) return;
       try {
@@ -170,11 +209,28 @@ when the device preference changes. React apps call `ThemeControl` and
       } catch (error) {}
     }
     function sync(preference) {
+      var theme = resolve(preference);
+      var buttons = document.querySelectorAll("button.kiwi-theme--icon");
+      for (var index = 0; index < buttons.length; index += 1) {
+        var label = theme === "light" ? "어둡게 전환" : "밝게 전환";
+        buttons[index].setAttribute("data-resolved-theme", theme);
+        buttons[index].setAttribute("aria-label", label);
+        buttons[index].setAttribute("title", label);
+      }
       var inputs = document.querySelectorAll(".kiwi-theme input[type='radio']");
       for (var index = 0; index < inputs.length; index += 1) {
         inputs[index].checked = inputs[index].value === preference;
       }
     }
+    document.addEventListener("click", function (event) {
+      var target = event.target;
+      var button = target && target.closest && target.closest("button.kiwi-theme--icon");
+      if (!button || button.disabled) return;
+      var value = button.getAttribute("data-resolved-theme") === "dark" ? "light" : "dark";
+      write(value);
+      apply(value);
+      sync(value);
+    });
     document.addEventListener("change", function (event) {
       var input = event.target;
       if (!input || !input.closest || !input.closest(".kiwi-theme")) return;
@@ -186,7 +242,7 @@ when the device preference changes. React apps call `ThemeControl` and
       sync(value);
     });
     window.addEventListener("storage", function (event) {
-      if (event.key !== key) return;
+      if (event.key !== null && event.key !== key) return;
       var preference = read();
       apply(preference);
       sync(preference);
@@ -194,11 +250,21 @@ when the device preference changes. React apps call `ThemeControl` and
     window
       .matchMedia("(prefers-color-scheme: dark)")
       .addEventListener("change", function () {
-        if (read() === "auto") apply("auto");
+        var preference = effective;
+        if (preference === "auto") apply(preference);
+        sync(preference);
       });
     var initial = read();
     apply(initial);
     sync(initial);
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        var buttons = document.querySelectorAll("button.kiwi-theme--icon");
+        for (var index = 0; index < buttons.length; index += 1) {
+          buttons[index].classList.add("kiwi-theme--motion");
+        }
+      });
+    });
   } catch (error) {}
 })();
 </script>
@@ -206,7 +272,9 @@ when the device preference changes. React apps call `ThemeControl` and
 
 `@whitekiwi/ui/theme` exports `themeControlMarkup`, `pipThemeBootstrap`, and
 `pipThemeControlScript` for the same text. `bindThemeControl(storageKey)` is
-the module form of the helper.
+the module form of the helper. Bind either once per page; both support icon
+and segmented controls. `commitThemePreference(storageKey, "auto")` clears the
+key and root attribute; the icon has no reset UI.
 
 ## Empty content
 
@@ -225,7 +293,7 @@ or failed. The app owns loading/error distinctions and live-region announcements
 
 Finance had a local labeled Select and Empty component; Finance filters, Namecard's
 side/theme choices and the PIP catalog's ThemeToggle independently implemented
-single selection. Screen theme now uses the shared `ThemeControl` track above. These are small reusable contracts without product data.
+single selection. Screen theme now uses the shared `ThemeControl` variants above. These are small reusable contracts without product data.
 Finance's calculations/calendar, Workspace's host actions, and Ticketman's booking
 workflow remain product-owned. Existing native dialogs/toasts have different
 lifecycle and announcement requirements; this release does not replace them with

@@ -13,6 +13,7 @@ import {
 } from "@whitekiwi/ui";
 import { DesignStandards } from "./design-standards";
 import { SelectionExamples } from "./selection-examples";
+import { ThemeSpecimens } from "./theme-specimens";
 import { docsThemeStorageKey } from "./theme-storage";
 
 const palette = [
@@ -65,7 +66,7 @@ const inventory = [
   ["TextLink", "CONTROL", "inline navigation"],
   ["Select", "CONTROL", "native options · hint · invalid · disabled"],
   ["SegmentedControl", "CONTROL", "single choice · native keyboard · forms"],
-  ["ThemeControl", "CONTROL", "자동 · 밝게 · 어둡게 · header track"],
+  ["ThemeControl", "CONTROL", "아이콘 기본 · 설정용 segmented"],
   ["EmptyState", "FEEDBACK", "explanation · next action"],
   ["Badge", "FEEDBACK", "6 semantic tones"],
   ["Callout", "FEEDBACK", "5 semantic tones"],
@@ -207,8 +208,6 @@ export default function Home() {
         </nav>
         <ThemeControl
           className="docs-theme-toggle"
-          hideLabel
-          label="화면 테마"
           storageKey={docsThemeStorageKey}
         />
       </header>
@@ -412,20 +411,19 @@ export default function Home() {
         <div className="docs-component-block" id="theme-control">
           <div className="docs-component-title">
             <span>화면 테마</span>
-            <code>CONNECTED TRACK · HEADER</code>
+            <code>ICON · HEADER DEFAULT</code>
           </div>
-          <div className="docs-theme-specimen">
-            <span>PIP</span>
-            <ThemeControl
-              hideLabel
-              label="화면 테마"
-              storageKey={docsThemeStorageKey}
-            />
-          </div>
-          <ThemeControl label="화면 테마" storageKey={docsThemeStorageKey} />
+          <ThemeSpecimens />
+          <ThemeControl
+            variant="segmented"
+            label="설정 전용 · 화면 테마"
+            storageKey={docsThemeStorageKey}
+          />
           <p>
-            밝게와 어둡게는 루트에 data-theme를 두고 그 값만 저장합니다. 자동은
-            속성과 저장값을 지워 기기 설정을 따릅니다.
+            제품 헤더는 현재 화면의 해·달만 표시하는 아이콘 버튼을 사용합니다.
+            클릭하면 반대 테마로 고정합니다. Segmented는 설정·카탈로그 전용이며
+            제품 헤더에는 사용하지 않습니다. 자동은 속성과 저장값을 지워 기기
+            설정을 따릅니다.
           </p>
         </div>
 

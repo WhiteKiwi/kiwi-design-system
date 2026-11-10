@@ -463,6 +463,97 @@ input.kiwi-field__input[type="time"]::-webkit-date-and-time-value {
   max-width: 100%;
   min-inline-size: 0;
 }
+/* GUI Challenges / Adam Argyle theme-switch port; see ../THIRD_PARTY.md. */
+.kiwi-theme--icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-width: 2.75rem;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--kiwi-radius-sm);
+  background: transparent;
+  color: var(--kiwi-color-text);
+  cursor: pointer;
+}
+.kiwi-theme--icon:hover:not(:disabled) {
+  background: var(--kiwi-color-control-hover);
+}
+.kiwi-theme--icon:active:not(:disabled) {
+  background: var(--kiwi-color-control-active);
+}
+.kiwi-theme--icon:focus-visible {
+  outline: 2px solid var(--kiwi-color-focus);
+  outline-offset: 0.2rem;
+}
+.kiwi-theme--icon:disabled {
+  background: var(--kiwi-color-disabled-surface);
+  color: var(--kiwi-color-disabled-text);
+  cursor: not-allowed;
+}
+.kiwi-theme__glyph {
+  width: 22px;
+  height: 22px;
+  overflow: visible;
+  /* Official .theme-toggle > svg { stroke-linecap: round } keeps rays rounded. */
+  stroke-linecap: round;
+}
+.kiwi-theme__glyph > :is(.moon, .sun, .sun-beams) {
+  transform-origin: center center;
+}
+.kiwi-theme__glyph > .sun-beams {
+  stroke-width: 2px;
+}
+.kiwi-theme--icon[data-resolved-theme="dark"] .sun {
+  transform: scale(1.75);
+}
+.kiwi-theme--icon[data-resolved-theme="dark"] .sun-beams {
+  transform: rotateZ(-25deg);
+  opacity: 0;
+}
+.kiwi-theme--icon[data-resolved-theme="dark"] .moon > circle {
+  transform: translateX(-7px);
+}
+@supports (cx: 1px) {
+  .kiwi-theme--icon[data-resolved-theme="dark"] .moon > circle {
+    transform: none;
+    cx: 17px;
+  }
+}
+/* Bindings enable motion only after initial theme sync has painted in two rAFs.
+   No transitions before readiness (including SSR/hydration) or in reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .kiwi-theme--motion .sun {
+    transition: transform 500ms cubic-bezier(0.5, 1.25, 0.75, 1.25);
+  }
+  .kiwi-theme--motion .sun-beams {
+    transition:
+      transform 500ms cubic-bezier(0.5, 1.5, 0.75, 1.25),
+      opacity 500ms cubic-bezier(0.25, 0, 0.3, 1);
+  }
+  .kiwi-theme--motion .moon > circle {
+    transition: transform 250ms cubic-bezier(0, 0, 0, 1);
+  }
+  @supports (cx: 1px) {
+    .kiwi-theme--motion .moon > circle {
+      transition: cx 250ms cubic-bezier(0, 0, 0, 1);
+    }
+  }
+  .kiwi-theme--motion[data-resolved-theme="dark"] .sun {
+    transition-timing-function: cubic-bezier(0.25, 0, 0.3, 1);
+    transition-duration: 250ms;
+  }
+  .kiwi-theme--motion[data-resolved-theme="dark"] .sun-beams {
+    transition-duration: 150ms;
+  }
+  .kiwi-theme--motion[data-resolved-theme="dark"] .moon > circle {
+    transition-delay: 250ms;
+    transition-duration: 500ms;
+  }
+}
 .kiwi-theme > legend:not(.kiwi-sr-only) {
   display: table;
   margin-bottom: var(--kiwi-space-2);

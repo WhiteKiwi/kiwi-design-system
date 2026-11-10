@@ -75,7 +75,7 @@ and spacing between components. Load fonts separately; system fallbacks work too
 | Actions and navigation | `Button`, `TextLink` | Button defaults to `type="button"`; set `submit` explicitly for forms |
 | Labeled input | `TextField`, `Select` | Required `label`; optional `hint` / `error`; generated ID and linked description |
 | Single selection | `SegmentedControl` | Native radio group; supports form submission/reset and disabled choices |
-| Screen theme | `ThemeControl` | Connected header track: 자동 / 밝게 / 어둡게. Stores only `light` or `dark` |
+| Screen theme | `ThemeControl` | 44×44 header icon by default; settings-only segmented option. Stores only `light` or `dark` |
 | Empty content | `EmptyState` | Title, optional description/actions; no automatic live announcement |
 | Status and guidance | `Badge`, `Callout` | Visual tone is not an automatic live announcement |
 | Content surfaces | `StaticCard`, `LinkedCard` | Article versus anchor; use an `href` for linked cards and avoid nested controls |
@@ -132,12 +132,33 @@ Non-React consumers can load only the stylesheet and use the documented
 
 ## Screen theme
 
-`ThemeControl` is the shared header control for 자동, 밝게, and 어둡게. The
-internal values are `auto`, `light`, and `dark`. It is a connected segment
-track, 2.75rem (44px) tall, with each option at least 44×44. The selected
-segment uses the inverted text/canvas pair. The legend defaults to `화면 테마`;
-pass `hideLabel` when the header should keep that name screen-reader only.
-Focus-visible uses `--kiwi-color-focus` and no other color.
+`ThemeControl` defaults to `variant="icon"`: one ghost button, a 44×44 hit
+target and a 22px sun/moon reflecting the resolved page theme. The glyph uses
+`--kiwi-color-text`; hover/active use control state tokens. Its Korean accessible
+name and title describe the action: `어둡게 전환` in light, `밝게 전환` in dark.
+Clicking fixes the opposite of the shown theme. There is no reset UI or
+`aria-pressed`. Without a stored choice, system changes update the glyph and
+`theme-color` live. Focus uses the focus token with a 0.2rem offset.
+
+Use `variant="segmented"` only in settings or catalogs, **never in product
+headers**. It preserves 자동 / 밝게 / 어둡게 radios, `label`, `hideLabel`, and
+fieldset attributes. `label` / `hideLabel` do not name the icon variant; its
+accessible name follows the resolved theme. Existing calls without `variant`
+intentionally change appearance in 0.2.4; add `variant="segmented"` for settings.
+Native `disabled` works for either variant.
+
+The glyph and picked motion A port the official GUI Challenges / Adam Argyle
+[theme-switch](https://github.com/argyleink/gui-challenges/tree/82317d0d04c4f38ddf781439e282aa67ecb5b7f6/theme-switch),
+commit `82317d0d04c4f38ddf781439e282aa67ecb5b7f6`: original 24×24 sun, eight thin
+round-capped rays (2-unit lines, 2px stroke) and crescent mask, displayed at 22px.
+Light rays keep their original scale; only the whole SVG is sized to 22px. The original motion uses 250ms sun /
+150ms rays / 500ms mask after 250ms delay to dark; to light, 500ms elastic sun
+and rays with a 250ms mask. Easing values are inlined without Open Props.
+Transitions start only after initial sync has painted; first paint and hydration
+stay instant, as does reduced motion. Shared motion tokens are unchanged.
+Upstream repository LICENSE is Apache-2.0; theme-switch/package.json declares ISC
+(inconsistent metadata). See [third-party notice](THIRD_PARTY.md) and the included
+[Apache-2.0 text](LICENSE-APACHE-2.0). WhiteKiwi's package remains MIT.
 
 `light` and `dark` set `<html data-theme="light">` or `data-theme="dark"`.
 `auto` removes the attribute so the page follows `prefers-color-scheme`. The
@@ -176,13 +197,28 @@ export function RootLayout({ children }: { children: React.ReactNode }) {
 import { ThemeControl } from "@whitekiwi/ui";
 
 export function AppHeader() {
-  return <ThemeControl hideLabel storageKey="app-theme" />;
+  return <ThemeControl storageKey="app-theme" />;
 }
 ```
 
-`commitThemePreference(storageKey, preference)` updates storage, the attribute,
+`commitThemePreference(storageKey, preference)` updates the effective in-memory preference first, then best-effort storage, the attribute,
 and `theme-color` from an imperative caller. `bindThemeControl(storageKey)`
-does the same for the native markup.
+does the same for either native variant. Its optional second argument scopes the
+binding to a container or the icon button itself, including initial/storage sync
+and motion readiness. Call the returned cleanup to remove listeners and motion
+readiness. Omitting the scope binds to `document`.
+`themeControlMarkup({ id, theme })`
+accepts an optional stable SVG ID prefix and resolved `"light" | "dark"` theme
+for static previews or server output. IDs are sanitized to letters, digits,
+underscores, and hyphens; provide a distinct prefix per control after sanitizing.
+Without options it emits the light icon with a generated unique ID;
+binding synchronizes it with the page theme. Call
+`commitThemePreference(storageKey, "auto")` to clear the key and return to the
+system preference without an icon reset UI. Storage failures (including unavailable
+localStorage) retain the effective choice for toggling and labels. Readable
+cross-tab storage events refresh cached keys even after the last control unmounts,
+including storage clear events. Only subscribed keys apply DOM changes or notify
+controls. Media changes follow only an effective `auto`.
 
 ## Themes and server rendering
 

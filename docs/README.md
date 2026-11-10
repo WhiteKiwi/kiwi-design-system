@@ -46,6 +46,7 @@
 
 ## 릴리스 기록
 
+- [0.2.4](releases-0.2.4.md) — ThemeControl 아이콘 기본값, 설정 전용 segmented와 선택된 공식 theme-switch motion A와 저장소 실패 대응.
 - [0.2.3](releases-0.2.3.md) — 헤더용 ThemeControl과 첫 paint 전 `pip-theme-bootstrap`.
 - [0.2.2](releases-0.2.2.md) — dark neutral에서 olive cast를 제거하고, iOS date/time 필드가 넘치지 않게 합니다.
 - [0.2.1](releases-0.2.1.md) — native 선택과 빈 상태, 비React 패턴과 소비자 적용 흐름.
