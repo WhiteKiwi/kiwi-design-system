@@ -45,7 +45,7 @@ Status: **implemented** — 디자인 계약의 버전이며 npm 패키지 버�
 
 | Family | Components | Contract |
 | --- | --- | --- |
-| Controls | `Button`, `TextField`, `Select`, `SegmentedControl`, `TextLink` | rest, hover, focus, disabled와 invalid 상태 |
+| Controls | `Button`, `TextField`, `Select`, `SegmentedControl`, `ThemeControl`, `TextLink` | rest, hover, focus, disabled와 invalid 상태 |
 | Feedback | `Badge`, `Callout`, `EmptyState` | neutral, brand와 status tone; text label 필수 |
 | Editorial | `StaticCard`, `LinkedCard`, `SectionHeading`, `CollectionHeading` | 정보와 navigation affordance 분리 |
 | Disclosure | `Disclosure` | Radix Collapsible 기반 keyboard behavior |
@@ -62,6 +62,7 @@ token을 조합한다. 새 component는 카탈로그 specimen과 inventory를 �
 | Danger Button | error / error-hover / error-active with surface-raised foreground | 2px focus token | disabled pair |
 | TextField / Select | surface-raised + control-border; hover/active keep the same pair | 2px focus token | disabled pair; invalid uses error boundary and linked error text |
 | SegmentedControl | surface-raised/text; control-hover/control-active; selected text/canvas | 2px focus ring outside selected label | native disabled group/option; selected disabled retains boundary |
+| ThemeControl | connected track; same pairs as SegmentedControl; selected fill is inverted text/canvas | 2px `--kiwi-color-focus` only | native disabled fieldset; no per-option disabled API |
 | TextLink | interactive / interactive-hover / interactive-active | 2px focus token | no disabled-link API; render plain text when unavailable |
 | LinkedCard | tone pair / brand-soft + text / brand-field-active + on-brand; arrow inherits foreground | separated two-ring focus | no disabled-card API; use StaticCard when unavailable |
 | Disclosure | same transparent/text pair; open state changes content and indicator | 2px focus token | no disabled prop in current API |
@@ -73,6 +74,7 @@ The website's primary-action matrix illustrates that family only. CSS and actual
 - 필수 control boundary는 장식용 border와 분리해 3:1 gate로 검증한다.
 - LinkedCard는 tone별 rest와 theme별 hover·active에서 글자와 화살표의 foreground를 함께 유지한다.
 - SegmentedControl은 native radio group이다. Tab·방향키·폼 제출/초기화는 브라우저가 맡으며 tablist나 navigation으로 사용하지 않는다. 긴 선택지는 잘리거나 가로로 넘치지 않고 줄바꿈한다.
+- ThemeControl은 헤더용 connected segment track이다. 보이는 이름은 자동·밝게·어둡게이고 값은 `auto`·`light`·`dark`이다. `light`/`dark`만 `<html data-theme>`와 앱이 고른 localStorage 키에 남긴다. `auto`는 attribute와 그 키를 제거한다. `data-theme="auto"`는 쓰지 않는다. focus-visible은 `--kiwi-color-focus`만 사용한다. 높이는 2.75rem(44px)이고 각 선택은 최소 44×44이다.
 - EmptyState는 설명과 다음 행동을 담고 자동으로 loading·error·live region 의미를 부여하지 않는다. 실제 데이터 없음과 미수집은 제품이 구분한다.
 - TextField와 Select는 id 생략 시 고유 id를 생성하고 hint/error와 외부 aria-describedby를 연결한다.
 - Button은 기본 type=button이며 form 제출은 명시적으로 type=submit을 선택한다.

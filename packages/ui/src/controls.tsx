@@ -10,8 +10,23 @@ import type {
   Ref,
   SelectHTMLAttributes,
 } from "react";
-import { useId } from "react";
+import {
+  useCallback,
+  useId,
+  useLayoutEffect,
+  useSyncExternalStore,
+} from "react";
 import { cn } from "./cn";
+import {
+  applyThemeDom,
+  assertThemeStorageKey,
+  browserStorage,
+  commitThemePreference,
+  isThemePreference,
+  readStoredTheme,
+  subscribeThemePreference,
+  type ThemePreference,
+} from "./theme";
 
 const button = cva("kiwi-button", {
   variants: {
@@ -243,5 +258,70 @@ export function SegmentedControl({
         ))}
       </div>
     </fieldset>
+  );
+}
+
+const themeControlOptions = [
+  { value: "auto", label: "자동" },
+  { value: "light", label: "밝게" },
+  { value: "dark", label: "어둡게" },
+] as const;
+
+export type ThemeControlProps = Omit<
+  FieldsetHTMLAttributes<HTMLFieldSetElement>,
+  "children" | "defaultValue" | "onChange" | "value"
+> & {
+  storageKey: string;
+  label?: ReactNode;
+  hideLabel?: boolean;
+  onPreferenceChange?: (preference: ThemePreference) => void;
+};
+
+function serverThemePreference(): ThemePreference {
+  return "auto";
+}
+
+/** Header theme choice. light and dark are explicit; auto follows the device. */
+export function ThemeControl({
+  storageKey,
+  label = "화면 테마",
+  hideLabel = false,
+  className,
+  onPreferenceChange,
+  ...props
+}: ThemeControlProps) {
+  assertThemeStorageKey(storageKey);
+  const subscribe = useCallback(
+    (onStoreChange: () => void) =>
+      subscribeThemePreference(storageKey, onStoreChange),
+    [storageKey],
+  );
+  const getSnapshot = useCallback(
+    () => readStoredTheme(browserStorage(), storageKey),
+    [storageKey],
+  );
+  const preference = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    serverThemePreference,
+  );
+  useLayoutEffect(() => {
+    applyThemeDom(readStoredTheme(browserStorage(), storageKey));
+  }, [storageKey]);
+
+  return (
+    <SegmentedControl
+      {...props}
+      className={cn("kiwi-theme", className)}
+      hideLabel={hideLabel}
+      label={label}
+      onValueChange={(value) => {
+        if (!isThemePreference(value)) return;
+        commitThemePreference(storageKey, value);
+        onPreferenceChange?.(value);
+      }}
+      options={themeControlOptions}
+      value={preference}
+    />
   );
 }

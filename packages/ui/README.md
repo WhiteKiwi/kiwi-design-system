@@ -75,6 +75,7 @@ and spacing between components. Load fonts separately; system fallbacks work too
 | Actions and navigation | `Button`, `TextLink` | Button defaults to `type="button"`; set `submit` explicitly for forms |
 | Labeled input | `TextField`, `Select` | Required `label`; optional `hint` / `error`; generated ID and linked description |
 | Single selection | `SegmentedControl` | Native radio group; supports form submission/reset and disabled choices |
+| Screen theme | `ThemeControl` | Connected header track: 자동 / 밝게 / 어둡게. Stores only `light` or `dark` |
 | Empty content | `EmptyState` | Title, optional description/actions; no automatic live announcement |
 | Status and guidance | `Badge`, `Callout` | Visual tone is not an automatic live announcement |
 | Content surfaces | `StaticCard`, `LinkedCard` | Article versus anchor; use an `href` for linked cards and avoid nested controls |
@@ -129,10 +130,64 @@ loading, and failed results and owns live announcements.
 Non-React consumers can load only the stylesheet and use the documented
 [native patterns](../../docs/native-patterns.md), with no React browser runtime.
 
+## Screen theme
+
+`ThemeControl` is the shared header control for 자동, 밝게, and 어둡게. The
+internal values are `auto`, `light`, and `dark`. It is a connected segment
+track, 2.75rem (44px) tall, with each option at least 44×44. The selected
+segment uses the inverted text/canvas pair. The legend defaults to `화면 테마`;
+pass `hideLabel` when the header should keep that name screen-reader only.
+Focus-visible uses `--kiwi-color-focus` and no other color.
+
+`light` and `dark` set `<html data-theme="light">` or `data-theme="dark"`.
+`auto` removes the attribute so the page follows `prefers-color-scheme`. The
+control never writes `data-theme="auto"`. Pass the app's `storageKey`. Only
+`light` and `dark` are written; `auto` deletes that key. A stored value other
+than those two is removed and treated as `auto`.
+
+Put `pip-theme-bootstrap` in the document head, before CSS, so the first paint
+matches the saved choice. It also sets `theme-color` to `#0e0e0e` when the
+resolved canvas is dark and `#f4f5ef` when it is light — the same values as
+`--kiwi-carbon` and `--kiwi-paper`. Import it from `@whitekiwi/ui/theme` in a
+Server Component. That entry has no React dependency and no client directive.
+Non-React pages copy the same markup, bootstrap, and a small helper from the
+[native patterns](../../docs/native-patterns.md#screen-theme).
+
+```tsx
+import { pipThemeBootstrap } from "@whitekiwi/ui/theme";
+
+export function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="ko" suppressHydrationWarning>
+      <head>
+        <meta name="theme-color" content="#f4f5ef" />
+        <script
+          id="pip-theme-bootstrap"
+          dangerouslySetInnerHTML={{ __html: pipThemeBootstrap("app-theme") }}
+        />
+      </head>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+```tsx
+import { ThemeControl } from "@whitekiwi/ui";
+
+export function AppHeader() {
+  return <ThemeControl hideLabel storageKey="app-theme" />;
+}
+```
+
+`commitThemePreference(storageKey, preference)` updates storage, the attribute,
+and `theme-color` from an imperative caller. `bindThemeControl(storageKey)`
+does the same for the native markup.
+
 ## Themes and server rendering
 
-Set `data-theme="light"` or `data-theme="dark"` on `<html>`. For system mode,
-remove the attribute entirely. The [token package](https://github.com/WhiteKiwi/kiwi-design-system/tree/main/packages/tokens)
+Set `data-theme="light"` or `data-theme="dark"` on `<html>`. For auto, remove
+the attribute entirely. The [token package](https://github.com/WhiteKiwi/kiwi-design-system/tree/main/packages/tokens)
 describes theme setup and semantic overrides.
 
 The JavaScript entry preserves `"use client"` for React Server Component-aware
@@ -146,10 +201,15 @@ Keep the server and client tree consistent for React's generated field IDs.
 
 - `@whitekiwi/ui`: components, `cn`, and the named types `ButtonProps`,
   `TextFieldProps`, `SelectProps`, `SegmentedControlProps`, `SegmentedControlOption`,
-  `EmptyStateProps`, `BadgeProps`, and `CalloutProps`
+  `ThemeControlProps`, `ThemePreference`, `EmptyStateProps`, `BadgeProps`, and
+  `CalloutProps`
+- `@whitekiwi/ui/theme`: `pipThemeBootstrap`, `pipThemeControlScript`,
+  `themeControlMarkup`, `bindThemeControl`, and `commitThemePreference`, without
+  React or a client directive
 - `@whitekiwi/ui/styles.css`: component styles, imported separately
 - `@whitekiwi/tokens/theme.css`: required token stylesheet from its own package
-- No CommonJS build, global reset, router, font download, or theme persistence
+- No CommonJS build, global reset, router, or font download. Theme storage uses
+  the key the app passes to `ThemeControl` or the bootstrap.
 
 Native semantics, focus styles, reduced-motion rules, and defined contrast pairs
 are part of the implementation. They do not certify an entire application.

@@ -49,7 +49,7 @@ body {
 For an unbundled page, copy the exported CSS to your public assets and load it
 with a stylesheet link. Browsers do not resolve npm package names themselves.
 
-## Light, dark, or the system
+## Light, dark, or auto
 
 Set the theme on the root `<html>` element:
 
@@ -57,12 +57,15 @@ Set the theme on the root `<html>` element:
 | --- | --- |
 | Light | `<html data-theme="light">` |
 | Dark | `<html data-theme="dark">` |
-| System | `<html>` with no `data-theme` attribute |
+| Auto | `<html>` with no `data-theme` attribute |
 
-For system mode, remove the attribute; `data-theme="auto"` does **not** enable
-system detection. Theme colors follow `prefers-color-scheme` only when the
-attribute is absent. Apply a saved explicit preference before first paint to
-avoid a light/dark flash. Theme storage and switching belong to your app.
+Auto removes the attribute. `data-theme="auto"` does **not** select a theme.
+Colors follow `prefers-color-scheme` only when the attribute is absent. Apply a
+saved `light` or `dark` value before first paint to avoid a flash. The app
+chooses the localStorage key and stores only those two values. The early
+`pip-theme-bootstrap` script and `ThemeControl` live in
+[@whitekiwi/ui](../ui/README.md#screen-theme). This package still has no
+JavaScript runtime.
 
 ## Use roles, not raw colors
 

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "next build && node scripts/order-theme-bootstrap.mjs",
     "dev": "next dev",
     "typecheck": "tsc --noEmit"
   },

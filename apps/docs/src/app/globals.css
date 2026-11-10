@@ -55,6 +55,22 @@ a {
 .docs-theme-toggle {
   justify-self: end;
 }
+.docs-theme-specimen {
+  display: flex;
+  min-height: 3.75rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--kiwi-space-4);
+  margin-bottom: var(--kiwi-space-6);
+  padding-inline: var(--kiwi-space-4);
+  border-bottom: 1px solid var(--kiwi-color-border-soft);
+  background: var(--kiwi-color-canvas);
+}
+.docs-theme-specimen > span {
+  font-family: var(--kiwi-font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
 
 .docs-hero,
 .docs-section {
@@ -77,6 +93,11 @@ a {
   font-family: var(--kiwi-font-mono);
   font-size: 0.62rem;
   letter-spacing: 0.08em;
+}
+.docs-hero h1,
+.docs-section .kiwi-section-heading h2 {
+  word-break: keep-all;
+  text-wrap: balance;
 }
 .docs-hero h1 {
   max-width: 11ch;

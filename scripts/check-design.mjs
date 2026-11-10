@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
+import vm from "node:vm";
 
 const root = new URL("../", import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), "utf8");
@@ -130,8 +131,23 @@ for (const [name, theme] of [
 const require = createRequire(new URL("apps/docs/package.json", root));
 const React = require("react");
 const { renderToStaticMarkup } = require("react-dom/server");
-const { Button, TextField, Select, SegmentedControl, EmptyState } =
-  await import(new URL("packages/ui/dist/index.js", root));
+const {
+  Button,
+  TextField,
+  Select,
+  SegmentedControl,
+  EmptyState,
+  ThemeControl,
+} = await import(new URL("packages/ui/dist/index.js", root));
+const {
+  canvasColor,
+  pipThemeBootstrap,
+  pipThemeControlScript,
+  readStoredTheme,
+  themeCanvas,
+  themeControlMarkup,
+  writeStoredTheme,
+} = await import(new URL("packages/ui/dist/theme.js", root));
 const render = (component, props) =>
   renderToStaticMarkup(React.createElement(component, props));
 assert.match(render(Button, { children: "Save" }), /type="button"/);
@@ -260,11 +276,232 @@ assert.match(empty, /<h3[^>]*>No records<\/h3>/);
 assert.match(empty, /Change period/);
 assert.match(empty, /<button/);
 assert.doesNotMatch(empty, /role="(?:alert|status)"/);
+const theme = render(ThemeControl, {
+  storageKey: "pip-theme",
+  label: "화면 테마",
+});
+assert.match(theme, /class="kiwi-segmented kiwi-theme"/);
+assert.match(theme, /<legend[^>]*>화면 테마<\/legend>/);
+for (const label of ["자동", "밝게", "어둡게"])
+  assert.match(theme, new RegExp(`>${label}<`));
+for (const value of ["auto", "light", "dark"]) {
+  assert.match(theme, new RegExp(`value="${value}"`));
+}
+assert.equal([...theme.matchAll(/type="radio"/g)].length, 3);
+assert.match(theme, /<input(?=[^>]*checked="")(?=[^>]*value="auto")[^>]*>/);
+assert.doesNotMatch(theme, /system|data-theme="auto"|data-theme="system"/);
+const hiddenTheme = render(ThemeControl, {
+  storageKey: "pip-theme",
+  hideLabel: true,
+});
+assert.match(hiddenTheme, /<legend class="kiwi-sr-only">화면 테마<\/legend>/);
+const themeGroups = renderToStaticMarkup(
+  React.createElement(
+    React.Fragment,
+    null,
+    React.createElement(ThemeControl, { storageKey: "pip-theme" }),
+    React.createElement(ThemeControl, { storageKey: "pip-theme" }),
+  ),
+);
+assert.equal(
+  new Set(
+    [...themeGroups.matchAll(/<input[^>]*name="([^"]+)"/g)].map(
+      (match) => match[1],
+    ),
+  ).size,
+  2,
+);
+assert.throws(() => render(ThemeControl, { storageKey: "bad key" }));
+assert.equal(themeCanvas.light, "#f4f5ef");
+assert.equal(themeCanvas.dark, "#0e0e0e");
+assert.equal(themeCanvas.light, blocks[0]["--kiwi-paper"]);
+assert.equal(themeCanvas.dark, blocks[0]["--kiwi-carbon"]);
+assert.equal(canvasColor("light", true), themeCanvas.light);
+assert.equal(canvasColor("dark", false), themeCanvas.dark);
+assert.equal(canvasColor("auto", true), themeCanvas.dark);
+assert.equal(canvasColor("auto", false), themeCanvas.light);
+const memory = new Map();
+const storage = {
+  getItem: (key) => (memory.has(key) ? memory.get(key) : null),
+  setItem: (key, value) => memory.set(key, value),
+  removeItem: (key) => memory.delete(key),
+};
+writeStoredTheme(storage, "app-theme", "light");
+assert.equal(readStoredTheme(storage, "app-theme"), "light");
+writeStoredTheme(storage, "app-theme", "dark");
+assert.equal(readStoredTheme(storage, "app-theme"), "dark");
+writeStoredTheme(storage, "app-theme", "auto");
+assert.equal(storage.getItem("app-theme"), null);
+assert.equal(readStoredTheme(storage, "app-theme"), "auto");
+for (const stray of ["auto", "system", ""]) {
+  memory.set("app-theme", stray);
+  assert.equal(readStoredTheme(storage, "app-theme"), "auto");
+}
+assert.deepEqual(
+  [...memory.values()].filter((value) => value === "auto"),
+  [],
+);
+const nativePatterns = read("docs/native-patterns.md");
+const bootstrap = pipThemeBootstrap("app-theme");
+const helper = pipThemeControlScript("app-theme");
+assert.ok(nativePatterns.includes(themeControlMarkup()));
+assert.ok(nativePatterns.includes(bootstrap));
+assert.ok(nativePatterns.includes(helper));
+for (const source of [bootstrap, helper, themeControlMarkup()]) {
+  assert.doesNotMatch(source, /system|data-theme="auto"|data-theme="system"/);
+  assert.doesNotMatch(source, /setItem\([^)]*auto/);
+}
+assert.throws(() => pipThemeBootstrap(""));
+function runThemeScript(source, { saved = null, prefersDark = false } = {}) {
+  const attributes = new Map();
+  const meta = {
+    name: "theme-color",
+    content: "#f4f5ef",
+    setAttribute(name, value) {
+      this[name] = value;
+    },
+  };
+  const radios = ["auto", "light", "dark"].map((value) => ({
+    type: "radio",
+    value,
+    checked: value === "auto",
+    closest(selector) {
+      return selector === ".kiwi-theme" ? radios : null;
+    },
+  }));
+  const map = new Map(saved === null ? [] : [["app-theme", saved]]);
+  let wrote = false;
+  const localStorage = {
+    getItem: (key) => (map.has(key) ? map.get(key) : null),
+    setItem: (key, value) => {
+      wrote = true;
+      map.set(key, value);
+    },
+    removeItem: (key) => map.delete(key),
+  };
+  const listeners = {};
+  const document = {
+    documentElement: {
+      setAttribute: (name, value) => attributes.set(name, value),
+      removeAttribute: (name) => attributes.delete(name),
+    },
+    head: { appendChild() {} },
+    querySelector: (selector) =>
+      selector === 'meta[name="theme-color"]' ? meta : null,
+    querySelectorAll: (selector) =>
+      selector === ".kiwi-theme input[type='radio']" ? radios : [],
+    createElement: () => ({
+      setAttribute(name, value) {
+        this[name] = value;
+      },
+    }),
+    addEventListener: (type, listener) => {
+      listeners[type] = listener;
+    },
+  };
+  const mediaListeners = [];
+  const context = vm.createContext({
+    document,
+    localStorage,
+    window: {
+      localStorage,
+      matchMedia: () => ({
+        matches: prefersDark,
+        addEventListener: (_type, listener) => mediaListeners.push(listener),
+      }),
+      addEventListener: (type, listener) => {
+        listeners[type] = listener;
+      },
+    },
+  });
+  vm.runInContext(source, context);
+  return { attributes, meta, radios, map, wrote, listeners, mediaListeners };
+}
+const darkBoot = runThemeScript(bootstrap, { saved: "dark" });
+assert.equal(darkBoot.attributes.get("data-theme"), "dark");
+assert.equal(darkBoot.meta.content, "#0e0e0e");
+assert.equal(darkBoot.wrote, false);
+const lightBoot = runThemeScript(bootstrap, {
+  saved: "light",
+  prefersDark: true,
+});
+assert.equal(lightBoot.attributes.get("data-theme"), "light");
+assert.equal(lightBoot.meta.content, "#f4f5ef");
+const autoBoot = runThemeScript(bootstrap, { prefersDark: true });
+assert.equal(autoBoot.attributes.has("data-theme"), false);
+assert.equal(autoBoot.meta.content, "#0e0e0e");
+const strayBoot = runThemeScript(bootstrap, {
+  saved: "auto",
+  prefersDark: false,
+});
+assert.equal(strayBoot.attributes.has("data-theme"), false);
+assert.equal(strayBoot.meta.content, "#f4f5ef");
+assert.equal(strayBoot.map.get("app-theme"), "auto");
+const bound = runThemeScript(helper, { saved: "auto", prefersDark: true });
+assert.equal(bound.map.has("app-theme"), false);
+assert.equal(bound.attributes.has("data-theme"), false);
+assert.equal(bound.meta.content, "#0e0e0e");
+assert.equal(bound.radios.find((radio) => radio.checked)?.value, "auto");
+bound.listeners.change({ target: bound.radios[2] });
+assert.equal(bound.map.get("app-theme"), "dark");
+assert.equal(bound.attributes.get("data-theme"), "dark");
+assert.equal(bound.meta.content, "#0e0e0e");
+assert.equal(bound.radios.find((radio) => radio.checked)?.value, "dark");
+bound.listeners.change({ target: bound.radios[0] });
+assert.equal(bound.map.has("app-theme"), false);
+assert.equal(bound.attributes.has("data-theme"), false);
+assert.equal([...bound.map.values()].includes("auto"), false);
+const themeRules = [...styles.matchAll(/\.kiwi-theme[^{]*\{[^}]*\}/g)].map(
+  (match) => match[0],
+);
+assert.ok(themeRules.length >= 4, "theme track rules missing");
+for (const rule of themeRules) {
+  assert.doesNotMatch(rule, /#[\da-f]{3,8}/i);
+  assert.doesNotMatch(rule, /system/);
+}
+assert.match(
+  styles,
+  /\.kiwi-theme \.kiwi-segmented__options\s*\{[^}]*gap:\s*0;[^}]*height:\s*2\.75rem;/,
+);
+assert.match(
+  styles,
+  /\.kiwi-theme \.kiwi-segmented__label\s*\{[^}]*min-width:\s*2\.75rem;[^}]*min-height:\s*2\.75rem;/,
+);
+const themeFocus = styles
+  .split("}")
+  .find(
+    (block) =>
+      block.includes(".kiwi-theme") &&
+      block.includes("input:focus-visible") &&
+      block.includes("outline:"),
+  );
+assert.ok(themeFocus, "theme focus-visible rule missing");
+assert.match(themeFocus, /outline:\s*2px solid var\(--kiwi-color-focus\)/);
+assert.doesNotMatch(themeFocus, /#[\da-f]{3,8}/i);
+assert.match(
+  read("apps/docs/src/app/globals.css"),
+  /\.docs-hero h1,[\s\S]*word-break:\s*keep-all;[\s\S]*text-wrap:\s*balance;/,
+);
+const themeEntry = read("packages/ui/dist/theme.js");
+assert.doesNotMatch(themeEntry, /^["']use client["']/);
+assert.doesNotMatch(themeEntry, /from ["']react["']/);
 assert.ok(
   read("packages/ui/dist/index.js").startsWith('"use client";'),
   "preserve the React client boundary in the shipped bundle",
 );
 const homepage = read("apps/docs/out/index.html");
+assert.ok(homepage.includes('id="pip-theme-bootstrap"'));
+assert.ok(homepage.includes(pipThemeBootstrap("pip-theme")));
+for (const label of ["자동", "밝게", "어둡게", "화면 테마"]) {
+  assert.ok(homepage.includes(label), `catalog is missing ${label}`);
+}
+assert.doesNotMatch(homepage, /data-theme="auto"|data-theme="system"/);
+const bootstrapAt = homepage.indexOf('id="pip-theme-bootstrap"');
+const cssAt = homepage.search(/rel="stylesheet"|<style[\s>]/);
+assert.ok(
+  cssAt === -1 || bootstrapAt < cssAt,
+  "pip-theme-bootstrap must run before CSS",
+);
 for (const rel of ["icon", "apple-touch-icon"]) {
   const link = [...homepage.matchAll(/<link\b[^>]*>/g)]
     .map(([tag]) =>
