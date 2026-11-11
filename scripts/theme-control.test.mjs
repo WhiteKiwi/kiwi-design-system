@@ -84,7 +84,12 @@ for (const mode of ["all-throw", "write-throw", "unavailable"]) {
   await system(true);
   const container = document.createElement("div");
   document.body.append(container);
-  const element = React.createElement(ThemeControl, { storageKey: key });
+  const changes = [];
+  const element = React.createElement(ThemeControl, {
+    storageKey: key,
+    "aria-pressed": true,
+    onPreferenceChange: (preference) => changes.push(preference),
+  });
   // Hydration must settle SSR's default light icon to system dark without readiness.
   container.innerHTML = renderToString(element);
   assert.equal(
@@ -110,6 +115,9 @@ for (const mode of ["all-throw", "write-throw", "unavailable"]) {
     assert.equal(button.title, button.getAttribute("aria-label"));
   }
   expect("dark", null);
+  assert.equal(button.hasAttribute("aria-pressed"), false);
+  assert.equal(container.querySelector("fieldset, input, legend"), null);
+  assert.equal(button.type, "button");
   assert.equal(button.classList.contains("kiwi-theme--motion"), false);
   await frame();
   assert.equal(button.classList.contains("kiwi-theme--motion"), false);
@@ -129,6 +137,7 @@ for (const mode of ["all-throw", "write-throw", "unavailable"]) {
   }
   await act(() => button.click());
   expect("dark", "dark");
+  assert.deepEqual(changes, ["light", "dark"]);
   // The public imperative entry and React must share the same effective store.
   await act(() => commitThemePreference(key, "auto"));
   expect("dark", null);
@@ -297,19 +306,42 @@ assert.equal(scopedButton.classList.contains("kiwi-theme--motion"), false);
 assert.equal(frames.size, 0);
 scopedButton.click();
 expectScopedTheme("dark");
-// The scope's change listener is removed too.
-const radio = document.createElement("input");
-radio.type = "radio";
-radio.value = "light";
-scopedButton.append(radio);
-radio.dispatchEvent(new window.Event("change", { bubbles: true }));
-expectScopedTheme("dark");
 // Unbinding also stops storage-driven attribute updates.
 saved.set(scopedKey, "light");
 window.dispatchEvent(new window.StorageEvent("storage", { key: scopedKey }));
 assert.equal(scopedButton.dataset.resolvedTheme, "dark");
 assert.equal(document.documentElement.dataset.theme, "dark");
 scopedContainer.remove();
+// Container scopes synchronize every descendant icon, ignore unrelated controls,
+// and respect native disabled behavior.
+const group = document.createElement("div");
+group.innerHTML =
+  themeControlMarkup() +
+  themeControlMarkup({ theme: "dark" }) +
+  '<input type="radio" value="auto">';
+document.body.append(group);
+const groupKey = "native-descendant-scope";
+saved.set(groupKey, "light");
+const stopGroup = bindThemeControl(groupKey, group);
+const buttons = [...group.querySelectorAll("button")];
+assert.ok(buttons.every((button) => button.dataset.resolvedTheme === "light"));
+buttons[0].disabled = true;
+buttons[0].click();
+assert.equal(saved.get(groupKey), "light");
+buttons[1]
+  .querySelector("svg")
+  .dispatchEvent(new window.MouseEvent("click", { bubbles: true }));
+assert.ok(buttons.every((button) => button.dataset.resolvedTheme === "dark"));
+group
+  .querySelector("input")
+  .dispatchEvent(new window.Event("change", { bubbles: true }));
+assert.equal(saved.get(groupKey), "dark");
+commitThemePreference(groupKey, "auto");
+assert.equal(saved.has(groupKey), false);
+assert.equal(document.documentElement.hasAttribute("data-theme"), false);
+stopGroup();
+assert.equal(frames.size, 0);
+group.remove();
 await window.happyDOM.close();
 console.log(
   "ThemeControl: storage, clicks, reset, media, cross-tab, hydration readiness and native icon scope passed.",

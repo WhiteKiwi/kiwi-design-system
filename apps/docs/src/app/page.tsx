@@ -66,7 +66,7 @@ const inventory = [
   ["TextLink", "CONTROL", "inline navigation"],
   ["Select", "CONTROL", "native options · hint · invalid · disabled"],
   ["SegmentedControl", "CONTROL", "single choice · native keyboard · forms"],
-  ["ThemeControl", "CONTROL", "아이콘 기본 · 설정용 segmented"],
+  ["ThemeControl", "CONTROL", "아이콘 · light/dark 전환"],
   ["EmptyState", "FEEDBACK", "explanation · next action"],
   ["Badge", "FEEDBACK", "6 semantic tones"],
   ["Callout", "FEEDBACK", "5 semantic tones"],
@@ -411,19 +411,14 @@ export default function Home() {
         <div className="docs-component-block" id="theme-control">
           <div className="docs-component-title">
             <span>화면 테마</span>
-            <code>ICON · HEADER DEFAULT</code>
+            <code>ICON · SCREEN THEME</code>
           </div>
           <ThemeSpecimens />
-          <ThemeControl
-            variant="segmented"
-            label="설정 전용 · 화면 테마"
-            storageKey={docsThemeStorageKey}
-          />
           <p>
             제품 헤더는 현재 화면의 해·달만 표시하는 아이콘 버튼을 사용합니다.
-            클릭하면 반대 테마로 고정합니다. Segmented는 설정·카탈로그 전용이며
-            제품 헤더에는 사용하지 않습니다. 자동은 속성과 저장값을 지워 기기
-            설정을 따릅니다.
+            클릭하면 반대 테마로 고정합니다.{" "}
+            {'commitThemePreference(key, "auto")'}로 속성과 저장값을 지우면 기기
+            설정을 다시 따릅니다.
           </p>
         </div>
 

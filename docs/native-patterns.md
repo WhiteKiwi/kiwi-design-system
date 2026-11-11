@@ -92,20 +92,9 @@ first paint, hydration and reduced motion stay instant. Failed or unavailable
 storage retains the effective preference in memory, including after reset to auto.
 Readable storage events refresh it; system changes follow only effective auto.
 
-Use `themeControlMarkup({ variant: "segmented" })` for settings/catalogs only,
-**never in product headers**. Radio names must be unique per independent group.
-`legend` and `hideLegend` still configure this variant.
-
-```html
-<fieldset class="kiwi-segmented kiwi-theme">
-  <legend class="kiwi-sr-only">화면 테마</legend>
-  <div class="kiwi-segmented__options">
-    <label class="kiwi-segmented__option"><input class="kiwi-sr-only" type="radio" name="theme" value="auto" checked><span class="kiwi-segmented__label">자동</span></label>
-    <label class="kiwi-segmented__option"><input class="kiwi-sr-only" type="radio" name="theme" value="light"><span class="kiwi-segmented__label">밝게</span></label>
-    <label class="kiwi-segmented__option"><input class="kiwi-sr-only" type="radio" name="theme" value="dark"><span class="kiwi-segmented__label">어둡게</span></label>
-  </div>
-</fieldset>
-```
+ThemeControl's `variant="segmented"` was removed in 0.2.5; the control is
+icon-only. `themeControlMarkup()` accepts only `id` and `theme` options.
+The standalone SegmentedControl pattern above is unchanged.
 
 `pip-theme-bootstrap` must be the first blocking script in `<head>`, before
 stylesheets. Replace `app-theme` with the app's storage key. The script reads
@@ -217,26 +206,12 @@ when the device preference changes. React apps call `ThemeControl` and
         buttons[index].setAttribute("aria-label", label);
         buttons[index].setAttribute("title", label);
       }
-      var inputs = document.querySelectorAll(".kiwi-theme input[type='radio']");
-      for (var index = 0; index < inputs.length; index += 1) {
-        inputs[index].checked = inputs[index].value === preference;
-      }
     }
     document.addEventListener("click", function (event) {
       var target = event.target;
       var button = target && target.closest && target.closest("button.kiwi-theme--icon");
       if (!button || button.disabled) return;
       var value = button.getAttribute("data-resolved-theme") === "dark" ? "light" : "dark";
-      write(value);
-      apply(value);
-      sync(value);
-    });
-    document.addEventListener("change", function (event) {
-      var input = event.target;
-      if (!input || !input.closest || !input.closest(".kiwi-theme")) return;
-      if (input.type !== "radio") return;
-      var value = input.value;
-      if (value !== "auto" && value !== "light" && value !== "dark") return;
       write(value);
       apply(value);
       sync(value);
@@ -273,7 +248,7 @@ when the device preference changes. React apps call `ThemeControl` and
 `@whitekiwi/ui/theme` exports `themeControlMarkup`, `pipThemeBootstrap`, and
 `pipThemeControlScript` for the same text. `bindThemeControl(storageKey)` is
 the module form of the helper. Bind either once per page; both support icon
-and segmented controls. `commitThemePreference(storageKey, "auto")` clears the
+buttons. `commitThemePreference(storageKey, "auto")` clears the
 key and root attribute; the icon has no reset UI.
 
 ## Empty content
@@ -293,7 +268,7 @@ or failed. The app owns loading/error distinctions and live-region announcements
 
 Finance had a local labeled Select and Empty component; Finance filters, Namecard's
 side/theme choices and the PIP catalog's ThemeToggle independently implemented
-single selection. Screen theme now uses the shared `ThemeControl` variants above. These are small reusable contracts without product data.
+single selection. Screen theme now uses the shared icon-only `ThemeControl` above. These are small reusable contracts without product data.
 Finance's calculations/calendar, Workspace's host actions, and Ticketman's booking
 workflow remain product-owned. Existing native dialogs/toasts have different
 lifecycle and announcement requirements; this release does not replace them with

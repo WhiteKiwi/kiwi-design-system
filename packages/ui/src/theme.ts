@@ -315,26 +315,12 @@ export function pipThemeControlScript(storageKey: string): string {
         buttons[index].setAttribute("aria-label", label);
         buttons[index].setAttribute("title", label);
       }
-      var inputs = document.querySelectorAll(".kiwi-theme input[type='radio']");
-      for (var index = 0; index < inputs.length; index += 1) {
-        inputs[index].checked = inputs[index].value === preference;
-      }
     }
     document.addEventListener("click", function (event) {
       var target = event.target;
       var button = target && target.closest && target.closest("button.kiwi-theme--icon");
       if (!button || button.disabled) return;
       var value = button.getAttribute("data-resolved-theme") === "dark" ? "light" : "dark";
-      write(value);
-      apply(value);
-      sync(value);
-    });
-    document.addEventListener("change", function (event) {
-      var input = event.target;
-      if (!input || !input.closest || !input.closest(".kiwi-theme")) return;
-      if (input.type !== "radio") return;
-      var value = input.value;
-      if (value !== "auto" && value !== "light" && value !== "dark") return;
       write(value);
       apply(value);
       sync(value);
@@ -369,51 +355,20 @@ export function pipThemeControlScript(storageKey: string): string {
   );
 }
 
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
-}
-
 let markupId = 0;
 
 export function themeControlMarkup({
-  variant = "icon",
-  name = "theme",
-  legend = "화면 테마",
-  hideLegend = true,
   id,
   theme = "light",
 }: {
-  variant?: "icon" | "segmented";
-  name?: string;
-  legend?: string;
-  hideLegend?: boolean;
   id?: string;
   theme?: "light" | "dark";
 } = {}): string {
-  if (!storageKeyPattern.test(name)) {
-    throw new Error("Theme radio name must be a short unquoted token.");
-  }
-  if (variant === "icon") {
-    const glyphId = id ?? `kiwi-theme-${++markupId}`;
-    const label = themeToggleLabel(theme);
-    return `<button type="button" class="kiwi-theme kiwi-theme--icon" data-resolved-theme="${theme}" aria-label="${label}" title="${label}">
+  const glyphId = id ?? `kiwi-theme-${++markupId}`;
+  const label = themeToggleLabel(theme);
+  return `<button type="button" class="kiwi-theme kiwi-theme--icon" data-resolved-theme="${theme}" aria-label="${label}" title="${label}">
 ${themeGlyphMarkup(glyphId)}
 </button>`;
-  }
-  const legendClass = hideLegend ? "kiwi-sr-only" : "kiwi-field__label";
-  const option = (value: ThemePreference, label: string, checked = false) =>
-    `    <label class="kiwi-segmented__option"><input class="kiwi-sr-only" type="radio" name="${name}" value="${value}"${checked ? " checked" : ""}><span class="kiwi-segmented__label">${label}</span></label>`;
-  return `<fieldset class="kiwi-segmented kiwi-theme">
-  <legend class="${legendClass}">${escapeHtml(legend)}</legend>
-  <div class="kiwi-segmented__options">
-${option("auto", "자동", true)}
-${option("light", "밝게")}
-${option("dark", "어둡게")}
-  </div>
-</fieldset>`;
 }
 
 export function bindThemeControl(
@@ -435,19 +390,6 @@ export function bindThemeControl(
       button.setAttribute("aria-label", themeToggleLabel(theme));
       button.setAttribute("title", themeToggleLabel(theme));
     }
-    for (const input of scope.querySelectorAll<HTMLInputElement>(
-      ".kiwi-theme input[type='radio']",
-    )) {
-      input.checked = input.value === preference;
-    }
-  };
-  const onChange = (event: Event) => {
-    const target = event.target;
-    if (!(target instanceof HTMLInputElement)) return;
-    if (target.type !== "radio" || !target.closest(".kiwi-theme")) return;
-    if (!scope.contains(target) || !isThemePreference(target.value)) return;
-    commitThemePreference(storageKey, target.value);
-    sync(target.value);
   };
   const onClick = (event: Event) => {
     if (!(event.target instanceof Element)) return;
@@ -459,7 +401,6 @@ export function bindThemeControl(
     commitThemePreference(storageKey, theme === "dark" ? "light" : "dark");
   };
   scope.addEventListener("click", onClick);
-  scope.addEventListener("change", onChange);
   const stop = subscribeThemePreference(storageKey, () => {
     sync(effectiveThemePreference(storageKey));
   });
@@ -479,7 +420,6 @@ export function bindThemeControl(
       button.classList.remove("kiwi-theme--motion");
     }
     scope.removeEventListener("click", onClick);
-    scope.removeEventListener("change", onChange);
     stop();
   };
 }

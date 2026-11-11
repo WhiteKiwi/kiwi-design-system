@@ -68,7 +68,7 @@ export function LinkedCard({
       data-interactive="true"
       data-ui="linked-card"
     >
-      <span>{children}</span>
+      <span className="kiwi-card-link__body">{children}</span>
       <span aria-hidden="true" className="kiwi-card-link__arrow">
         {arrowLabel} ↗
       </span>

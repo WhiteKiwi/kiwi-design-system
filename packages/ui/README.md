@@ -75,10 +75,10 @@ and spacing between components. Load fonts separately; system fallbacks work too
 | Actions and navigation | `Button`, `TextLink` | Button defaults to `type="button"`; set `submit` explicitly for forms |
 | Labeled input | `TextField`, `Select` | Required `label`; optional `hint` / `error`; generated ID and linked description |
 | Single selection | `SegmentedControl` | Native radio group; supports form submission/reset and disabled choices |
-| Screen theme | `ThemeControl` | 44×44 header icon by default; settings-only segmented option. Stores only `light` or `dark` |
+| Screen theme | `ThemeControl` | 44×44 icon button. Stores only `light` or `dark` |
 | Empty content | `EmptyState` | Title, optional description/actions; no automatic live announcement |
 | Status and guidance | `Badge`, `Callout` | Visual tone is not an automatic live announcement |
-| Content surfaces | `StaticCard`, `LinkedCard` | Article versus anchor; use an `href` for linked cards and avoid nested controls |
+| Content surfaces | `StaticCard`, `LinkedCard` | Article versus anchor; LinkedCard stacks children in `.kiwi-card-link__body` like StaticCard, with its arrow at the bottom. Use an `href` and avoid nested controls |
 | Editorial structure | `SectionHeading`, `CollectionHeading` | SectionHeading renders an `h2`; keep the surrounding heading hierarchy logical |
 | Progressive disclosure | `Disclosure` | Radix-backed trigger/content; `defaultOpen` sets initial state |
 | Class composition | `cn` | Combines conditional classes and Tailwind class merging |
@@ -132,7 +132,7 @@ Non-React consumers can load only the stylesheet and use the documented
 
 ## Screen theme
 
-`ThemeControl` defaults to `variant="icon"`: one ghost button, a 44×44 hit
+`ThemeControl` is icon-only: one ghost button, a 44×44 hit
 target and a 22px sun/moon reflecting the resolved page theme. The glyph uses
 `--kiwi-color-text`; hover/active use control state tokens. Its Korean accessible
 name and title describe the action: `어둡게 전환` in light, `밝게 전환` in dark.
@@ -140,12 +140,11 @@ Clicking fixes the opposite of the shown theme. There is no reset UI or
 `aria-pressed`. Without a stored choice, system changes update the glyph and
 `theme-color` live. Focus uses the focus token with a 0.2rem offset.
 
-Use `variant="segmented"` only in settings or catalogs, **never in product
-headers**. It preserves 자동 / 밝게 / 어둡게 radios, `label`, `hideLabel`, and
-fieldset attributes. `label` / `hideLabel` do not name the icon variant; its
-accessible name follows the resolved theme. Existing calls without `variant`
-intentionally change appearance in 0.2.4; add `variant="segmented"` for settings.
-Native `disabled` works for either variant.
+ThemeControl's `variant="segmented"` was removed in 0.2.5. The `variant`,
+`label`, and `hideLabel` props are removed; the control accepts button attributes
+instead of fieldset attributes. Native `disabled` disables the button.
+`SegmentedControl` is unchanged. Use `commitThemePreference(key, "auto")` for
+programmatic reset to the system preference.
 
 The glyph and picked motion A port the official GUI Challenges / Adam Argyle
 [theme-switch](https://github.com/argyleink/gui-challenges/tree/82317d0d04c4f38ddf781439e282aa67ecb5b7f6/theme-switch),
@@ -203,7 +202,7 @@ export function AppHeader() {
 
 `commitThemePreference(storageKey, preference)` updates the effective in-memory preference first, then best-effort storage, the attribute,
 and `theme-color` from an imperative caller. `bindThemeControl(storageKey)`
-does the same for either native variant. Its optional second argument scopes the
+does the same for native icon buttons. Its optional second argument scopes the
 binding to a container or the icon button itself, including initial/storage sync
 and motion readiness. Call the returned cleanup to remove listeners and motion
 readiness. Omitting the scope binds to `document`.
