@@ -22,7 +22,7 @@ from a branch. Preview runs do not request npm credentials or write to the regis
   to scope, metadata, export, license, and dependency checks
 
 Public libraries use one lockstep SemVer version. The current library version
-is `0.2.4`. Bump all libraries together with `pnpm release:version <version>`, add
+is `0.2.5`. Bump all libraries together with `pnpm release:version <version>`, add
 release notes describing consumer-visible changes, and review the diff. The
 command does not commit, tag, push, publish, or modify private app versions.
 Workspace references remain `workspace:^` or `workspace:*` in source; pinned
