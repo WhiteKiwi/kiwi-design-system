@@ -133,7 +133,7 @@ Non-React consumers can load only the stylesheet and use the documented
 ## Screen theme
 
 `ThemeControl` is icon-only: one ghost button, a 44×44 hit
-target and a 22px sun/moon reflecting the resolved page theme. The glyph uses
+target and a 16px sun/moon reflecting the resolved page theme. The glyph uses
 `--kiwi-color-text`; hover/active use control state tokens. Its Korean accessible
 name and title describe the action: `어둡게 전환` in light, `밝게 전환` in dark.
 Clicking fixes the opposite of the shown theme. There is no reset UI or
@@ -149,8 +149,8 @@ programmatic reset to the system preference.
 The glyph and picked motion A port the official GUI Challenges / Adam Argyle
 [theme-switch](https://github.com/argyleink/gui-challenges/tree/82317d0d04c4f38ddf781439e282aa67ecb5b7f6/theme-switch),
 commit `82317d0d04c4f38ddf781439e282aa67ecb5b7f6`: original 24×24 sun, eight thin
-round-capped rays (2-unit lines, 2px stroke) and crescent mask, displayed at 22px.
-Light rays keep their original scale; only the whole SVG is sized to 22px. The original motion uses 250ms sun /
+round-capped rays (2-unit lines, 2px stroke) and crescent mask, displayed at 16px.
+Light rays keep their original scale; only the whole SVG is sized to 16px. The original motion uses 250ms sun /
 150ms rays / 500ms mask after 250ms delay to dark; to light, 500ms elastic sun
 and rays with a 250ms mask. Easing values are inlined without Open Props.
 Transitions start only after initial sync has painted; first paint and hydration

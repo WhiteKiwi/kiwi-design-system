@@ -1,11 +1,11 @@
 /** GUI Challenges / Adam Argyle theme-switch, 82317d0d04c4f38ddf781439e282aa67ecb5b7f6.
- * Ported for PIP: unique mask IDs, 22px display, currentColor and motion readiness.
+ * Ported for PIP: unique mask IDs, 16px display, currentColor and motion readiness.
  * Upstream repository LICENSE: Apache-2.0; theme-switch/package.json: ISC.
  * See ../THIRD_PARTY.md and ../LICENSE-APACHE-2.0.
  */
 export function themeGlyphMarkup(id: string): string {
   id = id.replace(/[^A-Za-z0-9_-]/g, "");
-  return `<svg class="kiwi-theme__glyph" aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24">
+  return `<svg class="kiwi-theme__glyph" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24">
         <mask class="moon" id="${id}-mask">
           <rect x="0" y="0" width="100%" height="100%" fill="white" />
           <circle cx="24" cy="10" r="6" fill="black" />

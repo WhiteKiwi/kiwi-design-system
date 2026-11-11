@@ -319,7 +319,7 @@ for (const markup of [iconTheme, themeControlMarkup()]) {
   assert.match(markup, /class="moon"/);
   assert.match(markup, /class="sun" cx="12" cy="12" r="6"/);
   assert.match(markup, /viewBox="0 0 24 24"/);
-  assert.match(markup, /width="22" height="22"/);
+  assert.match(markup, /width="16" height="16"/);
   assert.equal([...markup.matchAll(/<line /g)].length, 8);
   assert.match(markup, /<svg class="kiwi-theme__glyph"/);
   assert.match(markup, /<g class="sun-beams" stroke="currentColor">/);
@@ -721,7 +721,7 @@ assert.doesNotMatch(
   /transition\s*:/,
   "pre-ready and reduced-motion glyphs have no transitions",
 );
-assert.match(restStyles, /width: 22px;\s*height: 22px/);
+assert.match(restStyles, /width: 16px;\s*height: 16px/);
 assert.match(restStyles, /\.kiwi-theme__glyph \{[^}]*stroke-linecap: round;/);
 assert.match(restStyles, /stroke-width: 2px/);
 for (const [, selector, declarations] of glyphStyles.matchAll(
