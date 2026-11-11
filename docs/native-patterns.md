@@ -63,7 +63,7 @@ It follows system changes live until an explicit preference is stored.
 
 ```html
 <button type="button" class="kiwi-theme kiwi-theme--icon" data-resolved-theme="light" aria-label="어둡게 전환" title="어둡게 전환">
-<svg class="kiwi-theme__glyph" aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 24 24">
+<svg class="kiwi-theme__glyph" aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24">
         <mask class="moon" id="kiwi-theme-example-mask">
           <rect x="0" y="0" width="100%" height="100%" fill="white" />
           <circle cx="24" cy="10" r="6" fill="black" />
@@ -85,7 +85,7 @@ It follows system changes live until an explicit preference is stored.
 
 IDs are unique per `themeControlMarkup()` call. When copying this example more
 than once, replace every `kiwi-theme-example` suffix consistently per instance.
-The 22px glyph ports the original 24×24 GUI Challenges / Adam Argyle theme-switch
+The 16px glyph ports the original 24×24 GUI Challenges / Adam Argyle theme-switch
 SVG and picked motion A. See [UI attribution and timings](../packages/ui/README.md#screen-theme).
 Bindings enable transitions after initial sync has painted (two animation frames);
 first paint, hydration and reduced motion stay instant. Failed or unavailable

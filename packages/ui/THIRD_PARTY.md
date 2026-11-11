@@ -9,7 +9,7 @@ Upstream's repository LICENSE is Apache-2.0, reproduced in
 [LICENSE-APACHE-2.0](LICENSE-APACHE-2.0). Its `theme-switch/package.json` declares
 ISC; these are inconsistent upstream metadata, and both facts are preserved here.
 
-WhiteKiwi modified the port for unique mask IDs, a 22px display within a 44px
+WhiteKiwi modified the port for unique mask IDs, a 16px display within a 44px
 button, inherited currentColor without hover recoloring, resolved-theme selectors,
 inline Open Props easing values, and motion readiness after initial theme sync.
 The original 24×24 geometry and motion durations are retained. No Open Props

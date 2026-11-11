@@ -46,6 +46,7 @@
 
 ## 릴리스 기록
 
+- [0.2.6](releases-0.2.6.md) — ThemeControl의 44×44 hit target을 유지하고 해·달 glyph를 22px에서 16px로 축소.
 - [0.2.5](releases-0.2.5.md) — LinkedCard 자식 세로 배치 수정과 ThemeControl segmented API 제거; 아이콘 전용.
 - [0.2.4](releases-0.2.4.md) — ThemeControl 아이콘 기본값, 설정 전용 segmented와 선택된 공식 theme-switch motion A와 저장소 실패 대응.
 - [0.2.3](releases-0.2.3.md) — 헤더용 ThemeControl과 첫 paint 전 `pip-theme-bootstrap`.
